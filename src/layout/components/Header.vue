@@ -45,7 +45,7 @@
             :index="item.path"
             :key="item.meta.title"
           >
-            <i class="el-icon-menu"></i>
+            <i :class="item.meta.icon"></i>
             <span class="menu_title" slot="title">{{ item.meta.title }}</span>
           </el-menu-item>
         </el-menu>
@@ -63,7 +63,7 @@ export default {
       selectStatus: [{ value: "hschain", status: "hschain" }],
       keyword: "",
       menu: [],
-      activeIndex: "/"
+      activeIndex: "/",
     };
   },
   created() {
@@ -72,17 +72,17 @@ export default {
         this.menu.push(item);
       }
     });
-    setTimeout(() => {
-      this.activeIndex = this.$route.path;
-    }, 0);
   },
-  computed: {
-    key() {
-      return this.$route.path;
+  watch: {
+    '$store.state.option.path': function(newVal) {
+      this.activeIndex = newVal
     }
   },
   methods: {
-    querykeyword() {},
+    querykeyword() {
+      localStorage.setItem('blockDetails', this.keyword)
+      this.$router.push('/blockDetails')
+    },
     handleSelect(key, keyPath) {
       // console.log(key, keyPath);
     }

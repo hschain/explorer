@@ -44,27 +44,39 @@ export const constantRoutes = [
     hidden: true
   },
   // 404 page must be placed at the end !!!
-  // { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
 
   { // 主页面板
     path: '/dashboard',
     component: () => import('@/views/Dashboard'),
-    meta: { title: '主页面板', icon: '@/assets/header/dashboard_ic_none.svg' },
+    meta: { title: '主页面板', icon: 'el-icon-menu' },
   },
   { // 区块链
     path: '/blocks',
     component: () => import('@/views/Blocks'),
-    meta: { title: '区块链', icon: '@/assets/header/blocks_ic_none.svg' },
+    meta: { title: '区块链', icon: 'el-icon-s-order' },
   },
   { // 交易
     path: '/transactions',
     component: () => import('@/views/Transactions'),
-    meta: { title: '交易', icon: '@/assets/header/transactions_ic_none.svg' },
+    meta: { title: '交易', icon: 'el-icon-s-data' },
   },
   { // 资产
     path: '/assets',
     component: () => import('@/views/Assets'),
-    meta: { title: '资产', icon: '@/assets/header/assets_ic_none.svg' },
+    meta: { title: '资产', icon: 'el-icon-s-cooperation' },
+  },
+  { // 区块链详情
+    path: '/blockDetails',
+    component: () => import('@/views/BlockDetails'),
+    meta: { title: '区块链详情', },
+    hidden: true
+  },
+  { // 交易详情
+    path: '/transactionDetails',
+    component: () => import('@/views/TransactionDetails'),
+    meta: { title: '交易详情', },
+    hidden: true
   },
 ]
 

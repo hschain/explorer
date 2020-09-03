@@ -1,8 +1,7 @@
 <template>
   <div :class="{ hidden: hidden }" class="pagination-container">
-    <div style="float: left">
+    <div style="float: right">
       <el-pagination
-        :background="background"
         :current-page.sync="currentPage"
         :page-size.sync="pageSize"
         :layout="layout"
@@ -37,7 +36,7 @@ export default {
     pageSizes: {
       type: Array,
       default() {
-        return [20, 10, 15, 50];
+        return [10, 15, 20, 50];
       }
     },
     layout: {
@@ -78,33 +77,11 @@ export default {
   created() {},
   methods: {
     handleSizeChange(val) {
-      this.$emit("pagination", { page: this.currentPage, limit: val });
-      sessionStorage.setItem(
-        "pagination",
-        JSON.stringify({
-          router: this.$route.path,
-          page: this.currentPage,
-          limit: val
-        })
-      );
+      // this.$emit("pagination", { page: this.currentPage, limit: val });
     },
     handleCurrentChange(val) {
-      this.$emit("pagination", { page: val, limit: this.pageSize });
-      sessionStorage.setItem(
-        "pagination",
-        JSON.stringify({
-          router: this.$route.path,
-          page: val,
-          limit: this.pageSize
-        })
-      );
+      // this.$emit("pagination", { page: val, limit: this.pageSize });
     },
-    confirmCurrentChange() {
-      this.$emit("pagination", {
-        page: this.currentPage,
-        limit: this.pageSize
-      });
-    }
   }
 };
 </script>

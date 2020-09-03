@@ -11,9 +11,10 @@ export default {
   name: "AppMain",
   computed: {
     key() {
+      this.$store.dispatch('option/highlightMenu', this.$route.path)
       return this.$route.path;
     }
-  }
+  },
 };
 </script>
 

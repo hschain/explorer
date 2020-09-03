@@ -1,7 +1,7 @@
 <template>
   <div class="Dashboard">
     <div class="main_Dashboard">
-      <img src="@/assets/view/main_dashboard.png" alt="" />
+      <img src="@/assets/view/main_dashboard.png" alt />
     </div>
     <div class="dashboardContent">
       <div class="cardDisplay">
@@ -33,28 +33,28 @@ export default {
     return {
       cardList: [
         {
-          title: "价格",
-          value: "421,552",
-          lastTime: "Last 7h ago"
+          title: "Price",
+          value: "923,241",
+          lastTime: "Last 3h ago",
         },
         {
-          title: "价格",
-          value: "431,552",
-          lastTime: "Last 7h ago"
+          title: "Height",
+          value: "431,132",
+          lastTime: "Last 5h ago",
         },
         {
-          title: "价格",
-          value: "521,552",
-          lastTime: "Last 7h ago"
+          title: "Bonded",
+          value: "524,567",
+          lastTime: "Last 7h ago",
         },
         {
-          title: "价格",
-          value: "121,552",
-          lastTime: "Last 7h ago"
-        }
-      ]
+          title: "Inflation",
+          value: "121,752",
+          lastTime: "Last 2h ago",
+        },
+      ],
     };
-  }
+  },
 };
 </script>
 
@@ -86,11 +86,7 @@ export default {
     .cardDisplay {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      @media screen and (max-width: 1100px) {
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
-      }
-      grid-gap: 10px;
+      gap: 10px;
       .cardBox {
         min-height: calc(100% - 12px);
         padding: 15px 20px;
@@ -129,13 +125,19 @@ export default {
         }
       }
     }
+
     .BlockTxWrapper {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr;
-      grid-column-gap: 15px;
-      grid-row-gap: 15px;
-      @media screen and (max-width: 1100px) {
+      gap: 15px;
+    }
+    @media screen and (max-width: 1100px) {
+      .cardDisplay {
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+      .BlockTxWrapper {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr;
       }
