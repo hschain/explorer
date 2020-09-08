@@ -11,6 +11,14 @@ const serviceModule = {
     url: '/v1/txs',
     method: 'get'
   },
+  getCurrency: {
+    url: '/v1/total',
+    method: 'get'
+  },
+  getAccountDetail: {
+    url: '/v1/account',
+    method: 'get'
+  },
 }
 
 const ApiSetting = {

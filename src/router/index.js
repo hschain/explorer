@@ -78,6 +78,12 @@ export const constantRoutes = [
     meta: { title: '交易详情', },
     hidden: true
   },
+  { // 账户详情
+    path: '/account/:data',
+    component: () => import('@/views/AccountDetails'),
+    meta: { title: '账户详情', },
+    hidden: true
+  },
 ]
 
 const createRouter = () => new Router({

@@ -7,7 +7,6 @@
       <div class="searchBar">
         <div class="queryIndex">
           <el-input class="inputKeyword" v-model="textarea" placeholder="请输入查询内容" clearable></el-input>
-          <el-button class="searchBtn" type="primary" icon="el-icon-search">查询</el-button>
         </div>
       </div>
       <el-table :data="AssetsList" stripe style="width: 100%">
@@ -36,7 +35,7 @@ export default {
   },
   data() {
     return {
-      textarea: '',
+      textarea: "",
       AssetsList: [
         {
           Name: "vasvs",
@@ -45,7 +44,22 @@ export default {
           Supply: "adadws",
           Owner: "hahah",
         },
+        {
+          Name: "nasvs",
+          MarketCap: "421,552",
+          Price: "421,552",
+          Supply: "adadws",
+          Owner: "hahah",
+        },
+        {
+          Name: "gasns",
+          MarketCap: "421,552",
+          Price: "421,552",
+          Supply: "adadws",
+          Owner: "hahah",
+        },
       ],
+      oAssetsList: [],
       listQuery: {
         page: 1,
         size: 10,
@@ -53,25 +67,44 @@ export default {
       total: 0,
     };
   },
+  watch: {
+    textarea: function (val, oldVal) {
+      if (val) {
+        this.AssetsList = this.oAssetsList.filter((item) =>
+          item.Name.indexOf(val) !== -1
+        );
+      } else {
+        this.AssetsList = this.oAssetsList;
+      }
+    },
+  },
+  created() {
+    this.getAssetsList();
+  },
   methods: {
-    getAssetsList() {},
+    getAssetsList() {
+      this.oAssetsList = this.AssetsList;
+      this.$http(this.$api.getCurrency).then((res) => {
+
+      })
+    },
   },
 };
 </script>
 
 <style lang="scss" scope>
-.AssetsList{
-  .table{
-    .searchBar{
+.AssetsList {
+  .table {
+    .searchBar {
       margin-bottom: 10px;
       display: flex;
       justify-content: flex-end;
-      .queryIndex{
+      .queryIndex {
         display: flex;
-        .inputKeyword{
+        .inputKeyword {
           width: 400px;
         }
-        .searchBtn{
+        .searchBtn {
           margin-left: 20px;
         }
       }

@@ -41,7 +41,7 @@
     </div>
     <div class="secondContainer containerWrapper">
       <div class="containerTitle">交易信息</div>
-      <el-table
+      <!-- <el-table
         v-if="TransactionsInfo && TransactionsInfo.length"
         :data="TransactionsInfo"
         stripe
@@ -92,7 +92,8 @@
             <div>{{scope.row.timestamp | time}}</div>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table>-->
+      <TxsTable v-if="TransactionsInfo" :txsList="TransactionsInfo" />
       <div v-else class="noTX">
         <img :src="require('@/assets/common/noitem_ic.svg')" alt />
         <p class="msg">交易信息为空</p>
@@ -104,8 +105,12 @@
 <script>
 import { formatTime } from "@/utils";
 import { setTxsType } from "@/utils/common";
+import TxsTable from "@/components/TxsTable/TxsTable";
 export default {
   name: "BlockDetails",
+  components: {
+    TxsTable,
+  },
   data() {
     return {
       blockData: {},
@@ -152,7 +157,9 @@ export default {
             };
             this.TransactionsInfo = res.data[0].txs;
             this.TransactionsInfo.forEach((item, i) => {
-              item.type = setTxsType(res.data[0].txs[i].messages[0].events.message.action)
+              item.type = setTxsType(
+                res.data[0].txs[i].messages[0].events.message.action
+              );
             });
           }
         }
