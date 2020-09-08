@@ -2,11 +2,15 @@
  * Created by Yee .
  */
 const serviceModule = {
-  // 登录
+  // 获取区块信息
   getBlocksList: {
     url: '/v1/blocks',
     method: 'get'
-  }
+  },
+  getTransactionsList: {
+    url: '/v1/txs',
+    method: 'get'
+  },
 }
 
 const ApiSetting = {

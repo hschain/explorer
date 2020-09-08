@@ -49,12 +49,12 @@ export const constantRoutes = [
   { // 主页面板
     path: '/dashboard',
     component: () => import('@/views/Dashboard'),
-    meta: { title: '主页面板', icon: 'el-icon-menu' },
+    meta: { title: '主页', icon: 'el-icon-menu' },
   },
   { // 区块链
     path: '/blocks',
     component: () => import('@/views/Blocks'),
-    meta: { title: '区块链', icon: 'el-icon-s-order' },
+    meta: { title: '区块', icon: 'el-icon-s-order' },
   },
   { // 交易
     path: '/transactions',
@@ -67,13 +67,13 @@ export const constantRoutes = [
     meta: { title: '资产', icon: 'el-icon-s-cooperation' },
   },
   { // 区块链详情
-    path: '/blockDetails',
+    path: '/blocks/:data',
     component: () => import('@/views/BlockDetails'),
     meta: { title: '区块链详情', },
     hidden: true
   },
   { // 交易详情
-    path: '/transactionDetails',
+    path: '/transactions/:data',
     component: () => import('@/views/TransactionDetails'),
     meta: { title: '交易详情', },
     hidden: true

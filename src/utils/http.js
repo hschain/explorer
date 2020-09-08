@@ -21,7 +21,7 @@ const removePending = config => {
   }
 }
 
-const httpServer = (opts, data) => {
+const httpServer = (opts, data, detail) => {
   // const Public = { // 公共参数
   //   _: new Date().getTime()
   // }
@@ -37,7 +37,7 @@ const httpServer = (opts, data) => {
     // baseURL: 'http://hsc.tt-cool.com/admin/',
 
     // eslint-disable-next-line
-    url: opts.url,
+    url: detail ? opts.url + '/' + detail : opts.url,
     timeout: 120000,
     // params: Object.assign(Public, data),
     params: data,
@@ -107,36 +107,28 @@ axios.interceptors.response.use(
      */
   response => {
     const res = response.data
+    res.code = response.status
     removePending(res)
     // if the custom code is not 200, it is judged as an error.
-    // if (res.code !== 200) {
-    //   console.log(res)
-    //   if (res.code === 0) {
-    //     Message({
-    //       message: res.error.message,
-    //       type: 'error',
-    //       duration: 5 * 1000
-    //     })
-    //   } else {
-    //     Message({
-    //       message: res.error || 'Error',
-    //       type: 'error',
-    //       duration: 3 * 1000
-    //     })
-    //     if (res.code === 5061) {
-    //     // 携带当前页面路由，以在登录页面完成登录后返回当前页面
-    //       router.replace({
-    //         path: '/login',
-    //         query: {
-    //           redirect: router.currentRoute.fullPath
-    //         }
-    //       })
-    //     }
-    //   }
-    //   return Promise.reject(new Error(res.error || 'Error'))
-    // } else {
-    //   return res
-    // }
+    if (res.code !== 200) {
+      console.log(res)
+      if (res.code === 0) {
+        Message({
+          message: res.error.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      } else {
+        Message({
+          message: res.error || 'Error',
+          type: 'error',
+          duration: 3 * 1000
+        })
+      }
+      return Promise.reject(new Error(res.error || 'Error'))
+    } else {
+      return res
+    }
   },
   error => {
     // console.log('err' + error) // for debug

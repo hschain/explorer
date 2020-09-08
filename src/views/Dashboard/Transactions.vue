@@ -7,75 +7,78 @@
     <el-table class="containerTable" :data="TransactionsList" stripe style="width: 100%">
       <el-table-column label="交易hash值" width="150">
         <template slot-scope="scope">
-          <el-link type="primary" :underline="false" @click="getDetails('TransactionDetails')">{{scope.row.TxHash}}</el-link>
+          <el-link
+            type="primary"
+            :underline="false"
+            @click="getDetails('Transactions', scope.row.tx_hash)"
+          >{{scope.row.tx_hash | hash}}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="类型">
-        <template>
-          <div>Transfer</div>
+        <template slot-scope="scope">
+          <div>{{scope.row.type}}</div>
         </template>
       </el-table-column>
       <el-table-column label="区块高度" width="100">
         <template slot-scope="scope">
-          <el-link type="primary" :underline="false" @click="getDetails('blockDetails')">{{scope.row.Height}}</el-link>
+          <el-link
+            type="primary"
+            :underline="false"
+            @click="getDetails('blocks', scope.row.height)"
+          >{{scope.row.height}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="Time" label="时间" width="80"></el-table-column>
+      <el-table-column label="时间" width="80">
+        <template slot-scope="scope">
+          <div>{{scope.row.timestamp | time}}</div>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import { formatTime } from "@/utils";
+import { setTxsType } from "@/utils/common";
 export default {
   name: "TransactionsBox",
   data() {
     return {
-      TransactionsList: [
-        {
-          TxHash: "60C191 … 023D2E",
-          Type: "Transfer",
-          Height: 520202,
-          Time: "24s ago",
-        },
-        {
-          TxHash: "60C191 … 023D2E",
-          Type: "Transfer",
-          Height: 520202,
-          Time: "24s ago",
-        },
-        {
-          TxHash: "60C191 … 023D2E",
-          Type: "Transfer",
-          Height: 520202,
-          Time: "24s ago",
-        },
-        {
-          TxHash: "60C191 … 023D2E",
-          Type: "Transfer",
-          Height: 520202,
-          Time: "24s ago",
-        },
-        {
-          TxHash: "60C191 … 023D2E",
-          Type: "Transfer",
-          Height: 520202,
-          Time: "24s ago",
-        },
-      ],
+      TransactionsList: [],
+      timer: null
     };
   },
   created() {
-    // this.getTransactionsList();
+    this.getTransactionsList();
+    this.timer = setInterval(() => {
+      this.getTransactionsList();      
+    }, 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+  },
+  filters: {
+    hash: function (value) {
+      return value.slice(0, 6) + " … " + value.slice(-6);
+    },
+    time: function (value) {
+      return formatTime(value);
+    },
   },
   methods: {
     getTransactionsList() {
       this.$http(this.$api.getTransactionsList, { limit: 5 }).then((res) => {
-        
+        if (res.code === 200) {
+          this.TransactionsList = res.data;
+          this.TransactionsList.forEach((item, i) => {
+            item.type = setTxsType(res.data[i].messages[0].events.message.action)
+          });
+        }
       });
     },
-    getDetails(target) {
-      this.$router.push('/'+target)
-    }
+    getDetails(target, detail) {
+      this.$router.push({ path: `/${target}/${detail}` });
+    },
   },
 };
 </script>

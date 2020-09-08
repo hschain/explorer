@@ -10,22 +10,22 @@
           <li class="infoLabel">{{InformationLabel[name]}}</li>
           <li class="infoValue">
             <img
-              v-show="name === 'Status' && item"
+              v-if="name === 'status' && item"
               :src="require('@/assets/common/success_ic.svg')"
               alt
             />
             <img
-              v-show="name === 'Status' && !item"
+              v-else-if="name === 'status' && !item"
               :src="require('@/assets/common/fail_ic.svg')"
               alt
             />
             <el-link
               type="primary"
               :underline="false"
-              v-if="name === 'Height'"
-              @click="getBlockDetails()"
+              v-if="name === 'height'"
+              @click="getBlockDetails(item)"
             >{{item}}</el-link>
-            <div style="display:inline-block" v-else-if="name === 'Status'">{{item ? '成功' : '失败'}}</div>
+            <div style="display:inline-block" v-else-if="name === 'status'">{{item ? '成功' : '失败'}}</div>
             <span v-else>{{item}}</span>
           </li>
         </ul>
@@ -36,35 +36,39 @@
       <div class="TxMessageWrapper">
         <div class="TxMessageType">
           <img :src="require('@/assets/common/msgsic_2.svg')" alt />
-          <span>{{Information.type}}</span>
+          <span>{{Msgs.type}}</span>
         </div>
         <div class="TxMessage">
-          <div class="TxMessage_toValue">
+          <div class="TxMessage_toValue" v-if="Msgs.action === 'send'">
             <div class="TxMessage_label">去向 / 交易值</div>
             <div class="TxMessage_contentWrapper">
               <div class="TxMessage_content">
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">去向</li>
                   <li class="TxMessage_value">
-                    <el-link type="primary" :underline="false">{{Msgs.To}}</el-link>
+                    <el-link type="primary" :underline="false">{{Msgs.to}}</el-link>
                   </li>
                 </ul>
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">交易值</li>
                   <li class="TxMessage_value">
-                    <span>{{Msgs.amount}}{{Msgs.denom}}</span>
+                    <span>{{Msgs.amount}} {{Msgs.denom}}</span>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
+          <ul v-else-if="Msgs.action === 'create_validator'" class="InfoRow">
+            <li class="InfoRow_label">验证者</li>
+            <li class="InfoRow_value">{{Msgs.validator}}</li>
+          </ul>
           <ul class="InfoRow">
             <li class="InfoRow_label">来源</li>
-            <li class="InfoRow_value">{{Msgs.From}}</li>
+            <li class="InfoRow_value">{{Msgs.from}}</li>
           </ul>
           <ul class="InfoRow">
             <li class="InfoRow_label">交易备注</li>
-            <li class="InfoRow_value">{{Msgs.memo}}</li>
+            <li class="InfoRow_value">{{Msgs.memo || '-'}}</li>
           </ul>
         </div>
       </div>
@@ -73,40 +77,70 @@
 </template>
 
 <script>
+import { formatTime } from "@/utils";
+import { setTxsType } from "@/utils/common";
 export default {
   name: "TransactionDetails",
   data() {
     return {
-      Information: {
-        TxHash:
-          "C0A6C5B3F784D4C5FF339C026533B0CE6DE103352343C7BC4F229A826183AF71",
-        Status: true,
-        Height: "579113",
-        Time: "2h ago ( 2020-09-03 / 14:45:43 )",
-      },
+      Information: {},
       InformationLabel: {
-        TxHash: "交易hash值",
-        Status: "状态",
-        Height: "区块高度",
-        Time: "交易时间",
+        tx_hash: "交易hash值",
+        status: "状态",
+        height: "区块高度",
+        timestamp: "交易时间",
       },
       Msgs: {
         type: "Transfer",
-        To: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
-        From: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
+        to: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
+        from: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
         amount: 1,
         denom: "HST",
         memo: 'test-hst'
       }
     };
   },
+  created() {
+    this.getTransactionDetails();
+  },
+  filters: {
+    hash: function (value) {
+      return value.slice(0, 6) + " … " + value.slice(-6);
+    },
+    time: function (value) {
+      return formatTime(value);
+    },
+  },
   methods: {
     //获取列表
     getTransactionDetails() {
-      
+      this.$http(this.$api.getTransactionsList, "", this.$route.params.data).then(res => {
+        if (res.code === 200) {
+          let time = formatTime(res.data[0].timestamp, true);
+          this.Information = {
+            tx_hash: res.data[0].tx_hash,
+            status: res.data[0].messages[0].success,
+            height: res.data[0].height,
+            timestamp: formatTime(res.data[0].timestamp) + " ( " + time[0] + " / " + time[1] + " )",
+          };
+          this.Msgs = {
+            type: setTxsType(res.data[0].messages[0].events.message.action),
+            action: res.data[0].messages[0].events.message.action,
+            from: res.data[0].messages[0].events.message.sender,
+            memo: res.data[0].memo
+          }
+          if (this.Msgs.action === 'send') {
+            this.Msgs.to = res.data[0].messages[0].events.transfer.recipient
+            this.Msgs.amount = res.data[0].messages[0].events.transfer.amount
+            this.Msgs.denom = res.data[0].messages[0].events.transfer.denom
+          } else {
+            this.Msgs.validator = res.data[0].messages[0].events.create_validator.validator
+          }
+        }
+      });
     },
-    getBlockDetails() {
-      this.$router.push("/blockDetails");
+    getBlockDetails(item) {
+      this.$router.push({ path: `/blocks/${item}` })
     },
   },
 };
@@ -187,11 +221,10 @@ export default {
                   flex-flow: column;
                 }
               }
-              .TxMessage_show:first-child {
-                height: fit-content;
-              }
               .TxMessage_show:last-child {
-                margin-bottom: 0;
+                .TxMessage_label {
+                  text-align: right;
+                }
               }
             }
           }

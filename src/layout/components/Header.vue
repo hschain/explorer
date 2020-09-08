@@ -80,8 +80,11 @@ export default {
   },
   methods: {
     querykeyword() {
-      localStorage.setItem('blockDetails', this.keyword)
-      this.$router.push('/blockDetails')
+      //纯数字直接查询区块信息
+      if (/^\d+$/g.test(this.keyword)) {
+        this.$router.push({ path: `/blocks/${this.keyword}` })
+      }
+      
     },
     handleSelect(key, keyPath) {
       // console.log(key, keyPath);
