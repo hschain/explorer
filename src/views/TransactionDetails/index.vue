@@ -46,7 +46,7 @@
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">去向</li>
                   <li class="TxMessage_value">
-                    <el-link type="primary" :underline="false">{{Msgs.to}}</el-link>
+                    <el-link type="primary" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.to}` })">{{Msgs.to}}</el-link>
                   </li>
                 </ul>
                 <ul class="TxMessage_show">
