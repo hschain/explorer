@@ -82,3 +82,9 @@
 .el-date-editor .el-range-separator {
   width: 6%;
 }
+
+.el-tooltip__popper.is-light {
+  background: #FFF;
+  border: 0px solid #303133;
+  box-shadow: 0 0.125rem 1.25rem 0 rgba(0,0,0,.2)
+}

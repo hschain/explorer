@@ -20,6 +20,7 @@
             <el-link
               type="primary"
               :underline="false"
+              @click="getDetails('account', scope.row.messages[0].events.message.sender)"
             >{{scope.row.messages[0].events.message.sender | hash}}</el-link>
             <img
               v-if="scope.row.messages[0].events.transfer"
@@ -31,6 +32,7 @@
               v-if="scope.row.messages[0].events.transfer"
               type="primary"
               :underline="false"
+              @click="getDetails('account', scope.row.messages[0].events.transfer.recipient)"
             >{{scope.row.messages[0].events.transfer.recipient | hash}}</el-link>
           </div>
         </template>

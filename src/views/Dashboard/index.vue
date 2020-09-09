@@ -58,7 +58,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .Dashboard {
   .main_Dashboard {
     display: flex;

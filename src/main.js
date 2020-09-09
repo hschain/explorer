@@ -5,6 +5,7 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
+import VueClipboard from 'vue-clipboard2' // 剪切板
 
 import '@/styles/index.scss' // global css
 
@@ -29,6 +30,7 @@ import api from '@/api/ApiSetting' // 接口列表
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
+Vue.use(VueClipboard)
 Vue.prototype.$http = http
 Vue.prototype.$api = api
 

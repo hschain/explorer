@@ -41,58 +41,6 @@
     </div>
     <div class="secondContainer containerWrapper">
       <div class="containerTitle">交易信息</div>
-      <!-- <el-table
-        v-if="TransactionsInfo && TransactionsInfo.length"
-        :data="TransactionsInfo"
-        stripe
-        style="width: 100%"
-      >
-        <el-table-column label="交易hash值" width="180">
-          <template slot-scope="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="getTransactionDetails(scope.row.tx_hash)"
-            >{{scope.row.tx_hash | hash}}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="类型" width="100">
-          <template slot-scope="scope">
-            <div>{{scope.row.type}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="地址">
-          <template slot-scope="scope">
-            <div class="TransferAddress">
-              <el-link type="primary" :underline="false">{{scope.row.messages[0].events.message.sender | hash}}</el-link>
-              <img v-if="scope.row.messages[0].events.transfer" class="trans_icon" :src="require('@/assets/common/transferarrow_gr.svg')" alt />
-              <el-link v-if="scope.row.messages[0].events.transfer" type="primary" :underline="false">{{scope.row.messages[0].events.transfer.recipient | hash}}</el-link>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="交易金额" width="120">
-          <template slot-scope="scope">
-            <div v-if="scope.row.messages[0].events.transfer">{{scope.row.messages[0].events.transfer.amount}}.</div>
-            <div v-else>-</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="交易货币" width="150">
-          <template slot-scope="scope">
-            <div v-if="scope.row.messages[0].events.transfer">{{scope.row.messages[0].events.transfer.denom}}</div>
-            <div v-else>-</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="区块高度" width="100">
-          <template slot-scope="scope">
-            <el-link type="info" :underline="false">{{scope.row.height}}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="时间" width="80">
-          <template slot-scope="scope">
-            <div>{{scope.row.timestamp | time}}</div>
-          </template>
-        </el-table-column>
-      </el-table>-->
       <TxsTable v-if="TransactionsInfo" :txsList="TransactionsInfo" />
       <div v-else class="noTX">
         <img :src="require('@/assets/common/noitem_ic.svg')" alt />
@@ -172,7 +120,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .BlockDetails {
   .titleWrapper {
     display: flex;
