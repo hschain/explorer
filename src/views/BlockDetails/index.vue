@@ -79,10 +79,10 @@ export default {
       TransactionsInfo: []
     };
   },
-  created() {
+  mounted() {
     if (this.$store.state.option.blockData) {
       this.handleResult(this.$store.state.option.blockData)
-      this.$store.dispatch('option/blockData', null)
+      this.$store.dispatch('option/getBlockData', null)
     } else {
       this.getBlockDetails()
     }

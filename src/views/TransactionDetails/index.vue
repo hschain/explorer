@@ -103,7 +103,7 @@ export default {
   created() {
     if (this.$store.state.option.transactionData) {
       this.handleResult(this.$store.state.option.transactionData)
-      this.$store.dispatch('option/transactionData', null)
+      this.$store.dispatch('option/getTransactionData', null)
     } else {
       this.getTransactionDetails();
     }

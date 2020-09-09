@@ -34,11 +34,18 @@ export default {
       },
       loading: true,
       total: 0,
-      begin: 0 //区块高度起始信息
+      begin: 0, //区块高度起始信息
+      timer: null,
     };
   },
   created() {
     this.getTransactionsList();
+    this.timer = setInterval(() => {
+      this.getTransactionsList();      
+    }, 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   methods: {
     getTransactionsList() {

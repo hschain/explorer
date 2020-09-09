@@ -19,6 +19,7 @@
             placeholder="查询区块，交易，地址详情等…"
             class="inputMargin"
             clearable
+            @keyup.enter.native="querykeyword()"
           >
             <el-button
               slot="append"

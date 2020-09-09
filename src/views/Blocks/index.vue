@@ -67,10 +67,17 @@ export default {
       total: 0,
       begin: 0, //区块高度起始信息
       loading: true,
+      timer: null,
     };
   },
   created() {
     this.getBlocksList();
+    this.timer = setInterval(() => {
+      this.getBlocksList();      
+    }, 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   filters: {
     hash: function (value) {
