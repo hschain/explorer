@@ -9,7 +9,7 @@
           <el-input class="inputKeyword" v-model="textarea" placeholder="请输入查询名称" clearable></el-input>
         </div>
       </div>
-      <el-table :default-sort="{prop: 'value', order: 'descending'}" :data="AssetsList" stripe style="width: 100%">
+      <el-table v-loading="loading" :default-sort="{prop: 'value', order: 'descending'}" :data="AssetsList" stripe style="width: 100%">
         <el-table-column sortable prop="denom" label="名称" width="150">
           <template slot-scope="scope">
             <div class="nameDetail">
@@ -64,6 +64,7 @@ export default {
         size: 10,
       },
       total: 0,
+      loading: true
     };
   },
   watch: {
@@ -88,6 +89,8 @@ export default {
           this.AssetsList = res.data.result
           this.oAssetsList = this.AssetsList
         }
+      }).finally(() => {
+        this.loading = false
       })
     },
   },

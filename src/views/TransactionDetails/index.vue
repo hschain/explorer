@@ -101,7 +101,12 @@ export default {
     };
   },
   created() {
-    this.getTransactionDetails();
+    if (this.$store.state.option.transactionData) {
+      this.handleResult(this.$store.state.option.transactionData)
+      this.$store.dispatch('option/transactionData', null)
+    } else {
+      this.getTransactionDetails();
+    }
   },
   filters: {
     hash: function (value) {
@@ -116,28 +121,32 @@ export default {
     getTransactionDetails() {
       this.$http(this.$api.getTransactionsList, "", this.$route.params.data).then(res => {
         if (res.code === 200) {
-          let time = formatTime(res.data[0].timestamp, true);
-          this.Information = {
-            tx_hash: res.data[0].tx_hash,
-            status: res.data[0].messages[0].success,
-            height: res.data[0].height,
-            timestamp: formatTime(res.data[0].timestamp) + " ( " + time[0] + " / " + time[1] + " )",
-          };
-          this.Msgs = {
-            type: setTxsType(res.data[0].messages[0].events.message.action),
-            action: res.data[0].messages[0].events.message.action,
-            from: res.data[0].messages[0].events.message.sender,
-            memo: res.data[0].memo
-          }
-          if (this.Msgs.action === 'send') {
-            this.Msgs.to = res.data[0].messages[0].events.transfer.recipient
-            this.Msgs.amount = res.data[0].messages[0].events.transfer.amount
-            this.Msgs.denom = res.data[0].messages[0].events.transfer.denom
-          } else {
-            this.Msgs.validator = res.data[0].messages[0].events.create_validator.validator
-          }
+          this.handleResult(res)
         }
       });
+    },
+    //处理获取的结果
+    handleResult(res) {
+      let time = formatTime(res.data[0].timestamp, true);
+      this.Information = {
+        tx_hash: res.data[0].tx_hash,
+        status: res.data[0].messages[0].success,
+        height: res.data[0].height,
+        timestamp: formatTime(res.data[0].timestamp) + " ( " + time[0] + " / " + time[1] + " )",
+      };
+      this.Msgs = {
+        type: setTxsType(res.data[0].messages[0].events.message.action),
+        action: res.data[0].messages[0].events.message.action,
+        from: res.data[0].messages[0].events.message.sender,
+        memo: res.data[0].memo
+      }
+      if (this.Msgs.action === 'send') {
+        this.Msgs.to = res.data[0].messages[0].events.transfer.recipient
+        this.Msgs.amount = res.data[0].messages[0].events.transfer.amount
+        this.Msgs.denom = res.data[0].messages[0].events.transfer.denom
+      } else {
+        this.Msgs.validator = res.data[0].messages[0].events.create_validator.validator
+      }
     },
     getBlockDetails(item) {
       this.$router.push({ path: `/blocks/${item}` })

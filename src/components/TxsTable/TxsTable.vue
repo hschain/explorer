@@ -1,5 +1,5 @@
 <template>
-    <el-table :data="TransactionsList" stripe style="width: 100%">
+    <el-table v-loading="loading" :data="TransactionsList" stripe style="width: 100%">
       <el-table-column label="交易hash值" width="180">
         <template slot-scope="scope">
           <el-link
@@ -70,10 +70,21 @@
 import { formatTime } from "@/utils";
 export default {
   name: "TxsTable",
-  props: ["txsList"],
+  props: {
+    txsList: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+  },
   data() {
     return {
-      TransactionsList: [],
+      TransactionsList: this.$store.state.option.transactionList,
       begin: 0, //区块高度起始信息
     };
   },

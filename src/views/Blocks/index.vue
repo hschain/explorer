@@ -4,7 +4,7 @@
       <h2 class="pageTitle">区块</h2>
     </div>
     <div class="table">
-      <el-table :data="BlocksList" stripe style="width: 100%">
+      <el-table v-loading="loading" :data="BlocksList" stripe style="width: 100%">
         <el-table-column label="区块高度" width="150">
           <template slot-scope="scope">
             <el-link
@@ -66,6 +66,7 @@ export default {
       },
       total: 0,
       begin: 0, //区块高度起始信息
+      loading: true,
     };
   },
   created() {
@@ -97,7 +98,9 @@ export default {
             this.begin = res.paging.begin;
           }
         }
-      });
+      }).finally(() => {
+        this.loading = false
+      })
     },
     getDetails(item) {
       this.$router.push({ path: `/blocks/${item}` });

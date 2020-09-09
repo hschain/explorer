@@ -4,7 +4,7 @@
       <h2 class="pageTitle">交易</h2>
     </div>
     <div class="table">
-      <TxsTable :txsList="TransactionsList" />
+      <TxsTable :loading="loading" :txsList="TransactionsList" />
       <Pagination
         :total="total"
         :page.sync="listQuery.page"
@@ -23,17 +23,18 @@ export default {
   name: "Transactions",
   components: {
     Pagination,
-    TxsTable,
+    TxsTable
   },
   data() {
     return {
       TransactionsList: [],
       listQuery: {
         page: 1,
-        size: 20,
+        size: 20
       },
+      loading: true,
       total: 0,
-      begin: 0, //区块高度起始信息
+      begin: 0 //区块高度起始信息
     };
   },
   created() {
@@ -42,13 +43,13 @@ export default {
   methods: {
     getTransactionsList() {
       let params = {
-        limit: this.listQuery.size,
+        limit: this.listQuery.size
       };
       if (this.listQuery.page !== 1) {
         params.begin =
           this.begin - (this.listQuery.page - 1) * this.listQuery.size;
       }
-      this.$http(this.$api.getTransactionsList, params).then((res) => {
+      this.$http(this.$api.getTransactionsList, params).then(res => {
         if (res.code === 200) {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
@@ -61,11 +62,12 @@ export default {
             this.begin = res.paging.begin;
           }
         }
-      });
-    },
-  },
+      }).finally(() => {
+        this.loading = false
+      })
+    }
+  }
 };
 </script>
 
-<style lang="scss" scope>
-</style>
+<style lang="scss" scope></style>
