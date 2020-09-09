@@ -7,20 +7,23 @@
     </div>
     <div class="address">
       <div class="qrAddress">
-        <el-tooltip class="item" effect="light" placement="bottom-start">
-          <div slot="content" class="qrModal">
+        <el-popover
+          placement="bottom-start"
+          trigger="hover"
+          popper-class="showQrCode"
+        >
+          <div class="qrModal">
             <vue-qr
-              v-if="showQr"
               class="qrCode"
               :text="$route.params.data"
               :margin="0"
               :size="128"
             ></vue-qr>
           </div>
-          <div @mouseenter="showQrCode" class="qrWrapper">
+          <div slot="reference" class="qrWrapper">
             <img :src="require('@/assets/common/qr_code.svg')" alt="" />
           </div>
-        </el-tooltip>
+        </el-popover>
         <ul class="addressDisplay">
           <li class="addressLabel">
             地址
@@ -163,7 +166,7 @@ export default {
   created() {
     if (this.$store.state.option.accountDetail) {
       this.assetsData = this.$store.state.option.accountDetail.data.result.value.coins
-      this.$store.dispatch('option/accountDetail', null)
+      this.$store.dispatch('option/getAccountDetail', null)
     } else {
       this.getAccountDetails();
     }
@@ -191,11 +194,6 @@ export default {
           });
         }
       });
-    },
-    showQrCode() {
-      setTimeout(() => {
-        this.showQr = true;
-      }, 50);
     },
     copy(val) {
       this.$copyText(val)
@@ -337,7 +335,7 @@ export default {
 </style>
 
 <style lang="scss">
-.el-tooltip__popper {
+.showQrCode {
   .qrModal {
     z-index: 100;
     position: relative;
