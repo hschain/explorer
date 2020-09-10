@@ -28,10 +28,10 @@ const httpServer = (opts, data, detail) => {
 
   const httpDefaultOpts = { // http默认配置
     method: opts.method,
-    // baseURL: '/api/',
+    baseURL: '/api/',
     // baseURL: 'http://192.168.2.177/api/',
     // baseURL: 'https://devnet.hschain.io/api/',
-    baseURL: 'http://testnet.hschain.io/api/',
+    // baseURL: 'https://testnet.hschain.io/api/',
     // baseURL: 'http://192.168.2.113/api/',
     // baseURL: '',
     // baseURL: 'http://hsc.tt-cool.com/admin/',

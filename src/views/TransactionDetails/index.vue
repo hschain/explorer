@@ -3,7 +3,7 @@
     <div class="titleWrapper">
       <h2 class="pageTitle">交易详情</h2>
     </div>
-    <div class="firstContainer containerWrapper">
+    <el-card shadow="never" class="firstContainer containerWrapper">
       <div class="containerTitle">交易信息</div>
       <div class="containerDetail">
         <ul class="infoRow" v-for="(item,name) in Information" :key="name">
@@ -30,8 +30,8 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="secondContainer containerWrapper">
+    </el-card>
+    <el-card shadow="never" class="secondContainer containerWrapper">
       <div class="containerTitle">交易内容</div>
       <div class="TxMessageWrapper">
         <div class="TxMessageType">
@@ -72,7 +72,7 @@
           </ul>
         </div>
       </div>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -127,25 +127,25 @@ export default {
     },
     //处理获取的结果
     handleResult(res) {
-      let time = formatTime(res.data[0].timestamp, true);
+      let time = formatTime(res.data.timestamp, true);
       this.Information = {
-        tx_hash: res.data[0].tx_hash,
-        status: res.data[0].messages[0].success,
-        height: res.data[0].height,
-        timestamp: formatTime(res.data[0].timestamp) + " ( " + time[0] + " / " + time[1] + " )",
+        tx_hash: res.data.tx_hash,
+        status: res.data.messages[0].success,
+        height: res.data.height,
+        timestamp: formatTime(res.data.timestamp) + " ( " + time[0] + " / " + time[1] + " )",
       };
       this.Msgs = {
-        type: setTxsType(res.data[0].messages[0].events.message.action),
-        action: res.data[0].messages[0].events.message.action,
-        from: res.data[0].messages[0].events.message.sender,
-        memo: res.data[0].memo
+        type: setTxsType(res.data.messages[0].events.message.action),
+        action: res.data.messages[0].events.message.action,
+        from: res.data.messages[0].events.message.sender,
+        memo: res.data.memo
       }
       if (this.Msgs.action === 'send') {
-        this.Msgs.to = res.data[0].messages[0].events.transfer.recipient
-        this.Msgs.amount = res.data[0].messages[0].events.transfer.amount
-        this.Msgs.denom = res.data[0].messages[0].events.transfer.denom
+        this.Msgs.to = res.data.messages[0].events.transfer.recipient
+        this.Msgs.amount = res.data.messages[0].events.transfer.amount
+        this.Msgs.denom = res.data.messages[0].events.transfer.denom
       } else {
-        this.Msgs.validator = res.data[0].messages[0].events.create_validator.validator
+        this.Msgs.validator = res.data.messages[0].events.create_validator.validator
       }
     },
     getBlockDetails(item) {

@@ -81,6 +81,9 @@ export default {
   },
   methods: {
     querykeyword() {
+      //去除首尾空格
+      this.keyword = this.keyword.replace(/(^\s*)|(\s*$)/g, "");
+
       if (/^\d+$/g.test(this.keyword)) {
         //纯数字直接查询区块信息
         this.$http(this.$api.getBlocksList, "", this.keyword).then(res => {

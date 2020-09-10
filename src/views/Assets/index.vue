@@ -3,7 +3,7 @@
     <div class="titleWrapper">
       <h2 class="pageTitle">资产</h2>
     </div>
-    <div class="table">
+    <el-card shadow="never" class="table">
       <div class="searchBar">
         <div class="queryIndex">
           <el-input class="inputKeyword" v-model="textarea" placeholder="请输入查询名称" clearable></el-input>
@@ -43,7 +43,7 @@
         :limit.sync="listQuery.size"
         @pagination="getAssetsList"
       />
-    </div>
+    </el-card>
   </div>
 </template>
 

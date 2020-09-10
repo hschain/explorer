@@ -5,7 +5,7 @@
     </div>
     <div class="dashboardContent">
       <div class="cardDisplay">
-        <div class="cardBox" v-for="item in cardList" :key="item.value">
+        <el-card class="cardBox" shadow="hover" v-for="item in cardList" :key="item.value">
           <div class="cardStatus">
             <div class="titleWrapper">
               <div class="title">{{ item.title }}</div>
@@ -13,7 +13,7 @@
             </div>
             <div class="contentWrapper">{{ item.lastTime }}</div>
           </div>
-        </div>
+        </el-card>
       </div>
       <div class="BlockTxWrapper">
         <Blocks />
@@ -89,10 +89,6 @@ export default {
       gap: 10px;
       .cardBox {
         min-height: calc(100% - 12px);
-        padding: 15px 20px;
-        border-radius: 5px;
-        background-color: #fff;
-        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         margin-bottom: 12px;
         .cardStatus {
           display: flex;
@@ -105,10 +101,10 @@ export default {
             height: 70px;
             .title {
               font-size: 13px;
-              color: #4b525d;
+              color: #91959a;
             }
             .value {
-              font-size: 18px;
+              font-size: 20px;
               color: #222;
               font-weight: 500;
               line-height: 1.2;

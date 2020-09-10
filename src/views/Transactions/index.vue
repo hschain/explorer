@@ -3,7 +3,7 @@
     <div class="titleWrapper">
       <h2 class="pageTitle">交易</h2>
     </div>
-    <div class="table">
+    <el-card shadow="never" class="table">
       <TxsTable :loading="loading" :txsList="TransactionsList" />
       <Pagination
         :total="total"
@@ -11,7 +11,7 @@
         :limit.sync="listQuery.size"
         @pagination="getTransactionsList"
       />
-    </div>
+    </el-card>
   </div>
 </template>
 

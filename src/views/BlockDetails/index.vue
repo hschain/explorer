@@ -26,7 +26,7 @@
         ></el-button>
       </el-button-group>
     </div>
-    <div class="firstContainer containerWrapper">
+    <el-card shadow="never" class="firstContainer containerWrapper">
       <div class="containerTitle">区块链信息</div>
       <div class="containerDetail">
         <ul class="infoRow" v-for="(item, name) in blockData" :key="name">
@@ -45,15 +45,15 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="secondContainer containerWrapper">
+    </el-card>
+    <el-card shadow="never" class="secondContainer containerWrapper">
       <div class="containerTitle">交易信息</div>
       <TxsTable v-if="TransactionsInfo.length" :txsList="TransactionsInfo" />
       <div v-else class="noTX">
         <img :src="require('@/assets/common/noitem_ic.svg')" alt />
         <p class="msg">交易信息为空</p>
       </div>
-    </div>
+    </el-card>
   </div>
 </template>
 

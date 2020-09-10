@@ -1,5 +1,5 @@
 <template>
-  <div class="Blocks BlockTxBox">
+  <el-card shadow="hover" class="Blocks BlockTxBox">
     <div class="titleWrapper">
       <h2 class="title">区块链</h2>
       <el-button type="primary" size="small" plain @click="() => $router.push('/blocks')">显示更多</el-button>
@@ -22,7 +22,7 @@
         </template>
       </el-table-column>
     </el-table>
-  </div>
+  </el-card>
 </template>
 
 <script>

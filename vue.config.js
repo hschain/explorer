@@ -24,7 +24,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/explorer',
+  // publicPath: '/explorer',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -39,20 +39,20 @@ module.exports = {
     proxy: {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
-      }
-      // '/api': {
-      //   target: `https://devnet.hschain.io/api/`,
+      // [process.env.VUE_APP_BASE_API]: {
+      //   target: `http://127.0.0.1:${port}/mock`,
       //   changeOrigin: true,
       //   pathRewrite: {
-      //     '^/api': ''
+      //     ['^' + process.env.VUE_APP_BASE_API]: ''
       //   }
       // }
+      '/api': {
+        target: `https://devnet.hschain.io/api/`,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
     },
     // after: require('./mock/mock-server.js')
   },

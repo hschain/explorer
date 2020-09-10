@@ -3,7 +3,7 @@
     <div class="titleWrapper">
       <h2 class="pageTitle">区块</h2>
     </div>
-    <div class="table">
+    <el-card shadow="never" class="table">
       <el-table v-loading="loading" :data="BlocksList" stripe style="width: 100%">
         <el-table-column label="区块高度" width="150">
           <template slot-scope="scope">
@@ -45,7 +45,7 @@
         :limit.sync="listQuery.size"
         @pagination="getBlocksList"
       />
-    </div>
+    </el-card>
   </div>
 </template>
 
