@@ -19,6 +19,10 @@ const serviceModule = {
     url: '/v1/account',
     method: 'get'
   },
+  getMinting: {
+    url: '/v1/minting/status',
+    method: 'get'
+  }
 }
 
 const ApiSetting = {

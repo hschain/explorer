@@ -2,7 +2,7 @@
   <header class="header">
     <div class="searchBar">
       <div class="searchBar_toolBar">
-        <a class="mainLink" href="/explorer/">
+        <a class="mainLink" href="/">
           <img src="@/assets/header/hstlogo.png" alt="" />
         </a>
         <div class="searchBar_selectWarpper">
@@ -39,7 +39,7 @@
           mode="horizontal"
           @select="handleSelect"
           :router="true"
-          active-text-color="#ffd04b"
+          active-text-color="#C1996C"
         >
           <el-menu-item
             v-for="item in menu"

@@ -17,7 +17,7 @@
                 <img class="fixedIcon" v-if="scope.row.denom === 'uhst'" :src="require('@/assets/common/logo.png')" alt="">
                 <img v-else :src="require('@/assets/common/symbol_none.svg')" alt="">
               </div>
-              <span class="name">{{scope.row.denom === 'uhst' ? 'hst' : scope.row.denom }}</span>
+              <span class="name">{{scope.row.denom === 'uhst' ? 'HST' : scope.row.denom.toUpperCase() }}</span>
             </div>
           </template>
         </el-table-column>
@@ -28,7 +28,7 @@
         </el-table-column>
         <el-table-column sortable prop="price" label="汇率">
           <template slot-scope="scope">
-            <span>{{scope.row.price}}{{scope.row.priceunit}}</span>
+            <span>$ {{scope.row.price}}{{scope.row.priceunit}}</span>
           </template>
         </el-table-column>
         <el-table-column sortable prop="amount" label="发行量">

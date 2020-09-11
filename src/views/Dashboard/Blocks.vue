@@ -10,12 +10,12 @@
           <el-link type="primary" :underline="false" @click="getDetails(scope.row.height)">{{scope.row.height}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="区块hash值">
+      <el-table-column label="区块奖励">
         <template slot-scope="scope">
-          <el-link type="primary" :underline="false" @click="getDetails(scope.row.height)">{{scope.row.block_hash | hash}}</el-link>
+          <div>{{scope.row.amount/100000}} {{scope.row.denom === 'uhst' ? 'hst' : scope.row.denom}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="num_txs" label="交易信息" width="80"></el-table-column>
+      <el-table-column prop="num_txs" label="交易数量" width="80"></el-table-column>
       <el-table-column label="时间" width="80">
         <template slot-scope="scope">
           <div>{{scope.row.timestamp | time}}</div>
@@ -38,7 +38,7 @@ export default {
   created() {
     this.getBlocksList();
     this.timer = setInterval(() => {
-      this.getBlocksList();      
+      this.getBlocksList();
     }, 3000);
   },
   beforeDestroy() {
@@ -58,6 +58,7 @@ export default {
       this.$http(this.$api.getBlocksList, { limit: 5 }).then((res) => {
         if (res.code === 200) {
           this.BlocksList = res.data
+          this.$emit('sendHeightValue', res.paging.begin)
         }
       });
     },

@@ -2,7 +2,7 @@
   <div class="BlockDetails containerWrap">
     <div class="titleWrapper">
       <h2 class="pageTitle">
-        区块链详情&nbsp;
+        区块详情&nbsp;
         <span class="height">#{{ blockData.height }}</span>
       </h2>
       <el-button-group>
@@ -11,23 +11,19 @@
           icon="el-icon-arrow-left"
           size="small"
           circle
-          @click="
-            () => $router.push({ path: `/blocks/${blockData.height + 1}` })
-          "
+          @click="() => $router.push({ path: `/blocks/${blockData.height - 1}` })"
         ></el-button>
         <el-button
           type="info"
           icon="el-icon-arrow-right"
           size="small"
           circle
-          @click="
-            () => $router.push({ path: `/blocks/${blockData.height - 1}` })
-          "
+          @click="() => $router.push({ path: `/blocks/${blockData.height + 1}` })"
         ></el-button>
       </el-button-group>
     </div>
     <el-card shadow="never" class="firstContainer containerWrapper">
-      <div class="containerTitle">区块链信息</div>
+      <div class="containerTitle">区块信息</div>
       <div class="containerDetail">
         <ul class="infoRow" v-for="(item, name) in blockData" :key="name">
           <li class="infoLabel">{{ blockDataLabel[name] }}</li>
@@ -39,8 +35,7 @@
               @click="
                 () => $router.push({ path: `/blocks/${blockData.height - 1}` })
               "
-              >{{ item }}</el-link
-            >
+            >{{ item }}</el-link>
             <span v-else>{{ item }}</span>
           </li>
         </ul>
@@ -64,7 +59,7 @@ import TxsTable from "@/components/TxsTable/TxsTable";
 export default {
   name: "BlockDetails",
   components: {
-    TxsTable
+    TxsTable,
   },
   data() {
     return {
@@ -73,55 +68,54 @@ export default {
         height: "区块高度",
         timestamp: "区块创建时间",
         block_hash: "当前区块hash值",
-        parent_hash: "上一个区块hash值",
-        num_txs: "当前块交易数量"
+        parent_hash: "上一个区块hash",
+        num_txs: "当前块交易数量",
       },
-      TransactionsInfo: []
+      TransactionsInfo: [],
     };
   },
   mounted() {
     if (this.$store.state.option.blockData) {
-      this.handleResult(this.$store.state.option.blockData)
-      this.$store.dispatch('option/getBlockData', null)
+      this.handleResult(this.$store.state.option.blockData);
+      this.$store.dispatch("option/getBlockData", null);
     } else {
-      this.getBlockDetails()
+      this.getBlockDetails();
     }
   },
   beforeDestroy() {
-    this.$store.dispatch('option/setTransactionList', [])
+    this.$store.dispatch("option/setTransactionList", []);
   },
   filters: {
-    hash: function(value) {
+    hash: function (value) {
       return value.slice(0, 6) + " … " + value.slice(-6);
     },
-    time: function(value) {
+    time: function (value) {
       return formatTime(value);
-    }
+    },
   },
   methods: {
     //获取列表
     getBlockDetails() {
-      this.$http(this.$api.getBlocksList, "", this.$route.params.data).then(res => {
-        if (res.code === 200) {
-          this.handleResult(res)
+      this.$http(this.$api.getBlocksList, "", this.$route.params.data).then(
+        (res) => {
+          if (res.code === 200) {
+            this.handleResult(res);
+          }
         }
-      });
+      );
     },
     //处理获取的结果
     handleResult(res) {
-      let time = formatTime(res.data[0].timestamp, true);
       this.blockData = {
         height: res.data[0].height,
         timestamp:
           formatTime(res.data[0].timestamp) +
           " ( " +
-          time[0] +
-          " / " +
-          time[1] +
+          formatTime(res.data[0].timestamp, true) +
           " )",
         block_hash: res.data[0].block_hash,
         parent_hash: res.data[0].parent_hash,
-        num_txs: res.data[0].num_txs
+        num_txs: res.data[0].num_txs,
       };
       if (res.data[0].txs) {
         this.TransactionsInfo = res.data[0].txs;
@@ -129,15 +123,18 @@ export default {
           item.type = setTxsType(
             res.data[0].txs[i].messages[0].events.message.action
           );
-        })
+        });
         //props父传子失效，暂时使用store传值
-        this.$store.dispatch('option/setTransactionList', this.TransactionsInfo)
+        this.$store.dispatch(
+          "option/setTransactionList",
+          this.TransactionsInfo
+        );
       }
     },
     getTransactionDetails(item) {
       this.$router.push({ path: `/transactions/${item}` });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -46,7 +46,11 @@
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">去向</li>
                   <li class="TxMessage_value">
-                    <el-link type="primary" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.to}` })">{{Msgs.to}}</el-link>
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      @click="() => this.$router.push({ path: `/account/${Msgs.to}` })"
+                    >{{Msgs.to}}</el-link>
                   </li>
                 </ul>
                 <ul class="TxMessage_show">
@@ -96,14 +100,14 @@ export default {
         from: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
         amount: 1,
         denom: "HST",
-        memo: 'test-hst'
-      }
+        memo: "test-hst",
+      },
     };
   },
   created() {
     if (this.$store.state.option.transactionData) {
-      this.handleResult(this.$store.state.option.transactionData)
-      this.$store.dispatch('option/getTransactionData', null)
+      this.handleResult(this.$store.state.option.transactionData);
+      this.$store.dispatch("option/getTransactionData", null);
     } else {
       this.getTransactionDetails();
     }
@@ -119,37 +123,46 @@ export default {
   methods: {
     //获取列表
     getTransactionDetails() {
-      this.$http(this.$api.getTransactionsList, "", this.$route.params.data).then(res => {
+      this.$http(
+        this.$api.getTransactionsList,
+        "",
+        this.$route.params.data
+      ).then((res) => {
         if (res.code === 200) {
-          this.handleResult(res)
+          this.handleResult(res);
         }
       });
     },
     //处理获取的结果
     handleResult(res) {
-      let time = formatTime(res.data.timestamp, true);
+      let time = formatTime(res.data[0].timestamp, true);
       this.Information = {
-        tx_hash: res.data.tx_hash,
-        status: res.data.messages[0].success,
-        height: res.data.height,
-        timestamp: formatTime(res.data.timestamp) + " ( " + time[0] + " / " + time[1] + " )",
+        tx_hash: res.data[0].tx_hash,
+        status: res.data[0].messages[0].success,
+        height: res.data[0].height,
+        timestamp:
+          formatTime(res.data[0].timestamp) +
+          " ( " +
+          formatTime(res.data[0].timestamp, true) +
+          " )",
       };
       this.Msgs = {
-        type: setTxsType(res.data.messages[0].events.message.action),
-        action: res.data.messages[0].events.message.action,
-        from: res.data.messages[0].events.message.sender,
-        memo: res.data.memo
-      }
-      if (this.Msgs.action === 'send') {
-        this.Msgs.to = res.data.messages[0].events.transfer.recipient
-        this.Msgs.amount = res.data.messages[0].events.transfer.amount
-        this.Msgs.denom = res.data.messages[0].events.transfer.denom
+        type: setTxsType(res.data[0].messages[0].events.message.action),
+        action: res.data[0].messages[0].events.message.action,
+        from: res.data[0].messages[0].events.message.sender,
+        memo: res.data[0].memo,
+      };
+      if (this.Msgs.action === "send") {
+        this.Msgs.to = res.data[0].messages[0].events.transfer.recipient;
+        this.Msgs.amount = res.data[0].messages[0].events.transfer.amount;
+        this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;
       } else {
-        this.Msgs.validator = res.data.messages[0].events.create_validator.validator
+        this.Msgs.validator =
+          res.data[0].messages[0].events.create_validator.validator;
       }
     },
     getBlockDetails(item) {
-      this.$router.push({ path: `/blocks/${item}` })
+      this.$router.push({ path: `/blocks/${item}` });
     },
   },
 };

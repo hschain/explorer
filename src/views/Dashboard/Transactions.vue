@@ -51,7 +51,7 @@ export default {
   created() {
     this.getTransactionsList();
     this.timer = setInterval(() => {
-      this.getTransactionsList();      
+      this.getTransactionsList();
     }, 3000);
   },
   beforeDestroy() {
@@ -73,6 +73,7 @@ export default {
           this.TransactionsList.forEach((item, i) => {
             item.type = setTxsType(res.data[i].messages[0].events.message.action)
           });
+          this.$emit('sendTransferValue', res.paging.begin)
         }
       });
     },

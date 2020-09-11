@@ -5,7 +5,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 // import qs from 'qs'
 // import { getToken } from '@/utils/auth'
-import router from '@/router/index'
+// import router from '@/router/index'
 
 const pending = [] // 用于存储每个请求的取消函数和axios标识
 const CancelToken = axios.CancelToken
