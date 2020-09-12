@@ -32,6 +32,7 @@ export default {
   components: { Blocks, Transactions },
   data() {
     return {
+      timer: null,
       cardData: {
         height: {
           title: "区块高度",
@@ -54,6 +55,12 @@ export default {
   },
   created() {
     this.getMinting()
+    this.timer = setInterval(() => {
+      this.getMinting();
+    }, 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   methods: {
     getMinting() {

@@ -1,9 +1,15 @@
 <template>
   <div class="BlocksList containerWrap">
+    <el-backtop class="backtop" :bottom="150">
+      回到顶部
+    </el-backtop>
     <div class="titleWrapper">
       <h2 class="pageTitle">区块</h2>
     </div>
     <el-card shadow="never" class="table">
+      <div class="updateCheckbox">
+        <el-checkbox v-model="update" @change="handleCheckedChange">实时更新</el-checkbox>
+      </div>
       <el-table v-loading="loading" :data="BlocksList" stripe style="width: 100%">
         <el-table-column label="区块高度" width="120">
           <template slot-scope="scope">
@@ -16,7 +22,7 @@
         </el-table-column>
         <el-table-column label="区块奖励">
           <template slot-scope="scope">
-            <div>{{scope.row.amount/100000}} {{scope.row.denom === 'uhst' ? 'hst' : scope.row.denom}}</div>
+            <div>{{scope.row.amount}} {{scope.row.denom}}</div>
           </template>
         </el-table-column>
         <el-table-column label="当前区块hash">
@@ -64,6 +70,7 @@ export default {
       begin: 0, //区块高度起始信息
       loading: true,
       timer: null,
+      update: true,
     };
   },
   created() {
@@ -96,6 +103,12 @@ export default {
       this.$http(this.$api.getBlocksList, params).then((res) => {
         if (res.code === 200) {
           this.BlocksList = res.data;
+          this.BlocksList.forEach(item => {
+            if (/^u/i.test(item.denom)) {
+              item.amount = (item.amount/1000000).toFixed(2)
+              item.denom = item.denom.slice(1)
+            }
+          })
           this.total = res.paging.total;
           if (this.listQuery.page === 1) {
             this.begin = res.paging.begin;
@@ -108,6 +121,16 @@ export default {
     getDetails(item) {
       this.$router.push({ path: `/blocks/${item}` });
     },
+    handleCheckedChange(val) {
+      if (val) {
+        this.getBlocksList();
+        this.timer = setInterval(() => {
+          this.getBlocksList();
+        }, 3000);
+      } else {
+        clearInterval(this.timer)
+      }
+    }
   },
 };
 </script>

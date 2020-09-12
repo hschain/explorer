@@ -8,13 +8,17 @@ export function formatTime(time, getTime) {
   let timeStamp = new Date(arr[0] + " " + arr[1] + " GMT+0000");
 
   if (getTime) {
-    let y = timeStamp.getFullYear(),
-      m = timeStamp.getMonth() + 1,
-      d = timeStamp.getDate(),
-      h = timeStamp.getHours(),
-      min = timeStamp.getMinutes(),
-      s = timeStamp.getSeconds();
-    return y + "-" + m + "-" + d + "/" + h + ":" + min + ":" + s;
+    let time = {}
+    time.y = timeStamp.getFullYear()
+    time.m = timeStamp.getMonth() + 1
+    time.d = timeStamp.getDate()
+    time.h = timeStamp.getHours()
+    time.min = timeStamp.getMinutes()
+    time.s = timeStamp.getSeconds()
+    for (let i in time) {
+      time[i] = addZero(time[i])
+    }
+    return time.y + "-" + time.m + "-" + time.d + " / " + time.h + ":" + time.min + ":" + time.s;
   } else {
     let diff = new Date().getTime() - timeStamp.getTime()
     if (diff <= 1000) {
@@ -33,30 +37,15 @@ export function formatTime(time, getTime) {
       return parseInt(diff/(1000*60*60*365)) + "年前";
     }
   }
-  // if (getTime) {
-  //   return arr;
-  // } else {
-  //   let timeStamp = [
-  //     ...(arr[0] = arr[0].split("-")),
-  //     ...(arr[1] = arr[1].split(":"))
-  //   ];
-  //   let now = new Date();
-  //   if (now.getFullYear() - timeStamp[0] > 0) {
-  //     return now.getFullYear() - timeStamp[0] + "年前";
-  //   } else if (now.getMonth() + 1 - timeStamp[1] > 0) {
-  //     return now.getMonth() + 1 - timeStamp[1] + "个月前";
-  //   } else if (now.getDate() - timeStamp[2] > 0) {
-  //     return now.getDate() - timeStamp[2] + "天前";
-  //   } else if (now.getHours() - timeStamp[3] > 0) {
-  //     return now.getHours() - timeStamp[3] + "小时前";
-  //   } else if (now.getMinutes() - timeStamp[4] > 0) {
-  //     return now.getMinutes() - timeStamp[4] + "分钟前";
-  //   } else if (now.getSeconds() - timeStamp[4] > 0) {
-  //     return now.getSeconds() - timeStamp[5] + "秒前";
-  //   } else {
-  //     return "刚刚";
-  //   }
-  // }
+}
+
+// 时间为个位数时，前面补零
+function addZero(val) {
+  if (val < 10) {
+    return '0' + val
+  } else {
+    return val
+  }
 }
 
 /**

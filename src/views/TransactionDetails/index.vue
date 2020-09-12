@@ -154,8 +154,13 @@ export default {
       };
       if (this.Msgs.action === "send") {
         this.Msgs.to = res.data[0].messages[0].events.transfer.recipient;
-        this.Msgs.amount = res.data[0].messages[0].events.transfer.amount;
-        this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;
+        if (/^u/i.test(res.data[0].messages[0].events.transfer.denom)) {
+          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom.slice(1)
+          this.Msgs.amount = (res.data[0].messages[0].events.transfer.amount/1000000).toFixed(6)
+        } else {
+          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;          
+          this.Msgs.amount = res.data[0].messages[0].events.transfer.amount;
+        }
       } else {
         this.Msgs.validator =
           res.data[0].messages[0].events.create_validator.validator;

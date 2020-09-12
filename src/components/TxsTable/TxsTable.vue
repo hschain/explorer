@@ -41,7 +41,7 @@
         <template slot-scope="scope">
           <div
             v-if="scope.row.messages[0].events.transfer"
-          >{{scope.row.messages[0].events.transfer.amount}}.</div>
+          >{{scope.row.messages[0].events.transfer.amount}}</div>
           <div v-else>-</div>
         </template>
       </el-table-column>
@@ -49,7 +49,7 @@
         <template slot-scope="scope">
           <div
             v-if="scope.row.messages[0].events.transfer"
-          >{{scope.row.messages[0].events.transfer.denom === 'UHST' ? 'HST' : scope.row.messages[0].events.transfer.denom}}</div>
+          >{{scope.row.messages[0].events.transfer.denom}}</div>
           <div v-else>-</div>
         </template>
       </el-table-column>

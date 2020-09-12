@@ -29,11 +29,7 @@
         <ul class="totalWrapper">
           <li class="addressValue">估值</li>
           <li class="addressDollars">
-            $ {{
-            assetsData[0]
-            ? ( (assetsData[0].price * assetsData[0].amount) / 1000000 ).toFixed(6)
-            : "-"
-            }}
+            $ {{ assetsData[0] ? (assetsData[0].price * assetsData[0].amount).toFixed(6) : "-" }}
           </li>
         </ul>
         <ul class="compareWrapper">
@@ -44,7 +40,9 @@
             : "0.00"
             }}
           </li>
-          <li class="addressDollars">{{ assetsData[0] ? assetsData[0].amount/1000000 + ' hst' : "-" }}</li>
+          <li
+            class="addressDollars"
+          >{{ assetsData[0] ? assetsData[0].amount + ' hst' : "-" }}</li>
         </ul>
       </div>
     </div>
@@ -76,16 +74,14 @@
                 <div class="icon">
                   <img
                     class="fixedIcon"
-                    v-if="scope.row.denom === 'uhst'"
+                    v-if="scope.row.denom === 'HST'"
                     :src="require('@/assets/common/logo.png')"
                     alt
                   />
                   <img v-else :src="require('@/assets/common/symbol_none.svg')" alt />
                 </div>
                 <span class="name">
-                  {{
-                  scope.row.denom === "uhst" ? "hst" : scope.row.denom
-                  }}
+                  {{ scope.row.denom }}
                 </span>
               </div>
             </template>
@@ -93,11 +89,7 @@
           <el-table-column prop="value" label="合计余额">
             <template slot-scope="scope">
               <span>
-                {{
-                scope.row.denom === "uhst"
-                ? '$ ' + ((scope.row.price * scope.row.amount) / 1000000).toFixed(6)
-                : '$ ' + (scope.row.price * scope.row.amount).toFixed(6)
-                }}
+                {{ '$ ' + (scope.row.price * scope.row.amount).toFixed(6) }}
               </span>
             </template>
           </el-table-column>
@@ -109,17 +101,13 @@
           <el-table-column prop="amount" label="可用余额">
             <template slot-scope="scope">
               <span>
-                {{
-                scope.row.denom === "uhst"
-                ? '$ ' + ((scope.row.price * scope.row.amount) / 1000000).toFixed(6)
-                : '$ ' + (scope.row.price * scope.row.amount).toFixed(6)
-                }}
+                {{ '$ ' + (scope.row.price * scope.row.amount).toFixed(6) }}
               </span>
             </template>
           </el-table-column>
           <el-table-column prop="amount" label="冻结余额">
             <template>
-              <span>$ 0.000000</span>
+              <span>$ 0.00</span>
             </template>
           </el-table-column>
         </el-table>
@@ -187,6 +175,13 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             this.assetsData = res.data.result.value.coins;
+            this.assetsData.forEach((item) => {
+              if (/^u/i.test(item.denom)) {
+                item.denom = item.denom.slice(1).toUpperCase();
+                item.amount = (item.amount / 1000000).toFixed(6);
+              }
+              item.price = (item.price*1).toFixed(6)
+            });
           }
         })
         .finally(() => {
@@ -202,6 +197,14 @@ export default {
           if (res.code === 200 && res.data) {
             this.TransactionsData = res.data;
             this.TransactionsData.forEach((item, i) => {
+              if (/^u/i.test(item.messages[0].events.transfer.denom)) {
+                item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
+                  1
+                );
+                item.messages[0].events.transfer.amount = (
+                  item.messages[0].events.transfer.amount / 1000000
+                ).toFixed(6);
+              }
               item.type = setTxsType(
                 res.data[i].messages[0].events.message.action
               );

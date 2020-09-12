@@ -12,7 +12,7 @@
       </el-table-column>
       <el-table-column label="区块奖励">
         <template slot-scope="scope">
-          <div>{{scope.row.amount/100000}} {{scope.row.denom === 'uhst' ? 'hst' : scope.row.denom}}</div>
+          <div>{{ scope.row.amount}} {{scope.row.denom}}</div>
         </template>
       </el-table-column>
       <el-table-column prop="num_txs" label="交易数量" width="80"></el-table-column>
@@ -58,6 +58,12 @@ export default {
       this.$http(this.$api.getBlocksList, { limit: 5 }).then((res) => {
         if (res.code === 200) {
           this.BlocksList = res.data
+          this.BlocksList.forEach(item => {
+            if (/^u/i.test(item.denom)) {
+              item.amount = (item.amount/1000000).toFixed(2)
+              item.denom = item.denom.slice(1)
+            }
+          })
           this.$emit('sendHeightValue', res.paging.begin)
         }
       });

@@ -14,16 +14,16 @@
           <template slot-scope="scope">
             <div class="nameDetail">
               <div class="icon">
-                <img class="fixedIcon" v-if="scope.row.denom === 'uhst'" :src="require('@/assets/common/logo.png')" alt="">
+                <img class="fixedIcon" v-if="scope.row.denom === 'HST'" :src="require('@/assets/common/logo.png')" alt="">
                 <img v-else :src="require('@/assets/common/symbol_none.svg')" alt="">
               </div>
-              <span class="name">{{scope.row.denom === 'uhst' ? 'HST' : scope.row.denom.toUpperCase() }}</span>
+              <span class="name">{{scope.row.denom }}</span>
             </div>
           </template>
         </el-table-column>
         <el-table-column sortable prop="value" label="市值">
           <template slot-scope="scope">
-            <span>{{scope.row.denom === 'uhst' ? (scope.row.price*scope.row.amount/1000000).toFixed(6) : (scope.row.price*scope.row.amount).toFixed(6) }}</span>
+            <span>{{scope.row.denom === 'HST' ? (scope.row.price*scope.row.amount/1000000).toFixed(6) : (scope.row.price*scope.row.amount).toFixed(6) }}</span>
           </template>
         </el-table-column>
         <el-table-column sortable prop="price" label="汇率">
@@ -33,7 +33,7 @@
         </el-table-column>
         <el-table-column sortable prop="amount" label="发行量">
           <template slot-scope="scope">
-            <span>{{scope.row.denom === 'uhst' ? (scope.row.amount/1000000).toFixed(6) : scope.row.amount }}</span>
+            <span>{{scope.row.amount}}</span>
           </template>
           </el-table-column>
       </el-table>
@@ -56,6 +56,7 @@ export default {
   },
   data() {
     return {
+      timer: null,
       textarea: "",
       AssetsList: [],
       oAssetsList: [],
@@ -71,7 +72,7 @@ export default {
     textarea: function (val, oldVal) {
       if (val) {
         this.AssetsList = this.oAssetsList.filter((item) =>
-          item.denom.indexOf(val) !== -1
+          item.denom.toLowerCase().indexOf(val.toLowerCase()) !== -1
         );
       } else {
         this.AssetsList = this.oAssetsList;
@@ -79,7 +80,13 @@ export default {
     },
   },
   created() {
-    this.getAssetsList();
+    this.getAssetsList()
+    this.timer = setInterval(() => {
+      this.getAssetsList();
+    }, 4000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   methods: {
     getAssetsList() {
@@ -87,6 +94,15 @@ export default {
       this.$http(this.$api.getCurrency).then((res) => {
         if (res.code === 200) {
           this.AssetsList = res.data.result
+          this.AssetsList.forEach(item => {
+            item.price = (item.price*1).toFixed(6)
+            if(/^u/i.test(item.denom)) {
+              item.denom = item.denom.toUpperCase().slice(1)
+              item.amount = (item.amount/1000000).toFixed(6)
+            } else {
+              item.denom = item.denom.toUpperCase()
+            }
+          })
           this.oAssetsList = this.AssetsList
         }
       }).finally(() => {

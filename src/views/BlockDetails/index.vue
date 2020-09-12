@@ -28,15 +28,7 @@
         <ul class="infoRow" v-for="(item, name) in blockData" :key="name">
           <li class="infoLabel">{{ blockDataLabel[name] }}</li>
           <li class="infoValue">
-            <el-link
-              type="primary"
-              :underline="false"
-              v-if="name === 'parent_hash'"
-              @click="
-                () => $router.push({ path: `/blocks/${blockData.height - 1}` })
-              "
-            >{{ item }}</el-link>
-            <span v-else>{{ item }}</span>
+            <span>{{ item }}</span>
           </li>
         </ul>
       </div>
@@ -68,7 +60,7 @@ export default {
         height: "区块高度",
         timestamp: "区块创建时间",
         block_hash: "当前区块hash值",
-        parent_hash: "上一个区块hash",
+        bonus: "区块奖励",
         num_txs: "当前块交易数量",
       },
       TransactionsInfo: [],
@@ -114,12 +106,24 @@ export default {
           formatTime(res.data[0].timestamp, true) +
           " )",
         block_hash: res.data[0].block_hash,
-        parent_hash: res.data[0].parent_hash,
+        bonus: /^u/i.test(res.data[0].denom)
+          ? (res.data[0].amount / 1000000).toFixed(2) +
+            " " +
+            res.data[0].denom.slice(1)
+          : res.data[0].amount + " " + res.data[0].denom,
         num_txs: res.data[0].num_txs,
       };
       if (res.data[0].txs) {
         this.TransactionsInfo = res.data[0].txs;
         this.TransactionsInfo.forEach((item, i) => {
+          if (/^u/i.test(item.messages[0].events.transfer.denom)) {
+            item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
+              1
+            );
+            item.messages[0].events.transfer.amount = (
+              item.messages[0].events.transfer.amount / 1000000
+            ).toFixed(6);
+          }
           item.type = setTxsType(
             res.data[0].txs[i].messages[0].events.message.action
           );

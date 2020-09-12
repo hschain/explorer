@@ -112,19 +112,19 @@ axios.interceptors.response.use(
     // if the custom code is not 200, it is judged as an error.
     if (res.code !== 200) {
       console.log(res)
-      if (res.code === 0) {
-        Message({
-          message: res.error.message,
-          type: 'error',
-          duration: 5 * 1000
-        })
-      } else {
-        Message({
-          message: res.error || 'Error',
-          type: 'error',
-          duration: 3 * 1000
-        })
-      }
+      // if (res.code === 0) {
+      //   Message({
+      //     message: res.error.message,
+      //     type: 'error',
+      //     duration: 5 * 1000
+      //   })
+      // } else {
+      //   Message({
+      //     message: res.error || 'Error',
+      //     type: 'error',
+      //     duration: 3 * 1000
+      //   })
+      // }
       return Promise.reject(new Error(res.error || 'Error'))
     } else {
       return res
@@ -132,13 +132,13 @@ axios.interceptors.response.use(
   },
   error => {
     // console.log('err' + error) // for debug
-
     if (error.message !== 'cancelOption') {
-      Message({
-        message: error.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
+      // Message({
+      //   message: error.message,
+      //   type: 'error',
+      //   duration: 5 * 1000
+      // })
+      console.log(error);
     }
 
     return Promise.reject(error)

@@ -5,6 +5,16 @@
   max-width: 1200px;
   margin: 25px auto 0;
   padding: 0 50px;
+  .backtop{
+    width: 60px;
+    padding: 10px;
+    height: 60px;
+    border-radius: 5px;
+    background: #020e46;
+    color: #F6F6F4;
+    box-shadow: -3px 3px 6px 3px rgba(0,0,0,0.2);
+    line-height: 25px;
+  }
   .titleWrapper {
     display: flex;
     justify-content: space-between;
@@ -22,6 +32,11 @@
     padding: 15px 20px;
     margin-bottom: 70px;
     max-width: 100%;
+    .updateCheckbox{
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 20px 10px;
+    }
   }    
   .TransferAddress{
     display: flex;
