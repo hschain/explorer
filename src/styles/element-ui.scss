@@ -63,6 +63,12 @@
   width: 100%;
 
 }
+.el-card.is-always-shadow,.el-card.is-hover-shadow:hover{
+  box-shadow: 0 3px 6px 2.5px rgba(0,0,0,.2);
+}
+.el-card.is-hover-shadow, .el-card.is-never-shadow{
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+}
 
 .el-table .cell{
   text-align: center;

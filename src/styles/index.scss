@@ -9,7 +9,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  // font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  // font-family: PingFangSC,helvetica neue,hiragino sans gb,arial,microsoft yahei ui,microsoft yahei,simsun,sans-serif!important;
+  font-family: "Arial","Microsoft YaHei","SimSun","SimHei",sans-serif;
 }
 
 label {
@@ -77,4 +79,5 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
   font-size: 100%;
   font: inherit;
   vertical-align: initial;
+  font-family: "Arial","Microsoft YaHei","SimHei","SimSun",sans-serif;
 }

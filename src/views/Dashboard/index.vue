@@ -1,23 +1,23 @@
 <template>
   <div class="Dashboard">
     <div class="main_Dashboard">
-      <img src="@/assets/view/main_dashboard.png" alt />
+      <img src="@/assets/view/main/main_dashboard.png" alt />
     </div>
     <div class="dashboardContent">
       <div class="cardDisplay">
-        <div class="cardBox" v-for="item in cardList" :key="item.value">
+        <el-card class="cardBox" shadow="hover" v-for="(item, name) in cardData" :key="name">
           <div class="cardStatus">
+            <div class="logoWrapper"><img :src="require(`@/assets/view/main/${name}.png`)" alt=""></div>
             <div class="titleWrapper">
+              <div class="value">{{ currencyFormat(item.value) }}</div>
               <div class="title">{{ item.title }}</div>
-              <div class="value">{{ item.value }}</div>
             </div>
-            <div class="contentWrapper">{{ item.lastTime }}</div>
           </div>
-        </div>
+        </el-card>
       </div>
       <div class="BlockTxWrapper">
-        <Blocks />
-        <Transactions />
+        <Blocks @sendHeightValue="getHeightValue" />
+        <Transactions @sendTransferValue="getTransferValue" />
       </div>
     </div>
   </div>
@@ -26,35 +26,59 @@
 <script>
 import Blocks from "./Blocks";
 import Transactions from "./Transactions";
+import { currencyFormat } from "@/utils"
 export default {
   name: "Dashboard",
   components: { Blocks, Transactions },
   data() {
     return {
-      cardList: [
-        {
-          title: "Price",
-          value: "923,241",
-          lastTime: "Last 3h ago",
+      timer: null,
+      cardData: {
+        height: {
+          title: "区块高度",
+          value: "0",
         },
-        {
-          title: "Height",
-          value: "431,132",
-          lastTime: "Last 5h ago",
+        transfer: {
+          title: "总交易数",
+          value: "0",
         },
-        {
-          title: "Bonded",
-          value: "524,567",
-          lastTime: "Last 7h ago",
+        flow: {
+          title: "总流通量",
+          value: "0",
         },
-        {
-          title: "Inflation",
-          value: "121,752",
-          lastTime: "Last 2h ago",
+        output: {
+          title: "日产出",
+          value: "0",
         },
-      ],
+      }
     };
   },
+  created() {
+    this.getMinting()
+    this.timer = setInterval(() => {
+      this.getMinting();
+    }, 3000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+  },
+  methods: {
+    getMinting() {
+      this.$http(this.$api.getMinting).then((res) => {
+        this.cardData.flow.value = res.data.result.status.total_minted_supply/1000000
+        this.cardData.output.value = res.data.result.mint_plans[0].total_per_day/1000000
+      })
+    },
+    getHeightValue(val) {
+      this.cardData.height.value = val
+    },
+    getTransferValue(val) {
+      this.cardData.transfer.value = val
+    },
+    currencyFormat (val) {
+      return currencyFormat(val, true)
+    }
+  }
 };
 </script>
 
@@ -89,10 +113,6 @@ export default {
       gap: 10px;
       .cardBox {
         min-height: calc(100% - 12px);
-        padding: 15px 20px;
-        border-radius: 5px;
-        background-color: #fff;
-        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         margin-bottom: 12px;
         .cardStatus {
           display: flex;
@@ -102,25 +122,28 @@ export default {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 70px;
-            .title {
-              font-size: 13px;
-              color: #4b525d;
-            }
+            height: 55px;
             .value {
-              font-size: 18px;
+              font-size: 20px;
               color: #222;
               font-weight: 500;
               line-height: 1.2;
+              text-align: center;
+            }
+            .title {
+              font-size: 14px;
+              color: #000;
+              text-align: center;
             }
           }
-          .contentWrapper {
-            flex: 1;
+          .logoWrapper {
             display: flex;
-            flex-direction: column-reverse;
-            font-size: 13px;
-            align-items: flex-end;
-            color: #4b525d;
+            justify-content: center;
+            align-items: center;
+            img{
+              height: 40px;
+              width: 40px;
+            }
           }
         }
       }

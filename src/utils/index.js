@@ -1,139 +1,63 @@
 /**
- * Created by PanJiaChen on 16/11/18.
+ * 时间的展示方式
+ * time : 需转换的时间值
+ * getTime : 是否直接返回原本时间，false则返回与现实时间的时差
  */
-
-/**
- * Parse the time to string
- * @param {(Object|string|number)} time
- * @param {string} cFormat
- * @returns {string}
- */
-export function parseTime(time, cFormat) {
-  if (arguments.length === 0) {
-    return null;
-  }
-  const format = cFormat || "{y}-{m}-{d} {h}:{i}:{s}";
-  let date;
-  if (typeof time === "object") {
-    date = time;
-  } else {
-    if (typeof time === "string" && /^[0-9]+$/.test(time)) {
-      time = parseInt(time);
-    }
-    if (typeof time === "number" && time.toString().length === 10) {
-      time = time * 1000;
-    }
-    date = new Date(time);
-  }
-  const formatObj = {
-    y: date.getFullYear(),
-    m: date.getMonth() + 1,
-    d: date.getDate(),
-    h: date.getHours(),
-    i: date.getMinutes(),
-    s: date.getSeconds(),
-    a: date.getDay()
-  };
-  const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
-    let value = formatObj[key];
-    // Note: getDay() returns 0 on Sunday
-    if (key === "a") {
-      return ["日", "一", "二", "三", "四", "五", "六"][value];
-    }
-    if (result.length > 0 && value < 10) {
-      value = "0" + value;
-    }
-    return value || 0;
-  });
-  return time_str;
-}
-
-/**
- * @param {number} time
- * @param {string} option
- * @returns {string}
- */
-// export function formatTime(time, option) {
-//   if (('' + time).length === 10) {
-//     time = parseInt(time) * 1000
-//   } else {
-//     time = +time
-//   }
-//   const d = new Date(time)
-//   const now = Date.now()
-
-//   const diff = (now - d) / 1000
-
-//   if (diff < 30) {
-//     return '刚刚'
-//   } else if (diff < 3600) {
-//     // less 1 hour
-//     return Math.ceil(diff / 60) + '分钟前'
-//   } else if (diff < 3600 * 24) {
-//     return Math.ceil(diff / 3600) + '小时前'
-//   } else if (diff < 3600 * 24 * 2) {
-//     return '1天前'
-//   }
-//   if (option) {
-//     return parseTime(time, option)
-//   } else {
-//     return (
-//       d.getMonth() +
-//       1 +
-//       '月' +
-//       d.getDate() +
-//       '日' +
-//       d.getHours() +
-//       '时' +
-//       d.getMinutes() +
-//       '分'
-//     )
-//   }
-// }
 export function formatTime(time, getTime) {
   let arr = time.slice(0, -1).split("T");
+  let timeStamp = new Date(arr[0] + " " + arr[1] + " GMT+0000");
+
   if (getTime) {
-    return arr;
+    let time = {}
+    time.y = timeStamp.getFullYear()
+    time.m = timeStamp.getMonth() + 1
+    time.d = timeStamp.getDate()
+    time.h = timeStamp.getHours()
+    time.min = timeStamp.getMinutes()
+    time.s = timeStamp.getSeconds()
+    for (let i in time) {
+      time[i] = addZero(time[i])
+    }
+    return time.y + "-" + time.m + "-" + time.d + " / " + time.h + ":" + time.min + ":" + time.s;
   } else {
-    let timeStamp = [
-      ...(arr[0] = arr[0].split("-")),
-      ...(arr[1] = arr[1].split(":"))
-    ];
-    let now = new Date();
-    if (now.getFullYear() - timeStamp[0] > 0) {
-      return now.getFullYear() - timeStamp[0] + "年前";
-    } else if (now.getMonth() + 1 - timeStamp[1] > 0) {
-      return now.getMonth() + 1 - timeStamp[1] + "个月前";
-    } else if (now.getDate() - timeStamp[2] > 0) {
-      return now.getDate() - timeStamp[2] + "天前";
-    } else if (now.getHours() - timeStamp[3] > 0) {
-      return now.getHours() - timeStamp[3] + "小时前";
-    } else if (now.getMinutes() - timeStamp[4] > 0) {
-      return now.getMinutes() - timeStamp[4] + "分钟前";
-    } else if (now.getSeconds() - timeStamp[4] > 0) {
-      return now.getSeconds() - timeStamp[5] + "秒前";
-    } else {
+    let diff = new Date().getTime() - timeStamp.getTime()
+    if (diff <= 1000) {
       return "刚刚";
+    } else if (diff <= 1000*60) {
+      return parseInt(diff/(1000)) + "秒前";
+    } else if (diff <= 1000*60*60) {
+      return parseInt(diff/(1000*60)) + "分钟前";
+    } else if (diff <= 1000*60*60*24) {
+      return parseInt(diff/(1000*60*60)) + "小时前";
+    } else if (diff <= 1000*60*60*24*30) {
+      return parseInt(diff/(1000*60*60*24)) + "天前";
+    } else if (diff <= 1000*60*60*365) {
+      return parseInt(diff/(1000*60*60*24*30)) + "个月前";
+    } else {
+      return parseInt(diff/(1000*60*60*365)) + "年前";
     }
   }
 }
 
-/**
- * @param {string} url
- * @returns {Object}
- */
-export function param2Obj(url) {
-  const search = url.split("?")[1];
-  if (!search) {
-    return {};
+// 时间为个位数时，前面补零
+function addZero(val) {
+  if (val < 10) {
+    return '0' + val
+  } else {
+    return val
   }
-  return JSON.parse(
-    '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, " ") +
-      '"}'
-  );
+}
+
+/**
+ * 货币格式
+ * value : 需转换货币格式的值
+ * intOnly : 是否保留整数
+ */
+export function currencyFormat(value, intOnly) {
+  let valueArray = value.toString().split(".");
+  valueArray[0] = valueArray[0].replace(/\B(?=(\d{3})+\b)/g, ",");
+  valueArray[1] && !intOnly
+    ? (value = valueArray[0] + "." + valueArray[1])
+    : (value = valueArray[0]);
+  return value;
 }

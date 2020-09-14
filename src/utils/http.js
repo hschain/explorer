@@ -5,7 +5,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 // import qs from 'qs'
 // import { getToken } from '@/utils/auth'
-import router from '@/router/index'
+// import router from '@/router/index'
 
 const pending = [] // 用于存储每个请求的取消函数和axios标识
 const CancelToken = axios.CancelToken
@@ -28,10 +28,10 @@ const httpServer = (opts, data, detail) => {
 
   const httpDefaultOpts = { // http默认配置
     method: opts.method,
-    // baseURL: '/api/',
+    baseURL: '/api/',
     // baseURL: 'http://192.168.2.177/api/',
     // baseURL: 'https://devnet.hschain.io/api/',
-    baseURL: 'http://testnet.hschain.io/api/',
+    // baseURL: 'https://testnet.hschain.io/api/',
     // baseURL: 'http://192.168.2.113/api/',
     // baseURL: '',
     // baseURL: 'http://hsc.tt-cool.com/admin/',
@@ -112,19 +112,19 @@ axios.interceptors.response.use(
     // if the custom code is not 200, it is judged as an error.
     if (res.code !== 200) {
       console.log(res)
-      if (res.code === 0) {
-        Message({
-          message: res.error.message,
-          type: 'error',
-          duration: 5 * 1000
-        })
-      } else {
-        Message({
-          message: res.error || 'Error',
-          type: 'error',
-          duration: 3 * 1000
-        })
-      }
+      // if (res.code === 0) {
+      //   Message({
+      //     message: res.error.message,
+      //     type: 'error',
+      //     duration: 5 * 1000
+      //   })
+      // } else {
+      //   Message({
+      //     message: res.error || 'Error',
+      //     type: 'error',
+      //     duration: 3 * 1000
+      //   })
+      // }
       return Promise.reject(new Error(res.error || 'Error'))
     } else {
       return res
@@ -132,13 +132,13 @@ axios.interceptors.response.use(
   },
   error => {
     // console.log('err' + error) // for debug
-
     if (error.message !== 'cancelOption') {
-      Message({
-        message: error.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
+      // Message({
+      //   message: error.message,
+      //   type: 'error',
+      //   duration: 5 * 1000
+      // })
+      console.log(error);
     }
 
     return Promise.reject(error)

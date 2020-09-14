@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'HSC浏览器',
+  title: 'HSChain区块浏览器',
 
   /**
    * @type {boolean} true | false

@@ -2,7 +2,7 @@
   <header class="header">
     <div class="searchBar">
       <div class="searchBar_toolBar">
-        <a class="mainLink" href="/explorer/">
+        <a class="mainLink" href="/">
           <img src="@/assets/header/hstlogo.png" alt="" />
         </a>
         <div class="searchBar_selectWarpper">
@@ -39,7 +39,7 @@
           mode="horizontal"
           @select="handleSelect"
           :router="true"
-          active-text-color="#ffd04b"
+          active-text-color="#C1996C"
         >
           <el-menu-item
             v-for="item in menu"
@@ -81,6 +81,9 @@ export default {
   },
   methods: {
     querykeyword() {
+      //去除首尾空格
+      this.keyword = this.keyword.replace(/(^\s*)|(\s*$)/g, "");
+
       if (/^\d+$/g.test(this.keyword)) {
         //纯数字直接查询区块信息
         this.$http(this.$api.getBlocksList, "", this.keyword).then(res => {

@@ -2,7 +2,7 @@
   <div class="BlockDetails containerWrap">
     <div class="titleWrapper">
       <h2 class="pageTitle">
-        区块链详情&nbsp;
+        区块详情&nbsp;
         <span class="height">#{{ blockData.height }}</span>
       </h2>
       <el-button-group>
@@ -11,49 +11,36 @@
           icon="el-icon-arrow-left"
           size="small"
           circle
-          @click="
-            () => $router.push({ path: `/blocks/${blockData.height + 1}` })
-          "
+          @click="() => $router.push({ path: `/blocks/${blockData.height - 1}` })"
         ></el-button>
         <el-button
           type="info"
           icon="el-icon-arrow-right"
           size="small"
           circle
-          @click="
-            () => $router.push({ path: `/blocks/${blockData.height - 1}` })
-          "
+          @click="() => $router.push({ path: `/blocks/${blockData.height + 1}` })"
         ></el-button>
       </el-button-group>
     </div>
-    <div class="firstContainer containerWrapper">
-      <div class="containerTitle">区块链信息</div>
+    <el-card shadow="never" class="firstContainer containerWrapper">
+      <div class="containerTitle">区块信息</div>
       <div class="containerDetail">
         <ul class="infoRow" v-for="(item, name) in blockData" :key="name">
           <li class="infoLabel">{{ blockDataLabel[name] }}</li>
           <li class="infoValue">
-            <el-link
-              type="primary"
-              :underline="false"
-              v-if="name === 'parent_hash'"
-              @click="
-                () => $router.push({ path: `/blocks/${blockData.height - 1}` })
-              "
-              >{{ item }}</el-link
-            >
-            <span v-else>{{ item }}</span>
+            <span>{{ item }}</span>
           </li>
         </ul>
       </div>
-    </div>
-    <div class="secondContainer containerWrapper">
+    </el-card>
+    <el-card shadow="never" class="secondContainer containerWrapper">
       <div class="containerTitle">交易信息</div>
       <TxsTable v-if="TransactionsInfo.length" :txsList="TransactionsInfo" />
       <div v-else class="noTX">
         <img :src="require('@/assets/common/noitem_ic.svg')" alt />
         <p class="msg">交易信息为空</p>
       </div>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -64,7 +51,7 @@ import TxsTable from "@/components/TxsTable/TxsTable";
 export default {
   name: "BlockDetails",
   components: {
-    TxsTable
+    TxsTable,
   },
   data() {
     return {
@@ -72,72 +59,86 @@ export default {
       blockDataLabel: {
         height: "区块高度",
         timestamp: "区块创建时间",
-        block_hash: "当前区块hash值",
-        parent_hash: "上一个区块hash值",
-        num_txs: "当前块交易数量"
+        block_hash: "当前区块Hash值",
+        bonus: "区块奖励",
+        num_txs: "当前块交易数量",
       },
-      TransactionsInfo: []
+      TransactionsInfo: [],
     };
   },
   mounted() {
     if (this.$store.state.option.blockData) {
-      this.handleResult(this.$store.state.option.blockData)
-      this.$store.dispatch('option/getBlockData', null)
+      this.handleResult(this.$store.state.option.blockData);
+      this.$store.dispatch("option/getBlockData", null);
     } else {
-      this.getBlockDetails()
+      this.getBlockDetails();
     }
   },
   beforeDestroy() {
-    this.$store.dispatch('option/setTransactionList', [])
+    this.$store.dispatch("option/setTransactionList", []);
   },
   filters: {
-    hash: function(value) {
+    hash: function (value) {
       return value.slice(0, 6) + " … " + value.slice(-6);
     },
-    time: function(value) {
+    time: function (value) {
       return formatTime(value);
-    }
+    },
   },
   methods: {
     //获取列表
     getBlockDetails() {
-      this.$http(this.$api.getBlocksList, "", this.$route.params.data).then(res => {
-        if (res.code === 200) {
-          this.handleResult(res)
+      this.$http(this.$api.getBlocksList, "", this.$route.params.data).then(
+        (res) => {
+          if (res.code === 200) {
+            this.handleResult(res);
+          }
         }
-      });
+      );
     },
     //处理获取的结果
     handleResult(res) {
-      let time = formatTime(res.data[0].timestamp, true);
       this.blockData = {
         height: res.data[0].height,
         timestamp:
           formatTime(res.data[0].timestamp) +
           " ( " +
-          time[0] +
-          " / " +
-          time[1] +
+          formatTime(res.data[0].timestamp, true) +
           " )",
         block_hash: res.data[0].block_hash,
-        parent_hash: res.data[0].parent_hash,
-        num_txs: res.data[0].num_txs
+        bonus: /^u/i.test(res.data[0].denom)
+          ? (res.data[0].amount / 1000000).toFixed(2) +
+            " " +
+            res.data[0].denom.slice(1).toUpperCase()
+          : res.data[0].amount + " " + res.data[0].denom,
+        num_txs: res.data[0].num_txs,
       };
       if (res.data[0].txs) {
         this.TransactionsInfo = res.data[0].txs;
         this.TransactionsInfo.forEach((item, i) => {
+          if (item.messages[0].success && /^u/i.test(item.messages[0].events.transfer.denom)) {
+            item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
+              1
+            );
+            item.messages[0].events.transfer.amount = (
+              item.messages[0].events.transfer.amount / 1000000
+            ).toFixed(6);
+          }
           item.type = setTxsType(
             res.data[0].txs[i].messages[0].events.message.action
           );
-        })
+        });
         //props父传子失效，暂时使用store传值
-        this.$store.dispatch('option/setTransactionList', this.TransactionsInfo)
+        this.$store.dispatch(
+          "option/setTransactionList",
+          this.TransactionsInfo
+        );
       }
     },
     getTransactionDetails(item) {
       this.$router.push({ path: `/transactions/${item}` });
-    }
-  }
+    },
+  },
 };
 </script>
 

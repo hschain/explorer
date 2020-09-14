@@ -1,11 +1,18 @@
 <template>
   <div class="BlocksList containerWrap">
+    <el-backtop class="backtop" :right="20" style="bottom: 25vh">
+      <img src="@/assets/common/top.png" alt="">
+      <p>顶部</p>
+    </el-backtop>
     <div class="titleWrapper">
       <h2 class="pageTitle">区块</h2>
     </div>
-    <div class="table">
+    <el-card shadow="never" class="table">
+      <div class="updateCheckbox">
+        <el-checkbox v-model="update" @change="handleCheckedChange">实时更新</el-checkbox>
+      </div>
       <el-table v-loading="loading" :data="BlocksList" stripe style="width: 100%">
-        <el-table-column label="区块高度" width="150">
+        <el-table-column label="区块高度" width="120">
           <template slot-scope="scope">
             <el-link
               type="primary"
@@ -14,16 +21,7 @@
             >{{scope.row.height}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="上一个区块hash值">
-          <template slot-scope="scope">
-            <el-link
-              type="primary"
-              :underline="false"
-              @click="getDetails(scope.row.height - 1 )"
-            >{{scope.row.parent_hash | hash}}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column label="当前区块hash值">
+        <el-table-column label="当前区块Hash">
           <template slot-scope="scope">
             <el-link
               type="info"
@@ -32,7 +30,12 @@
             >{{scope.row.block_hash | hash}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="num_txs" label="交易信息" width="100"></el-table-column>
+        <el-table-column label="区块奖励">
+          <template slot-scope="scope">
+            <div>{{scope.row.amount}} {{scope.row.denom}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="num_txs" label="交易数量" width="100"></el-table-column>
         <el-table-column label="时间" width="80">
           <template slot-scope="scope">
             <div>{{scope.row.timestamp | time}}</div>
@@ -45,7 +48,7 @@
         :limit.sync="listQuery.size"
         @pagination="getBlocksList"
       />
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -68,12 +71,13 @@ export default {
       begin: 0, //区块高度起始信息
       loading: true,
       timer: null,
+      update: true,
     };
   },
   created() {
     this.getBlocksList();
     this.timer = setInterval(() => {
-      this.getBlocksList();      
+      this.getBlocksList();
     }, 3000);
   },
   beforeDestroy() {
@@ -100,6 +104,12 @@ export default {
       this.$http(this.$api.getBlocksList, params).then((res) => {
         if (res.code === 200) {
           this.BlocksList = res.data;
+          this.BlocksList.forEach(item => {
+            if (/^u/i.test(item.denom)) {
+              item.amount = (item.amount/1000000).toFixed(2)
+              item.denom = item.denom.slice(1).toUpperCase()
+            }
+          })
           this.total = res.paging.total;
           if (this.listQuery.page === 1) {
             this.begin = res.paging.begin;
@@ -112,6 +122,16 @@ export default {
     getDetails(item) {
       this.$router.push({ path: `/blocks/${item}` });
     },
+    handleCheckedChange(val) {
+      if (val) {
+        this.getBlocksList();
+        this.timer = setInterval(() => {
+          this.getBlocksList();
+        }, 3000);
+      } else {
+        clearInterval(this.timer)
+      }
+    }
   },
 };
 </script>

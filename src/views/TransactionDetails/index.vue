@@ -3,7 +3,7 @@
     <div class="titleWrapper">
       <h2 class="pageTitle">交易详情</h2>
     </div>
-    <div class="firstContainer containerWrapper">
+    <el-card shadow="never" class="firstContainer containerWrapper">
       <div class="containerTitle">交易信息</div>
       <div class="containerDetail">
         <ul class="infoRow" v-for="(item,name) in Information" :key="name">
@@ -30,15 +30,15 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="secondContainer containerWrapper">
+    </el-card>
+    <el-card shadow="never" class="secondContainer containerWrapper">
       <div class="containerTitle">交易内容</div>
       <div class="TxMessageWrapper">
         <div class="TxMessageType">
           <img :src="require('@/assets/common/msgsic_2.svg')" alt />
           <span>{{Msgs.type}}</span>
         </div>
-        <div class="TxMessage">
+        <div v-if="Information.status" class="TxMessage">
           <div class="TxMessage_toValue" v-if="Msgs.action === 'send'">
             <div class="TxMessage_label">去向 / 交易值</div>
             <div class="TxMessage_contentWrapper">
@@ -46,12 +46,16 @@
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">去向</li>
                   <li class="TxMessage_value">
-                    <el-link type="primary" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.to}` })">{{Msgs.to}}</el-link>
+                    <el-link
+                      type="primary"
+                      :underline="false"
+                      @click="() => this.$router.push({ path: `/account/${Msgs.to}` })"
+                    >{{Msgs.to}}</el-link>
                   </li>
                 </ul>
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">交易值</li>
-                  <li class="TxMessage_value">
+                  <li class="TxMessage_value" style="color: #4b525d;">
                     <span>{{Msgs.amount}} {{Msgs.denom}}</span>
                   </li>
                 </ul>
@@ -64,15 +68,28 @@
           </ul>
           <ul class="InfoRow">
             <li class="InfoRow_label">来源</li>
-            <li class="InfoRow_value">{{Msgs.from}}</li>
+            <li>
+              <el-link
+                type="primary"
+                class="InfoRow_value"
+                :underline="false"
+                @click="() => this.$router.push({ path: `/account/${Msgs.from}` })"
+              >{{Msgs.from}}</el-link>
+            </li>
           </ul>
           <ul class="InfoRow">
             <li class="InfoRow_label">交易备注</li>
             <li class="InfoRow_value">{{Msgs.memo || '-'}}</li>
           </ul>
         </div>
+        <div v-else class="TxMessage">
+          <ul class="InfoRow">
+            <li class="InfoRow_label">转账失败原因</li>
+            <li class="InfoRow_value">{{Msgs.errorInfo || '-'}}</li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -85,25 +102,18 @@ export default {
     return {
       Information: {},
       InformationLabel: {
-        tx_hash: "交易hash值",
+        tx_hash: "交易Hash值",
         status: "状态",
         height: "区块高度",
         timestamp: "交易时间",
       },
-      Msgs: {
-        type: "Transfer",
-        to: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
-        from: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
-        amount: 1,
-        denom: "HST",
-        memo: 'test-hst'
-      }
+      Msgs: {},
     };
   },
   created() {
     if (this.$store.state.option.transactionData) {
-      this.handleResult(this.$store.state.option.transactionData)
-      this.$store.dispatch('option/getTransactionData', null)
+      this.handleResult(this.$store.state.option.transactionData);
+      this.$store.dispatch("option/getTransactionData", null);
     } else {
       this.getTransactionDetails();
     }
@@ -119,9 +129,13 @@ export default {
   methods: {
     //获取列表
     getTransactionDetails() {
-      this.$http(this.$api.getTransactionsList, "", this.$route.params.data).then(res => {
+      this.$http(
+        this.$api.getTransactionsList,
+        "",
+        this.$route.params.data
+      ).then((res) => {
         if (res.code === 200) {
-          this.handleResult(res)
+          this.handleResult(res);
         }
       });
     },
@@ -132,24 +146,40 @@ export default {
         tx_hash: res.data[0].tx_hash,
         status: res.data[0].messages[0].success,
         height: res.data[0].height,
-        timestamp: formatTime(res.data[0].timestamp) + " ( " + time[0] + " / " + time[1] + " )",
+        timestamp:
+          formatTime(res.data[0].timestamp) +
+          " ( " +
+          formatTime(res.data[0].timestamp, true) +
+          " )",
       };
       this.Msgs = {
         type: setTxsType(res.data[0].messages[0].events.message.action),
         action: res.data[0].messages[0].events.message.action,
         from: res.data[0].messages[0].events.message.sender,
-        memo: res.data[0].memo
-      }
-      if (this.Msgs.action === 'send') {
-        this.Msgs.to = res.data[0].messages[0].events.transfer.recipient
-        this.Msgs.amount = res.data[0].messages[0].events.transfer.amount
-        this.Msgs.denom = res.data[0].messages[0].events.transfer.denom
+        memo: res.data[0].memo,
+      };
+      if (this.Msgs.action === "send" && this.Information.status) {
+        this.Msgs.to = res.data[0].messages[0].events.transfer.recipient;
+        if (/^u/i.test(res.data[0].messages[0].events.transfer.denom)) {
+          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom.slice(
+            1
+          );
+          this.Msgs.amount = (
+            res.data[0].messages[0].events.transfer.amount / 1000000
+          ).toFixed(6);
+        } else {
+          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;
+          this.Msgs.amount = res.data[0].messages[0].events.transfer.amount;
+        }
+      } else if (this.Msgs.action === "send" && !this.Information.status) {
+        this.Msgs.errorInfo = JSON.parse(res.data[0].messages[0].log).message
       } else {
-        this.Msgs.validator = res.data[0].messages[0].events.create_validator.validator
+        this.Msgs.validator =
+          res.data[0].messages[0].events.create_validator.validator;
       }
     },
     getBlockDetails(item) {
-      this.$router.push({ path: `/blocks/${item}` })
+      this.$router.push({ path: `/blocks/${item}` });
     },
   },
 };
@@ -251,7 +281,6 @@ export default {
             min-width: 260px;
             height: fit-content;
             font-weight: 400;
-            color: #4b525d;
             overflow-wrap: break-word;
           }
         }

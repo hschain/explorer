@@ -1,23 +1,28 @@
 <template>
-    <el-table v-loading="loading" :data="TransactionsList" stripe style="width: 100%">
-      <el-table-column label="交易hash值" width="180">
-        <template slot-scope="scope">
-          <el-link
-            type="primary"
-            :underline="false"
-            @click="getDetails('transactions', scope.row.tx_hash)"
-          >{{scope.row.tx_hash | hash}}</el-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="类型" width="100">
-        <template slot-scope="scope">
-          <div>{{scope.row.type}}</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="地址">
-        <template slot-scope="scope">
-          <div class="TransferAddress">
+  <el-table v-loading="loading" :data="TransactionsList" stripe style="width: 100%">
+    <el-table-column label="交易Hash值" width="180">
+      <template slot-scope="scope">
+        <el-link
+          type="primary"
+          :underline="false"
+          @click="getDetails('transactions', scope.row.tx_hash)"
+        >{{scope.row.tx_hash | hash}}</el-link>
+      </template>
+    </el-table-column>
+    <el-table-column label="类型" width="60">
+      <template slot-scope="scope">
+        <div>{{scope.row.type}}</div>
+      </template>
+    </el-table-column>
+    <el-table-column label="地址">
+      <template slot-scope="scope">
+        <div class="TransferAddress">
+          <div v-if="scope.row.messages[0].success">
+            <span
+              v-if="scope.row.messages[0].events.message.sender === $route.params.data"
+            >{{scope.row.messages[0].events.message.sender | hash}}</span>
             <el-link
+              v-else
               type="primary"
               :underline="false"
               @click="getDetails('account', scope.row.messages[0].events.message.sender)"
@@ -28,42 +33,53 @@
               :src="require('@/assets/common/transferarrow_gr.svg')"
               alt
             />
+            <span
+              v-if="scope.row.messages[0].events.transfer && scope.row.messages[0].events.transfer.recipient === $route.params.data"
+            >{{scope.row.messages[0].events.transfer.recipient | hash}}</span>
             <el-link
-              v-if="scope.row.messages[0].events.transfer"
+              v-else-if="scope.row.messages[0].events.transfer"
               type="primary"
               :underline="false"
               @click="getDetails('account', scope.row.messages[0].events.transfer.recipient)"
             >{{scope.row.messages[0].events.transfer.recipient | hash}}</el-link>
           </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="交易金额" width="120">
-        <template slot-scope="scope">
-          <div
-            v-if="scope.row.messages[0].events.transfer"
-          >{{scope.row.messages[0].events.transfer.amount}}.</div>
           <div v-else>-</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="交易货币" width="150">
-        <template slot-scope="scope">
-          <div
-            v-if="scope.row.messages[0].events.transfer"
-          >{{scope.row.messages[0].events.transfer.denom}}</div>
-          <div v-else>-</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="区块高度" width="100">
-        <template slot-scope="scope">
-          <el-link type="primary" :underline="false" @click="getDetails('Blocks', scope.row.height)">{{scope.row.height}}</el-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="时间" width="80">
-        <template slot-scope="scope">
-          <div>{{scope.row.timestamp | time}}</div>
-        </template>
-      </el-table-column>
-    </el-table>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column label="交易金额" width="120">
+      <template slot-scope="scope">
+        <div
+          v-if="scope.row.messages[0].events.transfer && scope.row.messages[0].success"
+        >{{scope.row.messages[0].events.transfer.amount}}</div>
+        <div v-else>-</div>
+      </template>
+    </el-table-column>
+    <el-table-column label="交易货币" width="100">
+      <template slot-scope="scope">
+        <div
+          v-if="scope.row.messages[0].events.transfer && scope.row.messages[0].success"
+        >{{scope.row.messages[0].events.transfer.denom}}</div>
+        <div v-else>-</div>
+      </template>
+    </el-table-column>
+    <el-table-column label="区块高度" width="120">
+      <template slot-scope="scope">
+        <el-link
+          v-if="scope.row.height === $route.params.data"
+          type="primary"
+          :underline="false"
+          @click="getDetails('Blocks', scope.row.height)"
+        >{{scope.row.height}}</el-link>
+        <span v-else>{{scope.row.height}}</span>
+      </template>
+    </el-table-column>
+    <el-table-column label="时间" width="80">
+      <template slot-scope="scope">
+        <div>{{scope.row.timestamp | time}}</div>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script>
@@ -74,12 +90,12 @@ export default {
     txsList: {
       type: Array,
       default() {
-        return []
-      }
+        return [];
+      },
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
   data() {

@@ -1,11 +1,11 @@
 <template>
-  <div class="Transactions BlockTxBox">
+  <el-card shadow="hover" class="Transactions BlockTxBox">
     <div class="titleWrapper">
       <h2 class="title">交易</h2>
       <el-button type="primary" size="small" plain @click="() => $router.push('/transactions')">显示更多</el-button>
     </div>
     <el-table class="containerTable" :data="TransactionsList" stripe style="width: 100%">
-      <el-table-column label="交易hash值" width="150">
+      <el-table-column label="交易Hash值" width="180">
         <template slot-scope="scope">
           <el-link
             type="primary"
@@ -34,7 +34,7 @@
         </template>
       </el-table-column>
     </el-table>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -51,7 +51,7 @@ export default {
   created() {
     this.getTransactionsList();
     this.timer = setInterval(() => {
-      this.getTransactionsList();      
+      this.getTransactionsList();
     }, 3000);
   },
   beforeDestroy() {
@@ -73,6 +73,7 @@ export default {
           this.TransactionsList.forEach((item, i) => {
             item.type = setTxsType(res.data[i].messages[0].events.message.action)
           });
+          this.$emit('sendTransferValue', res.paging.begin)
         }
       });
     },

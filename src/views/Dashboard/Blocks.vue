@@ -1,5 +1,5 @@
 <template>
-  <div class="Blocks BlockTxBox">
+  <el-card shadow="hover" class="Blocks BlockTxBox">
     <div class="titleWrapper">
       <h2 class="title">区块链</h2>
       <el-button type="primary" size="small" plain @click="() => $router.push('/blocks')">显示更多</el-button>
@@ -10,19 +10,19 @@
           <el-link type="primary" :underline="false" @click="getDetails(scope.row.height)">{{scope.row.height}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="区块hash值">
+      <el-table-column label="区块奖励">
         <template slot-scope="scope">
-          <el-link type="primary" :underline="false" @click="getDetails(scope.row.height)">{{scope.row.block_hash | hash}}</el-link>
+          <div>{{ scope.row.amount}} {{scope.row.denom}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="num_txs" label="交易信息" width="80"></el-table-column>
+      <el-table-column prop="num_txs" label="交易数量" width="80"></el-table-column>
       <el-table-column label="时间" width="80">
         <template slot-scope="scope">
           <div>{{scope.row.timestamp | time}}</div>
         </template>
       </el-table-column>
     </el-table>
-  </div>
+  </el-card>
 </template>
 
 <script>
@@ -38,7 +38,7 @@ export default {
   created() {
     this.getBlocksList();
     this.timer = setInterval(() => {
-      this.getBlocksList();      
+      this.getBlocksList();
     }, 3000);
   },
   beforeDestroy() {
@@ -58,6 +58,13 @@ export default {
       this.$http(this.$api.getBlocksList, { limit: 5 }).then((res) => {
         if (res.code === 200) {
           this.BlocksList = res.data
+          this.BlocksList.forEach(item => {
+            if (/^u/i.test(item.denom)) {
+              item.amount = (item.amount/1000000).toFixed(2)
+              item.denom = item.denom.slice(1).toUpperCase()
+            }
+          })
+          this.$emit('sendHeightValue', res.paging.begin)
         }
       });
     },
