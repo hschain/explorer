@@ -1,7 +1,8 @@
 <template>
   <div class="TransactionsList containerWrap">
-    <el-backtop class="backtop" :bottom="150">
-      回到顶部
+    <el-backtop class="backtop" :right="20" style="bottom: 25vh">
+      <img src="@/assets/common/top.png" alt="">
+      <p>顶部</p>
     </el-backtop>
     <div class="titleWrapper">
       <h2 class="pageTitle">交易</h2>
@@ -67,8 +68,8 @@ export default {
         if (res.code === 200) {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
-            if (/^u/i.test(item.messages[0].events.transfer.denom)) {
-              item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(1)
+            if (item.messages[0].success && /^u/i.test(item.messages[0].events.transfer.denom)) {
+              item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(1).toUpperCase()
               item.messages[0].events.transfer.amount = (item.messages[0].events.transfer.amount/1000000).toFixed(6)
             }
             item.type = setTxsType(

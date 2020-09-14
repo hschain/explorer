@@ -36,19 +36,19 @@ export default {
       cardData: {
         height: {
           title: "区块高度",
-          value: "923,241",
+          value: "0",
         },
         transfer: {
           title: "总交易数",
-          value: "431,132",
+          value: "0",
         },
         flow: {
           title: "总流通量",
-          value: "524,567",
+          value: "0",
         },
         output: {
           title: "日产出",
-          value: "121,752",
+          value: "0",
         },
       }
     };

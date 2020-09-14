@@ -1,7 +1,8 @@
 <template>
   <div class="BlocksList containerWrap">
-    <el-backtop class="backtop" :bottom="150">
-      回到顶部
+    <el-backtop class="backtop" :right="20" style="bottom: 25vh">
+      <img src="@/assets/common/top.png" alt="">
+      <p>顶部</p>
     </el-backtop>
     <div class="titleWrapper">
       <h2 class="pageTitle">区块</h2>
@@ -20,18 +21,18 @@
             >{{scope.row.height}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="区块奖励">
-          <template slot-scope="scope">
-            <div>{{scope.row.amount}} {{scope.row.denom}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="当前区块hash">
+        <el-table-column label="当前区块Hash">
           <template slot-scope="scope">
             <el-link
               type="info"
               :underline="false"
               @click="getDetails(scope.row.height)"
             >{{scope.row.block_hash | hash}}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="区块奖励">
+          <template slot-scope="scope">
+            <div>{{scope.row.amount}} {{scope.row.denom}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="num_txs" label="交易数量" width="100"></el-table-column>
@@ -106,7 +107,7 @@ export default {
           this.BlocksList.forEach(item => {
             if (/^u/i.test(item.denom)) {
               item.amount = (item.amount/1000000).toFixed(2)
-              item.denom = item.denom.slice(1)
+              item.denom = item.denom.slice(1).toUpperCase()
             }
           })
           this.total = res.paging.total;

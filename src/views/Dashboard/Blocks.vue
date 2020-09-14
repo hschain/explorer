@@ -61,7 +61,7 @@ export default {
           this.BlocksList.forEach(item => {
             if (/^u/i.test(item.denom)) {
               item.amount = (item.amount/1000000).toFixed(2)
-              item.denom = item.denom.slice(1)
+              item.denom = item.denom.slice(1).toUpperCase()
             }
           })
           this.$emit('sendHeightValue', res.paging.begin)

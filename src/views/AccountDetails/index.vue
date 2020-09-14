@@ -42,7 +42,7 @@
           </li>
           <li
             class="addressDollars"
-          >{{ assetsData[0] ? assetsData[0].amount + ' hst' : "-" }}</li>
+          >{{ assetsData[0] ? assetsData[0].amount + ' HST' : "-" }}</li>
         </ul>
       </div>
     </div>
@@ -68,7 +68,7 @@
           style="width: 100%"
           v-loading="loading"
         >
-          <el-table-column prop="denom" label="资产" width="150">
+          <el-table-column label="资产" width="150">
             <template slot-scope="scope">
               <div class="nameDetail">
                 <div class="icon">
@@ -86,28 +86,33 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="value" label="合计余额">
+          <el-table-column label="可用余额">
             <template slot-scope="scope">
               <span>
-                {{ '$ ' + (scope.row.price * scope.row.amount).toFixed(6) }}
+                {{ scope.row.amount }}
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="price" label="汇率">
+          <el-table-column label="冻结余额">
+            <template>
+              <span>0.00</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="合计余额">
+            <template slot-scope="scope">
+              <span>
+                {{ scope.row.amount }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="汇率">
             <template slot-scope="scope">
               <span>$ {{ scope.row.price }}{{ scope.row.priceunit }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="amount" label="可用余额">
+          <el-table-column label="估值">
             <template slot-scope="scope">
-              <span>
-                {{ '$ ' + (scope.row.price * scope.row.amount).toFixed(6) }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="amount" label="冻结余额">
-            <template>
-              <span>$ 0.00</span>
+              <span>$ {{ (scope.row.price * scope.row.amount).toFixed(6) }}</span>
             </template>
           </el-table-column>
         </el-table>

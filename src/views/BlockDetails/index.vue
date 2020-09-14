@@ -59,7 +59,7 @@ export default {
       blockDataLabel: {
         height: "区块高度",
         timestamp: "区块创建时间",
-        block_hash: "当前区块hash值",
+        block_hash: "当前区块Hash值",
         bonus: "区块奖励",
         num_txs: "当前块交易数量",
       },
@@ -109,14 +109,14 @@ export default {
         bonus: /^u/i.test(res.data[0].denom)
           ? (res.data[0].amount / 1000000).toFixed(2) +
             " " +
-            res.data[0].denom.slice(1)
+            res.data[0].denom.slice(1).toUpperCase()
           : res.data[0].amount + " " + res.data[0].denom,
         num_txs: res.data[0].num_txs,
       };
       if (res.data[0].txs) {
         this.TransactionsInfo = res.data[0].txs;
         this.TransactionsInfo.forEach((item, i) => {
-          if (/^u/i.test(item.messages[0].events.transfer.denom)) {
+          if (item.messages[0].success && /^u/i.test(item.messages[0].events.transfer.denom)) {
             item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
               1
             );

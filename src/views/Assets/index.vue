@@ -1,5 +1,9 @@
 <template>
   <div class="AssetsList containerWrap">
+    <el-backtop class="backtop" :bottom="150">
+      <img src="@/assets/common/top.png" alt="">
+      <p>顶部</p>
+    </el-backtop>
     <div class="titleWrapper">
       <h2 class="pageTitle">资产</h2>
     </div>
@@ -23,7 +27,7 @@
         </el-table-column>
         <el-table-column sortable prop="value" label="市值">
           <template slot-scope="scope">
-            <span>{{scope.row.denom === 'HST' ? (scope.row.price*scope.row.amount/1000000).toFixed(6) : (scope.row.price*scope.row.amount).toFixed(6) }}</span>
+            <span>{{ (scope.row.price*scope.row.amount).toFixed(6) }}</span>
           </template>
         </el-table-column>
         <el-table-column sortable prop="price" label="汇率">
@@ -65,11 +69,13 @@ export default {
         size: 10,
       },
       total: 0,
-      loading: true
+      loading: true,
+      textFilter: '',
     };
   },
   watch: {
     textarea: function (val, oldVal) {
+      this.textFilter = val
       if (val) {
         this.AssetsList = this.oAssetsList.filter((item) =>
           item.denom.toLowerCase().indexOf(val.toLowerCase()) !== -1
@@ -104,6 +110,11 @@ export default {
             }
           })
           this.oAssetsList = this.AssetsList
+          if (this.textFilter) {
+            this.AssetsList = this.oAssetsList.filter((item) =>
+              item.denom.toLowerCase().indexOf(this.textFilter.toLowerCase()) !== -1
+            );
+          }
         }
       }).finally(() => {
         this.loading = false

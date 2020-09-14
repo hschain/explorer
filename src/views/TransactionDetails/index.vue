@@ -38,7 +38,7 @@
           <img :src="require('@/assets/common/msgsic_2.svg')" alt />
           <span>{{Msgs.type}}</span>
         </div>
-        <div class="TxMessage">
+        <div v-if="Information.status" class="TxMessage">
           <div class="TxMessage_toValue" v-if="Msgs.action === 'send'">
             <div class="TxMessage_label">去向 / 交易值</div>
             <div class="TxMessage_contentWrapper">
@@ -55,7 +55,7 @@
                 </ul>
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">交易值</li>
-                  <li class="TxMessage_value">
+                  <li class="TxMessage_value" style="color: #4b525d;">
                     <span>{{Msgs.amount}} {{Msgs.denom}}</span>
                   </li>
                 </ul>
@@ -68,11 +68,24 @@
           </ul>
           <ul class="InfoRow">
             <li class="InfoRow_label">来源</li>
-            <li class="InfoRow_value">{{Msgs.from}}</li>
+            <li>
+              <el-link
+                type="primary"
+                class="InfoRow_value"
+                :underline="false"
+                @click="() => this.$router.push({ path: `/account/${Msgs.from}` })"
+              >{{Msgs.from}}</el-link>
+            </li>
           </ul>
           <ul class="InfoRow">
             <li class="InfoRow_label">交易备注</li>
             <li class="InfoRow_value">{{Msgs.memo || '-'}}</li>
+          </ul>
+        </div>
+        <div v-else class="TxMessage">
+          <ul class="InfoRow">
+            <li class="InfoRow_label">转账失败原因</li>
+            <li class="InfoRow_value">{{Msgs.errorInfo || '-'}}</li>
           </ul>
         </div>
       </div>
@@ -89,19 +102,12 @@ export default {
     return {
       Information: {},
       InformationLabel: {
-        tx_hash: "交易hash值",
+        tx_hash: "交易Hash值",
         status: "状态",
         height: "区块高度",
         timestamp: "交易时间",
       },
-      Msgs: {
-        type: "Transfer",
-        to: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
-        from: "hsc1mv98ptkrhdpp5r4d9n782dqrvua4pds2rwhsvr",
-        amount: 1,
-        denom: "HST",
-        memo: "test-hst",
-      },
+      Msgs: {},
     };
   },
   created() {
@@ -152,15 +158,21 @@ export default {
         from: res.data[0].messages[0].events.message.sender,
         memo: res.data[0].memo,
       };
-      if (this.Msgs.action === "send") {
+      if (this.Msgs.action === "send" && this.Information.status) {
         this.Msgs.to = res.data[0].messages[0].events.transfer.recipient;
         if (/^u/i.test(res.data[0].messages[0].events.transfer.denom)) {
-          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom.slice(1)
-          this.Msgs.amount = (res.data[0].messages[0].events.transfer.amount/1000000).toFixed(6)
+          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom.slice(
+            1
+          );
+          this.Msgs.amount = (
+            res.data[0].messages[0].events.transfer.amount / 1000000
+          ).toFixed(6);
         } else {
-          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;          
+          this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;
           this.Msgs.amount = res.data[0].messages[0].events.transfer.amount;
         }
+      } else if (this.Msgs.action === "send" && !this.Information.status) {
+        this.Msgs.errorInfo = JSON.parse(res.data[0].messages[0].log).message
       } else {
         this.Msgs.validator =
           res.data[0].messages[0].events.create_validator.validator;
@@ -269,7 +281,6 @@ export default {
             min-width: 260px;
             height: fit-content;
             font-weight: 400;
-            color: #4b525d;
             overflow-wrap: break-word;
           }
         }

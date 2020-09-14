@@ -4,10 +4,15 @@
       <div class="footerLeft">
         <img src="@/assets/footer/HSC_footer.png" alt="" />
         <div class="walletLinkWrapper">
-          <p class="title">HSCHAIN, THE NEXT GENERATION BLOCKCHAIN</p>
+          <p class="title">HSChain，全球新经济网络基础公链</p>
         </div>
       </div>
       <div class="footerRight">
+        <div class="social">
+          <a href="https://github.com/hschain" target="_blank" title="Github">
+            <img class="picture" :src="require('@/assets/footer/github_btn.svg')" alt="">
+          </a>
+        </div>
         <div class="footerCopyright">
           © HSChain 2020
         </div>
@@ -18,7 +23,7 @@
 
 <script>
 export default {
-  name: "Footer"
+  name: "Footer",
 };
 </script>
 
@@ -48,10 +53,10 @@ export default {
       }
       .walletLinkWrapper {
         .title {
-          font-size: 14px;
-          font-weight: 400;
+          font-size: 16px;
+          font-weight: 500;
           line-height: 1.2;
-          color: #cdcdcd;
+          color:#e2e2e2;
           margin-bottom: 10px;
           margin-top: 10px;
         }
@@ -61,8 +66,17 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      line-height: 1.1;
-      .footerCopyright {
+      line-height: 1.5;
+      .social{
+        display: flex;
+        justify-content: flex-end;
+        .picture{
+          opacity: 0.7;
+          transition: opacity 0.3s;
+          &:hover{
+            opacity: 1;
+          }
+        }
       }
     }
   }
