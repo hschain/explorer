@@ -105,13 +105,20 @@ export default {
           }
         })
       } else if (this.keyword.length === 64) {
-        //长度为64时查询交易信息
+        //长度为64时查询交易信息或者区块信息
         this.$http(this.$api.getTransactionsList, null, this.keyword).then(res => {
           if (res.code === 200 && res.data) {
             this.$store.dispatch('option/getTransactionData', res)
             this.$router.push({ path: `/transactions/${this.keyword}` })
           } else {
-            this.$message.error("未查询到结果")
+            this.$http(this.$api.getBlocksList, "", this.keyword).then(res => {
+              if (res.code === 200 && res.data) {
+                this.$store.dispatch('option/getBlockData', res)
+                this.$router.push({ path: `/blocks/${this.keyword}` })
+              } else {
+                this.$message.error("未查询到结果");
+              }
+            });
           }
         })
       } else {
@@ -135,10 +142,10 @@ export default {
   .searchBar {
     background: #020e46;
     .searchBar_toolBar {
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 0 auto;
-      padding: 20px;
       display: flex;
+      padding: 20px 50px;
       justify-content: space-between;
       align-items: center;
       .mainLink {

@@ -102,7 +102,7 @@ export default {
   .dashboardContent {
     height: fit-content;
     margin: 15px auto 70px;
-    max-width: 1200px;
+    max-width: 1300px;
     padding: 0 50px;
     @media screen and (max-width: 1100px) {
       max-width: 800px;

@@ -167,7 +167,8 @@ export default {
   },
   created() {
     if (this.$store.state.option.accountDetail) {
-      this.assetsData = this.$store.state.option.accountDetail.data.result.value.coins;
+      this.loading = false
+      this.handleResult(this.$store.state.option.accountDetail)
       this.$store.dispatch("option/getAccountDetail", null);
     } else {
       this.getAccountDetails();
@@ -179,19 +180,22 @@ export default {
       this.$http(this.$api.getAccountDetail, null, this.$route.params.data)
         .then((res) => {
           if (res.code === 200) {
-            this.assetsData = res.data.result.value.coins;
-            this.assetsData.forEach((item) => {
-              if (/^u/i.test(item.denom)) {
-                item.denom = item.denom.slice(1).toUpperCase();
-                item.amount = (item.amount / 1000000).toFixed(6);
-              }
-              item.price = (item.price*1).toFixed(6)
-            });
+            this.handleResult(res)
           }
         })
         .finally(() => {
           this.loading = false;
         });
+    },
+    handleResult(res) {
+      this.assetsData = res.data.result.value.coins;
+      this.assetsData.forEach((item) => {
+        if (/^u/i.test(item.denom)) {
+          item.denom = item.denom.slice(1).toUpperCase();
+          item.amount = (item.amount / 1000000).toFixed(6);
+        }
+        item.price = (item.price*1).toFixed(6)
+      });
     },
     // 获取交易列表
     getTransactionsList() {

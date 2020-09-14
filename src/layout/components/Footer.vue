@@ -4,7 +4,7 @@
       <div class="footerLeft">
         <img src="@/assets/footer/HSC_footer.png" alt="" />
         <div class="walletLinkWrapper">
-          <p class="title">HSChain，全球新经济网络基础公链</p>
+          <p class="title">HSChain | 全球新经济网络基础公链</p>
         </div>
       </div>
       <div class="footerRight">
@@ -41,9 +41,9 @@ export default {
     font-size: 12px;
     position: relative;
     height: 100%;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
-    padding: 30px 20px 20px;
+    padding: 30px 50px 20px;
     .footerLeft {
       display: flex;
       flex-direction: column;

@@ -5,7 +5,7 @@
       <el-button type="primary" size="small" plain @click="() => $router.push('/transactions')">显示更多</el-button>
     </div>
     <el-table class="containerTable" :data="TransactionsList" stripe style="width: 100%">
-      <el-table-column label="交易Hash值" width="180">
+      <el-table-column label="交易Hash" width="180">
         <template slot-scope="scope">
           <el-link
             type="primary"
@@ -14,7 +14,7 @@
           >{{scope.row.tx_hash | hash}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="类型">
+      <el-table-column label="交易类型">
         <template slot-scope="scope">
           <div>{{scope.row.type}}</div>
         </template>

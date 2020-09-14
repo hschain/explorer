@@ -59,7 +59,7 @@ export default {
       blockDataLabel: {
         height: "区块高度",
         timestamp: "区块创建时间",
-        block_hash: "当前区块Hash值",
+        block_hash: "当前区块Hash",
         bonus: "区块奖励",
         num_txs: "当前块交易数量",
       },
