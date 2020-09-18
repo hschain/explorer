@@ -21,7 +21,7 @@
             >{{scope.row.height}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="当前区块Hash">
+        <el-table-column label="区块Hash">
           <template slot-scope="scope">
             <el-link
               type="info"
@@ -68,7 +68,6 @@ export default {
         size: 20,
       },
       total: 0,
-      begin: 0, //区块高度起始信息
       loading: true,
       timer: null,
       update: true,
@@ -99,7 +98,7 @@ export default {
       };
       if (this.listQuery.page !== 1) {
         params.begin =
-          this.begin - (this.listQuery.page - 1) * this.listQuery.size;
+          this.total - (this.listQuery.page - 1) * this.listQuery.size;
       }
       this.$http(this.$api.getBlocksList, params).then((res) => {
         if (res.code === 200) {
@@ -111,9 +110,6 @@ export default {
             }
           })
           this.total = res.paging.total;
-          if (this.listQuery.page === 1) {
-            this.begin = res.paging.begin;
-          }
         }
       }).finally(() => {
         this.loading = false

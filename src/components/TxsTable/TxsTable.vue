@@ -79,7 +79,7 @@
     <el-table-column label="区块高度" width="120">
       <template slot-scope="scope">
         <el-link
-          v-if="scope.row.height === $route.params.data"
+          v-if="scope.row.height !== $route.params.data"
           type="primary"
           :underline="false"
           @click="getDetails('Blocks', scope.row.height)"

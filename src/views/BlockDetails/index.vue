@@ -18,7 +18,7 @@
           icon="el-icon-arrow-right"
           size="small"
           circle
-          @click="() => $router.push({ path: `/blocks/${blockData.height + 1}` })"
+          @click="getBlockDetails(true)"
         ></el-button>
       </el-button-group>
     </div>
@@ -87,11 +87,16 @@ export default {
   },
   methods: {
     //获取列表
-    getBlockDetails() {
-      this.$http(this.$api.getBlocksList, "", this.$route.params.data).then(
+    getBlockDetails(next) {
+      this.$http(this.$api.getBlocksList, "", next ? this.$route.params.data*1 + 1 : this.$route.params.data).then(
         (res) => {
           if (res.code === 200) {
-            this.handleResult(res);
+            if (next && res.data) {
+              this.$store.dispatch('option/getBlockData', res)
+              this.$router.push({ path: `/blocks/${this.$route.params.data*1 + 1}` })
+            } else {
+              this.handleResult(res)
+            }
           }
         }
       );

@@ -41,7 +41,6 @@ export default {
       },
       loading: true,
       total: 0,
-      begin: 0, //区块高度起始信息
       timer: null,
       update: true,
     };
@@ -62,7 +61,7 @@ export default {
       };
       if (this.listQuery.page !== 1) {
         params.begin =
-          this.begin - (this.listQuery.page - 1) * this.listQuery.size;
+          this.total - (this.listQuery.page - 1) * this.listQuery.size;
       }
       this.$http(this.$api.getTransactionsList, params).then(res => {
         if (res.code === 200) {
@@ -77,9 +76,6 @@ export default {
             );
           });
           this.total = res.paging.total;
-          if (this.listQuery.page === 1) {
-            this.begin = res.paging.begin;
-          }
         }
       }).finally(() => {
         this.loading = false

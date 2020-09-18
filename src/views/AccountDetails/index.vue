@@ -28,9 +28,9 @@
       <div class="statistics">
         <ul class="totalWrapper">
           <li class="addressValue">估值</li>
-          <li class="addressDollars">
-            $ {{ assetsData[0] ? (assetsData[0].price * assetsData[0].amount).toFixed(6) : "-" }}
-          </li>
+          <li
+            class="addressDollars"
+          >$ {{ assetsData[0] ? (assetsData[0].price * assetsData[0].amount).toFixed(6) : "-" }}</li>
         </ul>
         <ul class="compareWrapper">
           <li class="addressValue">
@@ -40,9 +40,7 @@
             : "0.00"
             }}
           </li>
-          <li
-            class="addressDollars"
-          >{{ assetsData[0] ? assetsData[0].amount + ' HST' : "-" }}</li>
+          <li class="addressDollars">{{ assetsData[0] ? assetsData[0].amount + ' HST' : "-" }}</li>
         </ul>
       </div>
     </div>
@@ -60,7 +58,7 @@
         <el-menu-item class="menuTitle" index="Transactions">交易</el-menu-item>
         <el-menu-item class="menuTitle" index="Hashrate">算力</el-menu-item>
       </el-menu>
-      <div class="assetTxsTable">
+      <el-card shadow="never" class="assetTxsTable table">
         <el-table
           v-show="activeIndex === 'Assets'"
           :data="assetsData"
@@ -80,17 +78,13 @@
                   />
                   <img v-else :src="require('@/assets/common/symbol_none.svg')" alt />
                 </div>
-                <span class="name">
-                  {{ scope.row.denom }}
-                </span>
+                <span class="name">{{ scope.row.denom }}</span>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="可用余额">
             <template slot-scope="scope">
-              <span>
-                {{ scope.row.amount }}
-              </span>
+              <span>{{ scope.row.amount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="冻结余额">
@@ -100,9 +94,7 @@
           </el-table-column>
           <el-table-column label="合计余额">
             <template slot-scope="scope">
-              <span>
-                {{ scope.row.amount }}
-              </span>
+              <span>{{ scope.row.amount }}</span>
             </template>
           </el-table-column>
           <el-table-column label="汇率">
@@ -112,10 +104,13 @@
           </el-table-column>
           <el-table-column label="估值">
             <template slot-scope="scope">
-              <span>$ {{ (scope.row.price * scope.row.amount).toFixed(6) }}</span>
+              <span>$ {{ scope.row.value }}</span>
             </template>
           </el-table-column>
         </el-table>
+        <div v-show="activeIndex === 'Transactions'" class="updateCheckbox">
+          <el-checkbox v-model="update" @change="handleCheckedChange">实时更新</el-checkbox>
+        </div>
         <TxsTable v-show="activeIndex === 'Transactions'" :txsList="TransactionsData" />
         <el-table
           v-show="activeIndex === 'Hashrate'"
@@ -140,7 +135,14 @@
             </template>
           </el-table-column>
         </el-table>
-      </div>
+        <Pagination
+          v-if="activeIndex !== 'Hashrate'"
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.size"
+          @pagination="handleChange"
+        />
+      </el-card>
     </div>
   </div>
 </template>
@@ -149,20 +151,31 @@
 import { setTxsType } from "@/utils/common";
 import vueQr from "vue-qr";
 import TxsTable from "@/components/TxsTable/TxsTable";
+import Pagination from "@/components/Pagination/Pagination";
 export default {
   name: "AccountDetails",
   components: {
     vueQr,
     TxsTable,
+    Pagination,
   },
   data() {
     return {
       showQr: false,
       activeIndex: "Assets",
       assetsData: [],
+      oAssetsData: [],
       TransactionsData: [],
       hashrateData: [],
       loading: true,
+      update: true,
+      listQuery: {
+        page: 1,
+        size: 20
+      },
+      total: 0,
+      totalTrans: 0,
+      timer: null,
     };
   },
   created() {
@@ -173,6 +186,9 @@ export default {
     } else {
       this.getAccountDetails();
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   methods: {
     //获取资产列表
@@ -195,16 +211,39 @@ export default {
           item.amount = (item.amount / 1000000).toFixed(6);
         }
         item.price = (item.price*1).toFixed(6)
+        item.value = (item.price*item.amount).toFixed(6)
       });
+      this.oAssetsData = this.assetsData
+      this.handlePage()
+    },
+    handlePage() {
+      if (this.oAssetsData.length > this.listQuery.size) this.assetsData = this.oAssetsData.slice((this.listQuery.page-1)*this.listQuery.size, this.listQuery.page*this.listQuery.size)
+      this.total = this.oAssetsData.length
+    },
+    //页脚改变
+    handleChange() {
+      if (this.activeIndex === 'Transactions') {
+        this.getTransactionsList()
+      } else {
+        this.handlePage()
+      }
     },
     // 获取交易列表
     getTransactionsList() {
-      this.$http(this.$api.getTransactionsList, {
+      let params = {
+        limit: this.listQuery.size,
         address: this.$route.params.data,
-      })
+      };
+      if (this.listQuery.page !== 1) {
+        params.begin =
+          this.total - (this.listQuery.page - 1) * this.listQuery.size;
+      }
+      this.$http(this.$api.getTransactionsList, params)
         .then((res) => {
           if (res.code === 200 && res.data) {
             this.TransactionsData = res.data;
+            this.total = res.paging.total
+            this.totalTrans =  this.total;
             this.TransactionsData.forEach((item, i) => {
               if (/^u/i.test(item.messages[0].events.transfer.denom)) {
                 item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
@@ -224,6 +263,7 @@ export default {
           this.loading = false;
         });
     },
+    //复制内容
     copy(val) {
       this.$copyText(val)
         .then((res) => {
@@ -233,18 +273,35 @@ export default {
           this.$message.error("复制失败");
         });
     },
+    //table切换时
     handleSelect(val) {
       this.activeIndex = val;
-      if (
-        !this.TransactionsData.length &&
-        this.activeIndex === "Transactions"
-      ) {
+      clearInterval(this.timer)
+      if ( this.activeIndex === "Transactions" ) {
+        this.timer = setInterval(() => {
+          this.getTransactionsList()
+        }, 3000);
+        this.total = this.totalTrans
         this.loading = true;
         this.getTransactionsList();
-      } else if (!this.hashrateData.length && this.activeIndex === "Hashrate") {
+      } else if ( this.activeIndex === "Assets") {
+        this.loading = false;
+        this.total = this.oAssetsData.length
+      } else if ( this.activeIndex === "Hashrate" ) {
         this.loading = false;
       }
     },
+    //切换实时更新状态
+    handleCheckedChange(val) {
+      if (val) {
+        this.getTransactionsList();
+        this.timer = setInterval(() => {
+          this.getTransactionsList();
+        }, 3000);
+      } else {
+        clearInterval(this.timer)
+      }
+    }
   },
 };
 </script>

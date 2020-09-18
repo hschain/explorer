@@ -27,7 +27,7 @@
         </el-table-column>
         <el-table-column sortable prop="value" label="市值">
           <template slot-scope="scope">
-            <span>{{ (scope.row.price*scope.row.amount).toFixed(6) }}</span>
+            <span>{{ scope.row.value }}</span>
           </template>
         </el-table-column>
         <el-table-column sortable prop="price" label="汇率">
@@ -41,11 +41,11 @@
           </template>
           </el-table-column>
       </el-table>
-      <pagination
+      <Pagination
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.size"
-        @pagination="getAssetsList"
+        @pagination="handlePage"
       />
     </el-card>
   </div>
@@ -64,12 +64,12 @@ export default {
       textarea: "",
       AssetsList: [],
       oAssetsList: [],
+      loading: true,
       listQuery: {
         page: 1,
-        size: 10,
+        size: 20
       },
       total: 0,
-      loading: true,
       textFilter: '',
     };
   },
@@ -108,6 +108,7 @@ export default {
             } else {
               item.denom = item.denom.toUpperCase()
             }
+            item.value = (item.price*item.amount).toFixed(6)
           })
           this.oAssetsList = this.AssetsList
           if (this.textFilter) {
@@ -115,11 +116,16 @@ export default {
               item.denom.toLowerCase().indexOf(this.textFilter.toLowerCase()) !== -1
             );
           }
+          this.handlePage()
+          this.total = this.oAssetsList.length
         }
       }).finally(() => {
         this.loading = false
       })
     },
+    handlePage() {
+      if (this.oAssetsList.length > this.listQuery.size) this.AssetsList = this.oAssetsList.slice((this.listQuery.page-1)*this.listQuery.size, this.listQuery.page*this.listQuery.size)
+    }
   },
 };
 </script>
