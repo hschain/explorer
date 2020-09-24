@@ -261,6 +261,8 @@ export default {
               res.data[i].messages[0].events.message.action
             );
           });
+        } else {
+          this.TransactionsData = []
         }
       }).finally(() => {
         this.loading = false

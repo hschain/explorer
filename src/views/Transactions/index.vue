@@ -78,6 +78,8 @@ export default {
             );
           });
           this.total = res.paging.total;
+        } else {
+          this.TransactionsList = []
         }
       }).finally(() => {
         this.loading = false

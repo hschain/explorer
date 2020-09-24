@@ -11,7 +11,7 @@
           icon="el-icon-arrow-left"
           size="small"
           circle
-          @click="() => $router.push({ path: `/blocks/${blockData.height - 1}` })"
+          @click="() => $router.push({ path: `/blocks/${$route.params.data*1 - 1}` })"
         ></el-button>
         <el-button
           type="info"
