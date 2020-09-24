@@ -46,7 +46,7 @@
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.size"
-        @pagination="getBlocksList"
+        @pagination="pagination"
       />
     </el-card>
   </div>
@@ -71,16 +71,18 @@ export default {
       loading: true,
       timer: null,
       update: true,
+      stopLastRequest: false,
     };
   },
   created() {
     this.getBlocksList();
-    this.timer = setInterval(() => {
-      this.getBlocksList();
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getBlocksList();
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   filters: {
     hash: function (value) {
@@ -113,6 +115,13 @@ export default {
         }
       }).finally(() => {
         this.loading = false
+        if (this.update && !this.stopLastRequest) {
+          setTimeout(() => {
+            this.getBlocksList()
+          }, 300);
+        } else {
+          this.stopLastRequest = false
+        }
       })
     },
     getDetails(item) {
@@ -121,12 +130,21 @@ export default {
     handleCheckedChange(val) {
       if (val) {
         this.getBlocksList();
-        this.timer = setInterval(() => {
-          this.getBlocksList();
-        }, 3000);
+        // this.timer = setInterval(() => {
+        //   this.getBlocksList();
+        // }, 5000);
       } else {
-        clearInterval(this.timer)
+        // clearInterval(this.timer)
       }
+      this.update = val
+    },
+    pagination(val) {
+      this.listQuery = {
+        page: val.page,
+        size: val.limit
+      }
+      this.stopLastRequest = true
+      this.getBlocksList()
     }
   },
 };

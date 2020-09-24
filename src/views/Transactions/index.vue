@@ -16,7 +16,7 @@
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.size"
-        @pagination="getTransactionsList"
+        @pagination="pagination"
       />
     </el-card>
   </div>
@@ -43,16 +43,18 @@ export default {
       total: 0,
       timer: null,
       update: true,
+      stopLastRequest: false,
     };
   },
   created() {
     this.getTransactionsList();
-    this.timer = setInterval(() => {
-      this.getTransactionsList();      
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getTransactionsList();      
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   methods: {
     getTransactionsList() {
@@ -64,7 +66,7 @@ export default {
           this.total - (this.listQuery.page - 1) * this.listQuery.size;
       }
       this.$http(this.$api.getTransactionsList, params).then(res => {
-        if (res.code === 200) {
+        if (res.code === 200 && res.data) {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
             if (item.messages[0].success && /^u/i.test(item.messages[0].events.transfer.denom)) {
@@ -79,17 +81,33 @@ export default {
         }
       }).finally(() => {
         this.loading = false
+        if (this.update && !this.stopLastRequest) {
+          setTimeout(() => {
+            this.getTransactionsList()
+          }, 300);
+        } else {
+          this.stopLastRequest = false
+        }
       })
     },
     handleCheckedChange(val) {
       if (val) {
         this.getTransactionsList();
-        this.timer = setInterval(() => {
-          this.getTransactionsList();
-        }, 3000);
+        // this.timer = setInterval(() => {
+        //   this.getTransactionsList();
+        // }, 3000);
       } else {
-        clearInterval(this.timer)
+        // clearInterval(this.timer)
       }
+      this.update = val
+    },
+    pagination(val) {
+      this.listQuery = {
+        page: val.page,
+        size: val.limit
+      }
+      this.stopLastRequest = true
+      this.getTransactionsList()
     }
   }
 };

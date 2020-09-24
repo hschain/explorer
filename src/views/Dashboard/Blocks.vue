@@ -32,17 +32,19 @@ export default {
   data() {
     return {
       BlocksList: [],
-      timer: null
+      timer: null,
+      update: true
     };
   },
   created() {
     this.getBlocksList();
-    this.timer = setInterval(() => {
-      this.getBlocksList();
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getBlocksList();
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   filters: {
     hash: function (value) {
@@ -66,7 +68,11 @@ export default {
           })
           this.$emit('sendHeightValue', res.paging.begin)
         }
-      });
+      }).finally(() => {
+        if (this.update) {
+          this.getBlocksList()
+        }
+      })
     },
     getDetails(item) {
       this.$router.push({ path: `/blocks/${item}` })

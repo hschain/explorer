@@ -45,17 +45,19 @@ export default {
   data() {
     return {
       TransactionsList: [],
-      timer: null
+      timer: null,
+      update: true
     };
   },
   created() {
     this.getTransactionsList();
-    this.timer = setInterval(() => {
-      this.getTransactionsList();
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getTransactionsList();
+    // }, 1000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   filters: {
     hash: function (value) {
@@ -68,14 +70,18 @@ export default {
   methods: {
     getTransactionsList() {
       this.$http(this.$api.getTransactionsList, { limit: 5 }).then((res) => {
-        if (res.code === 200) {
+        if (res.code === 200 && res.data) {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
             item.type = setTxsType(res.data[i].messages[0].events.message.action)
           });
           this.$emit('sendTransferValue', res.paging.begin)
         }
-      });
+      }).finally(() => {
+        if (this.update) {
+          this.getTransactionsList()
+        }
+      })
     },
     getDetails(target, detail) {
       this.$router.push({ path: `/${target}/${detail}` });

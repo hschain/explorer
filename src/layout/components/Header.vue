@@ -6,13 +6,19 @@
           <img src="@/assets/header/hstlogo.png" alt="" />
         </a>
         <div class="searchBar_selectWarpper">
-          <el-select class="select" v-model="selectValue">
+          <el-select class="select" v-model="selectValue" @change="selectOption" placeholder="null">
+            <template slot = "prefix">
+                <!-- <img src="@/assets/common/logo.png" style="width:20px;border-radius:50%" alt="" /> -->
+              </template>
             <el-option
               v-for="(item, index) of selectStatus"
               :key="index"
-              :label="item.status"
-              :value="item.value"
-            />
+              :label="item.name"
+              :value="item.name"
+            >
+              <!-- <img src="@/assets/common/logo.png" style="width:20px;border-radius:50%" alt="" />
+              <span>{{item.value}}</span> -->
+            </el-option>
           </el-select>
           <el-input
             v-model="keyword"
@@ -60,11 +66,13 @@ export default {
   name: "Header",
   data() {
     return {
-      selectValue: "hschain",
-      selectStatus: [{ value: "hschain", status: "hschain" }],
+      selectValue: "",
+      selectStatus: [],
       keyword: "",
       menu: [],
       activeIndex: "/",
+      origin: window.location.origin + '/',
+      localName: ''
     };
   },
   created() {
@@ -73,6 +81,7 @@ export default {
         this.menu.push(item);
       }
     });
+    this.getMainNodes()
   },
   watch: {
     '$store.state.option.path': function(newVal) {
@@ -80,6 +89,21 @@ export default {
     }
   },
   methods: {
+    //判断下拉框展示内容
+    getMainNodes() {
+      this.$http(this.$api.getNodes).then(res => {
+        if (res.code === 200 && res.data) {
+          this.selectStatus = res.data
+          this.selectStatus.forEach(item => {
+            if (this.origin === item.url) {
+               this.selectValue = item.name
+            }
+          })
+          this.localName = this.selectValue
+        }
+      })
+    },
+    //查询内容
     querykeyword() {
       //去除首尾空格
       this.keyword = this.keyword.replace(/(^\s*)|(\s*$)/g, "");
@@ -127,6 +151,14 @@ export default {
     },
     handleSelect(key, keyPath) {
       // console.log(key, keyPath);
+    },
+    selectOption(val) {
+      this.selectStatus.forEach(item => {
+        if (item.name === val) {
+          window.open(item.url)
+        }
+      })
+      this.selectValue = this.localName
     }
   }
 };
@@ -156,6 +188,9 @@ export default {
       .searchBar_selectWarpper {
         .select {
           width: 120px;
+          .el-input__prefix{
+            top: 9px;
+          }
         }
         .inputMargin {
           width: 500px;

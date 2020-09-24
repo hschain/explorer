@@ -45,7 +45,7 @@
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.size"
-        @pagination="handlePage"
+        @pagination="pagination"
       />
     </el-card>
   </div>
@@ -71,6 +71,8 @@ export default {
       },
       total: 0,
       textFilter: '',
+      update: true,
+      stopLastRequest: false,
     };
   },
   watch: {
@@ -87,20 +89,21 @@ export default {
   },
   created() {
     this.getAssetsList()
-    this.timer = setInterval(() => {
-      this.getAssetsList();
-    }, 4000);
+    // this.timer = setInterval(() => {
+    //   this.getAssetsList();
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   methods: {
     getAssetsList() {
-      this.oAssetsList = this.AssetsList;
+      // this.oAssetsList = this.AssetsList;
       this.$http(this.$api.getCurrency).then((res) => {
         if (res.code === 200) {
-          this.AssetsList = res.data.result
-          this.AssetsList.forEach(item => {
+          this.oAssetsList = res.data.result
+          this.oAssetsList.forEach(item => {
             item.price = (item.price*1).toFixed(6)
             if(/^u/i.test(item.denom)) {
               item.denom = item.denom.toUpperCase().slice(1)
@@ -110,21 +113,37 @@ export default {
             }
             item.value = (item.price*item.amount).toFixed(6)
           })
-          this.oAssetsList = this.AssetsList
           if (this.textFilter) {
             this.AssetsList = this.oAssetsList.filter((item) =>
               item.denom.toLowerCase().indexOf(this.textFilter.toLowerCase()) !== -1
             );
+          } else {
+            this.AssetsList = this.oAssetsList
           }
+          this.total = this.AssetsList.length
           this.handlePage()
-          this.total = this.oAssetsList.length
         }
       }).finally(() => {
         this.loading = false
+        if (this.update && !this.stopLastRequest) {
+          setTimeout(() => {
+            this.getAssetsList()
+          }, 300);
+        } else {
+          this.stopLastRequest = false
+        }
       })
     },
     handlePage() {
-      if (this.oAssetsList.length > this.listQuery.size) this.AssetsList = this.oAssetsList.slice((this.listQuery.page-1)*this.listQuery.size, this.listQuery.page*this.listQuery.size)
+      if (this.AssetsList.length > this.listQuery.size) this.AssetsList = this.oAssetsList.slice((this.listQuery.page-1)*this.listQuery.size, this.listQuery.page*this.listQuery.size)
+    },
+    pagination(val) {
+      this.listQuery = {
+        page: val.page,
+        size: val.limit
+      }
+      this.stopLastRequest = true
+      this.getAssetsList()
     }
   },
 };

@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       timer: null,
+      update: true,
       cardData: {
         height: {
           title: "区块高度",
@@ -47,7 +48,7 @@ export default {
           value: "0",
         },
         output: {
-          title: "日产出",
+          title: "每秒交易数",
           value: "0",
         },
       }
@@ -55,19 +56,34 @@ export default {
   },
   created() {
     this.getMinting()
-    this.timer = setInterval(() => {
-      this.getMinting();
-    }, 3000);
+    this.getTps()
+    // this.timer = setInterval(() => {
+    //   this.getMinting();
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   methods: {
     getMinting() {
       this.$http(this.$api.getMinting).then((res) => {
         this.cardData.flow.value = res.data.result.status.total_minted_supply/1000000
-        this.cardData.output.value = res.data.result.mint_plans[0].total_per_day/1000000
+        // this.cardData.output.value = res.data.result.mint_plans[0].total_per_day/1000000
+      }).finally(() => {
+        if (this.update) {
+          this.getMinting()
+        }
       })
+    },
+    getTps() {
+      this.$http(this.$api.getTps).then(res => {
+        this.cardData.output.value = res.data
+      }).finally(() => {
+        if (this.update) {
+          this.getTps()
+        }
+      })      
     },
     getHeightValue(val) {
       this.cardData.height.value = val

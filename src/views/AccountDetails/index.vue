@@ -176,6 +176,7 @@ export default {
       total: 0,
       totalTrans: 0,
       timer: null,
+      stopLastRequest: false,
     };
   },
   created() {
@@ -188,20 +189,19 @@ export default {
     }
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   methods: {
     //获取资产列表
     getAccountDetails() {
-      this.$http(this.$api.getAccountDetail, null, this.$route.params.data)
-        .then((res) => {
-          if (res.code === 200) {
-            this.handleResult(res)
-          }
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      this.$http(this.$api.getAccountDetail, null, this.$route.params.data).then((res) => {
+        if (res.code === 200) {
+          this.handleResult(res)
+        }
+      }).finally(() => {
+        this.loading = false;
+      });
     },
     handleResult(res) {
       this.assetsData = res.data.result.value.coins;
@@ -221,8 +221,13 @@ export default {
       this.total = this.oAssetsData.length
     },
     //页脚改变
-    handleChange() {
+    handleChange(val) {
       if (this.activeIndex === 'Transactions') {
+        this.listQuery = {
+          page: val.page,
+          size: val.limit
+        }
+        this.stopLastRequest = true
         this.getTransactionsList()
       } else {
         this.handlePage()
@@ -238,30 +243,35 @@ export default {
         params.begin =
           this.total - (this.listQuery.page - 1) * this.listQuery.size;
       }
-      this.$http(this.$api.getTransactionsList, params)
-        .then((res) => {
-          if (res.code === 200 && res.data) {
-            this.TransactionsData = res.data;
-            this.total = res.paging.total
-            this.totalTrans =  this.total;
-            this.TransactionsData.forEach((item, i) => {
-              if (/^u/i.test(item.messages[0].events.transfer.denom)) {
-                item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
-                  1
-                );
-                item.messages[0].events.transfer.amount = (
-                  item.messages[0].events.transfer.amount / 1000000
-                ).toFixed(6);
-              }
-              item.type = setTxsType(
-                res.data[i].messages[0].events.message.action
+      this.$http(this.$api.getTransactionsList, params).then((res) => {
+        if (res.code === 200 && res.data) {
+          this.TransactionsData = res.data;
+          this.total = res.paging.total
+          this.totalTrans =  this.total;
+          this.TransactionsData.forEach((item, i) => {
+            if (/^u/i.test(item.messages[0].events.transfer.denom)) {
+              item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
+                1
               );
-            });
-          }
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+              item.messages[0].events.transfer.amount = (
+                item.messages[0].events.transfer.amount / 1000000
+              ).toFixed(6);
+            }
+            item.type = setTxsType(
+              res.data[i].messages[0].events.message.action
+            );
+          });
+        }
+      }).finally(() => {
+        this.loading = false
+        if (this.update && !this.stopLastRequest) {
+          setTimeout(() => {
+            this.getTransactionsList()
+          }, 300);
+        } else {
+          this.stopLastRequest = false
+        }
+      });
     },
     //复制内容
     copy(val) {
@@ -276,11 +286,13 @@ export default {
     //table切换时
     handleSelect(val) {
       this.activeIndex = val;
-      clearInterval(this.timer)
+      // clearInterval(this.timer)
+      this.update = false
       if ( this.activeIndex === "Transactions" ) {
-        this.timer = setInterval(() => {
-          this.getTransactionsList()
-        }, 3000);
+        // this.timer = setInterval(() => {
+        //   this.getTransactionsList()
+        // }, 1000);
+        this.update = true
         this.total = this.totalTrans
         this.loading = true;
         this.getTransactionsList();
@@ -295,12 +307,13 @@ export default {
     handleCheckedChange(val) {
       if (val) {
         this.getTransactionsList();
-        this.timer = setInterval(() => {
-          this.getTransactionsList();
-        }, 3000);
+        // this.timer = setInterval(() => {
+        //   this.getTransactionsList();
+        // }, 3000);
       } else {
-        clearInterval(this.timer)
+        // clearInterval(this.timer)
       }
+      this.update = val
     }
   },
 };
