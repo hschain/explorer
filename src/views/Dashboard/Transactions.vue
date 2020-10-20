@@ -5,7 +5,7 @@
       <el-button type="primary" size="small" plain @click="() => $router.push('/transactions')">显示更多</el-button>
     </div>
     <el-table class="containerTable" :data="TransactionsList" stripe style="width: 100%">
-      <el-table-column label="交易Hash值" width="180">
+      <el-table-column label="交易Hash" width="180">
         <template slot-scope="scope">
           <el-link
             type="primary"
@@ -14,7 +14,7 @@
           >{{scope.row.tx_hash | hash}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="类型">
+      <el-table-column label="交易类型">
         <template slot-scope="scope">
           <div>{{scope.row.type}}</div>
         </template>
@@ -39,23 +39,25 @@
 
 <script>
 import { formatTime } from "@/utils";
-import { setTxsType } from "@/utils/common";
+import { setTxsType, setDelayTimer } from "@/utils/common";
 export default {
   name: "TransactionsBox",
   data() {
     return {
       TransactionsList: [],
-      timer: null
+      timer: null,
+      update: true
     };
   },
   created() {
     this.getTransactionsList();
-    this.timer = setInterval(() => {
-      this.getTransactionsList();
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getTransactionsList();
+    // }, 1000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   filters: {
     hash: function (value) {
@@ -68,14 +70,20 @@ export default {
   methods: {
     getTransactionsList() {
       this.$http(this.$api.getTransactionsList, { limit: 5 }).then((res) => {
-        if (res.code === 200) {
+        if (res.code === 200 && res.data) {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
             item.type = setTxsType(res.data[i].messages[0].events.message.action)
           });
           this.$emit('sendTransferValue', res.paging.begin)
         }
-      });
+      }).finally(() => {
+        if (this.update) {
+          setTimeout(() => {
+            this.getTransactionsList()
+          }, setDelayTimer);
+        }
+      })
     },
     getDetails(target, detail) {
       this.$router.push({ path: `/${target}/${detail}` });

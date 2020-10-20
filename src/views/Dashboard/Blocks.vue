@@ -1,7 +1,7 @@
 <template>
   <el-card shadow="hover" class="Blocks BlockTxBox">
     <div class="titleWrapper">
-      <h2 class="title">区块链</h2>
+      <h2 class="title">区块</h2>
       <el-button type="primary" size="small" plain @click="() => $router.push('/blocks')">显示更多</el-button>
     </div>
     <el-table class="containerTable" :data="BlocksList" stripe style="width: 100%">
@@ -27,22 +27,25 @@
 
 <script>
 import { formatTime } from "@/utils";
+import { setDelayTimer } from "@/utils/common"
 export default {
   name: "BlocksBox",
   data() {
     return {
       BlocksList: [],
-      timer: null
+      timer: null,
+      update: true
     };
   },
   created() {
     this.getBlocksList();
-    this.timer = setInterval(() => {
-      this.getBlocksList();
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getBlocksList();
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   filters: {
     hash: function (value) {
@@ -66,7 +69,14 @@ export default {
           })
           this.$emit('sendHeightValue', res.paging.begin)
         }
-      });
+      }).finally(() => {
+        if (this.update) {
+          setTimeout(() => {
+            this.getBlocksList()
+          }, setDelayTimer)
+
+        }
+      })
     },
     getDetails(item) {
       this.$router.push({ path: `/blocks/${item}` })

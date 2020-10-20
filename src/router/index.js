@@ -51,7 +51,7 @@ export const constantRoutes = [
     component: () => import('@/views/Dashboard'),
     meta: { title: '主页', icon: 'el-icon-menu' },
   },
-  { // 区块链
+  { // 区块
     path: '/blocks',
     component: () => import('@/views/Blocks'),
     meta: { title: '区块', icon: 'el-icon-s-order' },
@@ -66,10 +66,10 @@ export const constantRoutes = [
     component: () => import('@/views/Assets'),
     meta: { title: '资产', icon: 'el-icon-s-cooperation' },
   },
-  { // 区块链详情
+  { // 区块详情
     path: '/blocks/:data',
     component: () => import('@/views/BlockDetails'),
-    meta: { title: '区块链详情', },
+    meta: { title: '区块详情', },
     hidden: true
   },
   { // 交易详情

@@ -1,6 +1,6 @@
 <template>
   <el-table v-loading="loading" :data="TransactionsList" stripe style="width: 100%">
-    <el-table-column label="交易Hash值" width="180">
+    <el-table-column label="交易Hash" width="180">
       <template slot-scope="scope">
         <el-link
           type="primary"
@@ -9,12 +9,25 @@
         >{{scope.row.tx_hash | hash}}</el-link>
       </template>
     </el-table-column>
-    <el-table-column label="类型" width="60">
+    <el-table-column label="交易类型" width="80">
       <template slot-scope="scope">
         <div>{{scope.row.type}}</div>
       </template>
     </el-table-column>
-    <el-table-column label="地址">
+    <el-table-column label="交易状态" width="80">
+      <template slot-scope="scope">
+        <div>
+          <img
+            v-if="scope.row.messages[0].success"
+            :src="require('@/assets/common/success_ic.svg')"
+            alt
+          />
+          <img v-else :src="require('@/assets/common/fail_ic.svg')" alt />
+          <span>{{scope.row.messages[0].success ? '成功' : '失败'}}</span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column label="交易地址">
       <template slot-scope="scope">
         <div class="TransferAddress">
           <div v-if="scope.row.messages[0].success">
@@ -66,7 +79,7 @@
     <el-table-column label="区块高度" width="120">
       <template slot-scope="scope">
         <el-link
-          v-if="scope.row.height === $route.params.data"
+          v-if="scope.row.height !== $route.params.data"
           type="primary"
           :underline="false"
           @click="getDetails('Blocks', scope.row.height)"

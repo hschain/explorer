@@ -102,7 +102,7 @@ export default {
     return {
       Information: {},
       InformationLabel: {
-        tx_hash: "交易Hash值",
+        tx_hash: "交易Hash",
         status: "状态",
         height: "区块高度",
         timestamp: "交易时间",

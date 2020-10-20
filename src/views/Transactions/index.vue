@@ -16,14 +16,14 @@
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.size"
-        @pagination="getTransactionsList"
+        @pagination="pagination"
       />
     </el-card>
   </div>
 </template>
 
 <script>
-import { setTxsType } from "@/utils/common";
+import { setTxsType, setDelayTimer } from "@/utils/common";
 import TxsTable from "@/components/TxsTable/TxsTable";
 import Pagination from "@/components/Pagination/Pagination";
 export default {
@@ -41,19 +41,20 @@ export default {
       },
       loading: true,
       total: 0,
-      begin: 0, //区块高度起始信息
       timer: null,
       update: true,
+      stopLastRequest: false,
     };
   },
   created() {
     this.getTransactionsList();
-    this.timer = setInterval(() => {
-      this.getTransactionsList();      
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getTransactionsList();      
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   methods: {
     getTransactionsList() {
@@ -62,10 +63,10 @@ export default {
       };
       if (this.listQuery.page !== 1) {
         params.begin =
-          this.begin - (this.listQuery.page - 1) * this.listQuery.size;
+          this.total - (this.listQuery.page - 1) * this.listQuery.size;
       }
       this.$http(this.$api.getTransactionsList, params).then(res => {
-        if (res.code === 200) {
+        if (res.code === 200 && res.data) {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
             if (item.messages[0].success && /^u/i.test(item.messages[0].events.transfer.denom)) {
@@ -77,23 +78,38 @@ export default {
             );
           });
           this.total = res.paging.total;
-          if (this.listQuery.page === 1) {
-            this.begin = res.paging.begin;
-          }
+        } else {
+          this.TransactionsList = []
         }
       }).finally(() => {
         this.loading = false
+        if (this.update && !this.stopLastRequest) {
+          setTimeout(() => {
+            this.getTransactionsList()
+          }, setDelayTimer);
+        } else {
+          this.stopLastRequest = false
+        }
       })
     },
     handleCheckedChange(val) {
       if (val) {
         this.getTransactionsList();
-        this.timer = setInterval(() => {
-          this.getTransactionsList();
-        }, 3000);
+        // this.timer = setInterval(() => {
+        //   this.getTransactionsList();
+        // }, 3000);
       } else {
-        clearInterval(this.timer)
+        // clearInterval(this.timer)
       }
+      this.update = val
+    },
+    pagination(val) {
+      this.listQuery = {
+        page: val.page,
+        size: val.limit
+      }
+      this.stopLastRequest = true
+      this.getTransactionsList()
     }
   }
 };

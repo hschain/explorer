@@ -21,7 +21,7 @@
             >{{scope.row.height}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="当前区块Hash">
+        <el-table-column label="区块Hash">
           <template slot-scope="scope">
             <el-link
               type="info"
@@ -46,7 +46,7 @@
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.size"
-        @pagination="getBlocksList"
+        @pagination="pagination"
       />
     </el-card>
   </div>
@@ -54,6 +54,7 @@
 
 <script>
 import { formatTime } from "@/utils";
+import { setDelayTimer } from "@/utils/common"
 import Pagination from "@/components/Pagination/Pagination";
 export default {
   name: "Blocks",
@@ -68,20 +69,21 @@ export default {
         size: 20,
       },
       total: 0,
-      begin: 0, //区块高度起始信息
       loading: true,
       timer: null,
       update: true,
+      stopLastRequest: false,
     };
   },
   created() {
     this.getBlocksList();
-    this.timer = setInterval(() => {
-      this.getBlocksList();
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.getBlocksList();
+    // }, 5000);
   },
   beforeDestroy() {
-    clearInterval(this.timer)
+    // clearInterval(this.timer)
+    this.update = false
   },
   filters: {
     hash: function (value) {
@@ -99,7 +101,7 @@ export default {
       };
       if (this.listQuery.page !== 1) {
         params.begin =
-          this.begin - (this.listQuery.page - 1) * this.listQuery.size;
+          this.total - (this.listQuery.page - 1) * this.listQuery.size;
       }
       this.$http(this.$api.getBlocksList, params).then((res) => {
         if (res.code === 200) {
@@ -111,12 +113,16 @@ export default {
             }
           })
           this.total = res.paging.total;
-          if (this.listQuery.page === 1) {
-            this.begin = res.paging.begin;
-          }
         }
       }).finally(() => {
         this.loading = false
+        if (this.update && !this.stopLastRequest) {
+          setTimeout(() => {
+            this.getBlocksList()
+          }, setDelayTimer);
+        } else {
+          this.stopLastRequest = false
+        }
       })
     },
     getDetails(item) {
@@ -125,12 +131,21 @@ export default {
     handleCheckedChange(val) {
       if (val) {
         this.getBlocksList();
-        this.timer = setInterval(() => {
-          this.getBlocksList();
-        }, 3000);
+        // this.timer = setInterval(() => {
+        //   this.getBlocksList();
+        // }, 5000);
       } else {
-        clearInterval(this.timer)
+        // clearInterval(this.timer)
       }
+      this.update = val
+    },
+    pagination(val) {
+      this.listQuery = {
+        page: val.page,
+        size: val.limit
+      }
+      this.stopLastRequest = true
+      this.getBlocksList()
     }
   },
 };

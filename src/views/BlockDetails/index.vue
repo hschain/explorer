@@ -11,14 +11,14 @@
           icon="el-icon-arrow-left"
           size="small"
           circle
-          @click="() => $router.push({ path: `/blocks/${blockData.height - 1}` })"
+          @click="() => $router.push({ path: `/blocks/${$route.params.data*1 - 1}` })"
         ></el-button>
         <el-button
           type="info"
           icon="el-icon-arrow-right"
           size="small"
           circle
-          @click="() => $router.push({ path: `/blocks/${blockData.height + 1}` })"
+          @click="getBlockDetails(true)"
         ></el-button>
       </el-button-group>
     </div>
@@ -59,7 +59,7 @@ export default {
       blockDataLabel: {
         height: "区块高度",
         timestamp: "区块创建时间",
-        block_hash: "当前区块Hash值",
+        block_hash: "当前区块Hash",
         bonus: "区块奖励",
         num_txs: "当前块交易数量",
       },
@@ -87,11 +87,16 @@ export default {
   },
   methods: {
     //获取列表
-    getBlockDetails() {
-      this.$http(this.$api.getBlocksList, "", this.$route.params.data).then(
+    getBlockDetails(next) {
+      this.$http(this.$api.getBlocksList, "", next ? this.$route.params.data*1 + 1 : this.$route.params.data).then(
         (res) => {
           if (res.code === 200) {
-            this.handleResult(res);
+            if (next && res.data) {
+              this.$store.dispatch('option/getBlockData', res)
+              this.$router.push({ path: `/blocks/${this.$route.params.data*1 + 1}` })
+            } else {
+              this.handleResult(res)
+            }
           }
         }
       );
