@@ -39,7 +39,7 @@
 
 <script>
 import { formatTime } from "@/utils";
-import { setTxsType } from "@/utils/common";
+import { setTxsType, setDelayTimer } from "@/utils/common";
 export default {
   name: "TransactionsBox",
   data() {
@@ -79,7 +79,9 @@ export default {
         }
       }).finally(() => {
         if (this.update) {
-          this.getTransactionsList()
+          setTimeout(() => {
+            this.getTransactionsList()
+          }, setDelayTimer);
         }
       })
     },

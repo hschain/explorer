@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { setDelayTimer } from "@/utils/common";
 import Pagination from "@/components/Pagination/Pagination";
 export default {
   name: "Assets",
@@ -128,7 +129,7 @@ export default {
         if (this.update && !this.stopLastRequest) {
           setTimeout(() => {
             this.getAssetsList()
-          }, 300);
+          }, setDelayTimer);
         } else {
           this.stopLastRequest = false
         }

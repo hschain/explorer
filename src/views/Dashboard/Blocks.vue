@@ -27,6 +27,7 @@
 
 <script>
 import { formatTime } from "@/utils";
+import { setDelayTimer } from "@/utils/common"
 export default {
   name: "BlocksBox",
   data() {
@@ -70,7 +71,10 @@ export default {
         }
       }).finally(() => {
         if (this.update) {
-          this.getBlocksList()
+          setTimeout(() => {
+            this.getBlocksList()
+          }, setDelayTimer)
+
         }
       })
     },

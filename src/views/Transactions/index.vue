@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { setTxsType } from "@/utils/common";
+import { setTxsType, setDelayTimer } from "@/utils/common";
 import TxsTable from "@/components/TxsTable/TxsTable";
 import Pagination from "@/components/Pagination/Pagination";
 export default {
@@ -86,7 +86,7 @@ export default {
         if (this.update && !this.stopLastRequest) {
           setTimeout(() => {
             this.getTransactionsList()
-          }, 300);
+          }, setDelayTimer);
         } else {
           this.stopLastRequest = false
         }

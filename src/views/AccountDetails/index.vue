@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import { setTxsType } from "@/utils/common";
+import { setTxsType, setDelayTimer } from "@/utils/common";
 import vueQr from "vue-qr";
 import TxsTable from "@/components/TxsTable/TxsTable";
 import Pagination from "@/components/Pagination/Pagination";
@@ -174,6 +174,7 @@ export default {
         size: 20
       },
       total: 0,
+      end: 0, //用于跳转页面计算
       totalTrans: 0,
       timer: null,
       stopLastRequest: false,
@@ -240,14 +241,14 @@ export default {
         address: this.$route.params.data,
       };
       if (this.listQuery.page !== 1) {
-        params.begin =
-          this.total - (this.listQuery.page - 1) * this.listQuery.size;
+        params.begin = this.end - 1;
       }
       this.$http(this.$api.getTransactionsList, params).then((res) => {
         if (res.code === 200 && res.data) {
           this.TransactionsData = res.data;
           this.total = res.paging.total
           this.totalTrans =  this.total;
+          this.end = res.paging.end
           this.TransactionsData.forEach((item, i) => {
             if (/^u/i.test(item.messages[0].events.transfer.denom)) {
               item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
@@ -269,7 +270,7 @@ export default {
         if (this.update && !this.stopLastRequest) {
           setTimeout(() => {
             this.getTransactionsList()
-          }, 300);
+          }, setDelayTimer);
         } else {
           this.stopLastRequest = false
         }

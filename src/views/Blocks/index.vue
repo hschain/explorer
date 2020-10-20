@@ -54,6 +54,7 @@
 
 <script>
 import { formatTime } from "@/utils";
+import { setDelayTimer } from "@/utils/common"
 import Pagination from "@/components/Pagination/Pagination";
 export default {
   name: "Blocks",
@@ -118,7 +119,7 @@ export default {
         if (this.update && !this.stopLastRequest) {
           setTimeout(() => {
             this.getBlocksList()
-          }, 300);
+          }, setDelayTimer);
         } else {
           this.stopLastRequest = false
         }

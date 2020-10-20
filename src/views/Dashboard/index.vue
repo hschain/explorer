@@ -27,6 +27,7 @@
 import Blocks from "./Blocks";
 import Transactions from "./Transactions";
 import { currencyFormat } from "@/utils"
+import { setDelayTimer } from "@/utils/common";
 export default {
   name: "Dashboard",
   components: { Blocks, Transactions },
@@ -51,6 +52,10 @@ export default {
           title: "每秒交易数",
           value: "0",
         },
+        users: {
+          title: "总用户量",
+          value: "0",
+        },
       }
     };
   },
@@ -72,7 +77,10 @@ export default {
         // this.cardData.output.value = res.data.result.mint_plans[0].total_per_day/1000000
       }).finally(() => {
         if (this.update) {
-          this.getMinting()
+          setTimeout(() => {
+            this.getMinting()
+          }, setDelayTimer);
+
         }
       })
     },
@@ -81,7 +89,9 @@ export default {
         this.cardData.output.value = res.data
       }).finally(() => {
         if (this.update) {
-          this.getTps()
+          setTimeout(() => {
+            this.getTps()
+          }, setDelayTimer);
         }
       })      
     },
@@ -125,7 +135,7 @@ export default {
     }
     .cardDisplay {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 10px;
       .cardBox {
         min-height: calc(100% - 12px);

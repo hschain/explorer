@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import VueClipboard from 'vue-clipboard2' // 剪切板
+import echarts from 'echarts' //echarts可视化列表
 
 import '@/styles/index.scss' // global css
 
@@ -33,6 +34,7 @@ Vue.use(ElementUI, { locale })
 Vue.use(VueClipboard)
 Vue.prototype.$http = http
 Vue.prototype.$api = api
+Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 
