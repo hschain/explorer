@@ -43,13 +43,13 @@ export default {
       total: 0,
       timer: null,
       update: true,
-      stopLastRequest: false,
+      stopLastRequest: false
     };
   },
   created() {
     this.getTransactionsList();
     // this.timer = setInterval(() => {
-    //   this.getTransactionsList();      
+    //   this.getTransactionsList();
     // }, 5000);
   },
   beforeDestroy() {
