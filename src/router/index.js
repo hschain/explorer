@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import Jump from '@/jump'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -43,6 +44,11 @@ export const constantRoutes = [
     redirect: '/dashboard',
     hidden: true
   },
+    { // 下载
+      path: '/jump',
+      component: () => import('@/jump'),
+      hidden: true
+    },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true },
 

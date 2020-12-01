@@ -5,20 +5,20 @@
     </div>
     <el-card shadow="never" class="table">
       <el-table v-loading="loading" :data="Top500List" stripe style="width: 100%">
-        <el-table-column label="序号" width="100">
+        <el-table-column label="序号" width="120">
           <template slot-scope="scope">
             {{scope.$index + 1 + (listQuery.page - 1) * listQuery.size}}
           </template>
         </el-table-column>
-        <el-table-column prop="address" label="地址" width="450">
+        <el-table-column prop="address" label="地址">
           <template slot-scope="scope">
             <el-link type="primary" :underline="false" @click="getDetails(scope.row.address, scope)">{{scope.row.address}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="可用余额" width="300">
+        <el-table-column prop="amount" label="可用余额">
           <template slot-scope="scope">{{scope.row.amount}}</template>
         </el-table-column>
-        <el-table-column prop="denom" label="货币" width="280">
+        <el-table-column prop="denom" label="货币">
           <template slot-scope="scope">{{scope.row.denom}}</template>
         </el-table-column>
       </el-table>
@@ -101,16 +101,42 @@
 
 </script>
 
-<style>
-  .el-table .warning-row {
-    background: oldlace;
+<style lang="scss" scoped>
+  .AssetsList {
+    .table {
+      .searchBar {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: flex-end;
+        .queryIndex {
+          display: flex;
+          .inputKeyword {
+            width: 400px;
+          }
+          .searchBtn {
+            margin-left: 20px;
+          }
+        }
+      }
+      .nameDetail {
+        display: flex;
+        .icon {
+          margin-right: 10px;
+          .fixedIcon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%
+          }
+        }
+        .name {
+          line-height: 30px;
+        }
+      }
+    }
   }
+</style>
+<style lang="scss">
+@media screen and (max-width: 500px) {
 
-  .el-table .success-row {
-    background: #f0f9eb;
-  }
-
-  .el-table--scrollable-x .el-table__body-wrapper {
-    overflow-x: hidden !important;
-  }
+}
 </style>

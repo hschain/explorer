@@ -182,5 +182,10 @@ export default {
       }
     }
   }
+  @media (max-width: 550px){
+    .inputKeyword{
+      display: none !important;
+    }
+  }
 }
 </style>

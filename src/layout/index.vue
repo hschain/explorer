@@ -35,6 +35,11 @@ export default {
     position: fixed;
     top: 0;
   }
+  @media (min-width: 890px){
+    .main-container{
+      padding-top: 145px;
+    }
+  }
 }
 .fixed-header {
   position: fixed;

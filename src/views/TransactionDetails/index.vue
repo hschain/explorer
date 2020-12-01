@@ -9,22 +9,9 @@
         <ul class="infoRow" v-for="(item,name) in Information" :key="name">
           <li class="infoLabel">{{InformationLabel[name]}}</li>
           <li class="infoValue">
-            <img
-              v-if="name === 'status' && item"
-              :src="require('@/assets/common/success_ic.svg')"
-              alt
-            />
-            <img
-              v-else-if="name === 'status' && !item"
-              :src="require('@/assets/common/fail_ic.svg')"
-              alt
-            />
-            <el-link
-              type="primary"
-              :underline="false"
-              v-if="name === 'height'"
-              @click="getBlockDetails(item)"
-            >{{item}}</el-link>
+            <img v-if="name === 'status' && item" :src="require('@/assets/common/success_ic.svg')" alt/>
+            <img v-else-if="name === 'status' && !item" :src="require('@/assets/common/fail_ic.svg')" alt/>
+            <el-link type="primary" :underline="false" v-if="name === 'height'" @click="getBlockDetails(item)">{{item}}</el-link>
             <div style="display:inline-block" v-else-if="name === 'status'">{{item ? '成功' : '失败'}}</div>
             <span v-else>{{item}}</span>
           </li>
@@ -39,18 +26,20 @@
           <span>{{Msgs.type}}</span>
         </div>
         <div v-if="Information.status" class="TxMessage">
-          <div class="TxMessage_toValue" v-if="Msgs.action === 'send'">
-            <div class="TxMessage_label">去向 / 交易值</div>
+          <ul class="InfoRow">
+            <li class="InfoRow_label">来源</li>
+            <li>
+              <el-link type="primary" class="InfoRow_value" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.from}` })">{{Msgs.from}}</el-link>
+            </li>
+          </ul>
+          <div class="TxMessage_toValue" v-if="Msgs.action === 'send' || Msgs.action === 'issue'">
+<!--            <div class="TxMessage_label">去向 / 交易值</div>-->
             <div class="TxMessage_contentWrapper">
               <div class="TxMessage_content">
                 <ul class="TxMessage_show">
                   <li class="TxMessage_label">去向</li>
                   <li class="TxMessage_value">
-                    <el-link
-                      type="primary"
-                      :underline="false"
-                      @click="() => this.$router.push({ path: `/account/${Msgs.to}` })"
-                    >{{Msgs.to}}</el-link>
+                    <el-link type="primary" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.to}` })">{{Msgs.to}}</el-link>
                   </li>
                 </ul>
                 <ul class="TxMessage_show">
@@ -65,17 +54,6 @@
           <ul v-else-if="Msgs.action === 'create_validator'" class="InfoRow">
             <li class="InfoRow_label">验证者</li>
             <li class="InfoRow_value">{{Msgs.validator}}</li>
-          </ul>
-          <ul class="InfoRow">
-            <li class="InfoRow_label">来源</li>
-            <li>
-              <el-link
-                type="primary"
-                class="InfoRow_value"
-                :underline="false"
-                @click="() => this.$router.push({ path: `/account/${Msgs.from}` })"
-              >{{Msgs.from}}</el-link>
-            </li>
           </ul>
           <ul class="InfoRow">
             <li class="InfoRow_label">交易备注</li>
@@ -102,10 +80,10 @@ export default {
     return {
       Information: {},
       InformationLabel: {
-        tx_hash: "交易Hash",
-        status: "状态",
-        height: "区块高度",
-        timestamp: "交易时间",
+        tx_hash: '交易Hash',
+        status: '状态',
+        height: '区块高度',
+        timestamp: '交易时间'
       },
       Msgs: {},
     };
@@ -131,7 +109,7 @@ export default {
     getTransactionDetails() {
       this.$http(
         this.$api.getTransactionsList,
-        "",
+        '',
         this.$route.params.data
       ).then((res) => {
         if (res.code === 200) {
@@ -139,7 +117,7 @@ export default {
         }
       });
     },
-    //处理获取的结果
+    // 处理获取的结果
     handleResult(res) {
       let time = formatTime(res.data[0].timestamp, true);
       this.Information = {
@@ -148,9 +126,9 @@ export default {
         height: res.data[0].height,
         timestamp:
           formatTime(res.data[0].timestamp) +
-          " ( " +
+           '('  +
           formatTime(res.data[0].timestamp, true) +
-          " )",
+           ')',
       };
       this.Msgs = {
         type: setTxsType(res.data[0].messages[0].events.message.action),
@@ -160,7 +138,9 @@ export default {
       };
       if (this.Msgs.action === "send" && this.Information.status) {
         this.Msgs.to = res.data[0].messages[0].events.transfer.recipient;
+        console.log(this.Msgs.to)
         if (/^u/i.test(res.data[0].messages[0].events.transfer.denom)) {
+          // console.log(res.data[0].messages[0].events.transfer.denom)
           this.Msgs.denom = res.data[0].messages[0].events.transfer.denom.slice(
             1
           );
@@ -178,6 +158,7 @@ export default {
           res.data[0].messages[0].events.create_validator.validator;
       }
     },
+
     getBlockDetails(item) {
       this.$router.push({ path: `/blocks/${item}` });
     },
@@ -207,9 +188,10 @@ export default {
       .TxMessage {
         padding: 15px 20px;
         .TxMessage_toValue {
-          height: fit-content;
-          display: flex;
-          flex-flow: row;
+          width: 100%;
+          height: auto;
+          display: block;
+          //flex-flow: row;
           align-items: center;
           justify-content: space-between;
           align-items: flex-start;
@@ -222,28 +204,37 @@ export default {
             color: #222;
           }
           .TxMessage_contentWrapper {
-            padding: 15px 20px;
+            padding: 0px 0px;
             max-height: 300px;
-            width: calc(100% - 203px);
+            //width: calc(100% - 203px);
+            width: 100%;
             border-radius: 5px;
             background-color: #f9fafc;
             .TxMessage_content {
-              max-height: 245px;
-              overflow-y: auto;
-              display: flex;
-              flex-flow: row;
+              //max-height: 245px;
+              height: auto;
+              //overflow-y: auto;
+              //display: block;
+              //flex-flow: row;
               align-items: center;
               justify-content: space-between;
               align-items: flex-start;
               .TxMessage_show {
+                display: grid;
+                grid-template-rows: 20px;
+                grid-template-columns: 210px 1fr;
+                margin: 10px 0;
+                //display: flex;
+                //flex-flow: row;
                 .TxMessage_label {
                   height: 18px;
+                  //line-height: 18px;
                   font-size: 13px;
                   font-weight: 400;
-                  line-height: 2.31;
+                  line-height: 18px;
                   text-align: left;
-                  color: #89909b;
-                  margin-bottom: 15px;
+                  color: #222;
+                  //margin: 15px;
                 }
                 .TxMessage_value {
                   min-width: 260px;
@@ -256,13 +247,12 @@ export default {
                   min-width: 50px;
                   color: #222;
                   word-break: break-word;
-                  display: flex;
                   flex-flow: column;
                 }
               }
               .TxMessage_show:last-child {
                 .TxMessage_label {
-                  text-align: right;
+                  //text-align: right;
                 }
               }
             }
@@ -285,6 +275,44 @@ export default {
           }
         }
       }
+    }
+  }
+
+  @media (max-width: 890px) and (min-width: 100px){
+    .el-card__body{
+      .TxMessageWrapper{
+        margin: 20px 0;
+        .TxMessage{
+          padding: 15px 5px;
+          .InfoRow{
+            display: block;
+            .InfoRow_value{
+              word-break: normal;
+              display: block;
+              //margin-left: 30px;
+            }
+          }
+          .TxMessage_toValue{
+            .TxMessage_contentWrapper{
+              .TxMessage_content{
+                .TxMessage_show{
+                  display: block;
+                  .TxMessage_value{
+                    .el-link{
+                      word-break: normal;
+                      display: block;
+                      //margin-left: 30px;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .el-table--fit{
+      width: auto !important;
     }
   }
 }

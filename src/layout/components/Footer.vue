@@ -43,7 +43,7 @@ export default {
     height: 100%;
     max-width: 1300px;
     margin: 0 auto;
-    padding: 30px 50px 20px;
+    padding: 20px 50px;
     .footerLeft {
       display: flex;
       flex-direction: column;
@@ -51,6 +51,7 @@ export default {
       img {
         width: 160px;
       }
+
       .walletLinkWrapper {
         .title {
           font-size: 16px;
@@ -76,6 +77,35 @@ export default {
           &:hover{
             opacity: 1;
           }
+        }
+      }
+    }
+  }
+
+}
+@media screen and (max-width: 500px){
+  .Footer{
+    height: 105px;
+    .footerWrapper{
+      padding: 15px 10px;
+      .footerLeft{
+        height: 92px;
+        img{
+          width: 120px;
+        }
+        .walletLinkWrapper{
+          margin: 10px 0;
+          .title{
+            font-size: 13px;
+          }
+        }
+      }
+      .footerRight{
+        display: flex;
+        text-align: right;
+        .social{
+        }
+        .footerCopyright{
         }
       }
     }

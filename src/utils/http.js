@@ -30,7 +30,7 @@ const httpServer = (opts, data, detail) => {
     method: opts.method,
     baseURL: '/api/',
     // baseURL: 'http://192.168.2.177/api/',
-    // baseURL: 'https://api.hschain.io/api/',
+    // baseURL: 'https://scan.hschain.io/api/',
     // baseURL: 'https://testnet.hschain.io/api/',
     // baseURL: 'http://192.168.2.113/api/',
     // baseURL: '',

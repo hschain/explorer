@@ -10,11 +10,11 @@ import echarts from 'echarts' //echarts可视化列表
 
 import '@/styles/index.scss' // global css
 
-// import './styles/bootstrap.css' // 引入响应式框架
 
 import App from './App'
 import store from './store'
 import router from './router'
+import jump from './jump'
 
 import http from '@/utils/http' // 引入封装的axios请求
 import api from '@/api/ApiSetting' // 接口列表
@@ -43,6 +43,7 @@ Vue.config.productionTip = false
 
 new Vue({
   el: '#app',
+  jump,
   router,
   store,
   render: h => h(App)

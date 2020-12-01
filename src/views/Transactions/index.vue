@@ -70,9 +70,12 @@ export default {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
             if (item.messages[0].success && /^u/i.test(item.messages[0].events.transfer.denom)) {
-              item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(1).toUpperCase()
-              item.messages[0].events.transfer.amount = (item.messages[0].events.transfer.amount/1000000).toFixed(6)
+              if (item.messages[0].events.transfer && /^u/i.test(item.messages[0].events.transfer.denom)) {
+                item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(1).toUpperCase()
+                item.messages[0].events.transfer.amount = (item.messages[0].events.transfer.amount/1000000).toFixed(6)
+              }
             }
+            console.log(res.data)
             item.type = setTxsType(
               res.data[i].messages[0].events.message.action
             );
@@ -115,4 +118,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scope></style>
+<style lang="scss" scope>
+  @media (max-width: 890px) and (min-width: 100px){
+    .el-table__header-wrapper>.el-table__header{
+      // width: auto !important;
+    }
+    .el-table__footer-wrapper, .el-table__header-wrapper {
+      // overflow-x: auto !important;
+    }
+    .el-table{
+      overflow: auto !important;
+    }
+  }
+
+</style>

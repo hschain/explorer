@@ -46,11 +46,12 @@ module.exports = {
       //     ['^' + process.env.VUE_APP_BASE_API]: ''
       //   }
       // }
-      "/api": {
-        target: `https://testnet.hschain.io//api/`,
+      '/api': {
+        target: `https://testnet.hschain.io//api/`,  //测试网址
+        // target: `https://scan.hschain.io//api/`, // 正式网址
         changeOrigin: true,
         pathRewrite: {
-          "^/api": ""
+          '^/api': ''
         }
       }
     }
