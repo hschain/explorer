@@ -22,9 +22,9 @@ const serviceModule = {
     url: '/v1/account',
     method: 'get'
   },
-  // 获取总流通量和tps
-  getMinting: {
-    url: '/v1/minting/status',
+  // 获取每秒交易数、总用户量、日产总量 、总流通量
+  getFrame: {
+    url: '/v1/frame',
     method: 'get'
   },
   // 获取页面头部下拉框信息
@@ -35,6 +35,11 @@ const serviceModule = {
   // 获取tps
   getTps: {
     url: '/v1/tps',
+    method: 'get'
+  },
+  // 获取Top500表格信息
+  getTop500List: {
+    url: '/v1/topaccounts',
     method: 'get'
   }
 }

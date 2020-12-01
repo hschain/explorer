@@ -37,63 +37,54 @@ export default {
       update: true,
       cardData: {
         height: {
-          title: "区块高度",
-          value: "0",
+          title: '区块高度',
+          value: '0'
         },
         transfer: {
-          title: "总交易数",
-          value: "0",
+          title: '总交易数',
+          value: '0'
         },
-        flow: {
-          title: "总流通量",
-          value: "0",
+        tps: {
+          title: '每秒交易数',
+          value: '0'
         },
-        output: {
-          title: "每秒交易数",
-          value: "0",
+        total_circulation_supply: {
+          title: '总流通量',
+          value: '0'
         },
-        users: {
-          title: "总用户量",
-          value: "0",
+        current_day_provisions: {
+          title: '日产总量',
+          value: '0'
         },
+        usersNumber: {
+          title: '总用户量',
+          value: '0'
+        }
       }
     };
   },
   created() {
-    this.getMinting()
-    this.getTps()
-    // this.timer = setInterval(() => {
-    //   this.getMinting();
-    // }, 5000);
+    this.getFrame()
   },
   beforeDestroy() {
     // clearInterval(this.timer)
     this.update = false
   },
   methods: {
-    getMinting() {
-      this.$http(this.$api.getMinting).then((res) => {
-        this.cardData.flow.value = res.data.result.status.total_minted_supply/1000000
-        // this.cardData.output.value = res.data.result.mint_plans[0].total_per_day/1000000
+    getFrame() {
+      this.$http(this.$api.getFrame).then((res) => {
+        if(res.code === 200) {
+          for (let i in res.data) {
+            this.cardData[i].value = res.data[i]
+          }
+        }
       }).finally(() => {
         if (this.update) {
           setTimeout(() => {
-            this.getMinting()
-          }, setDelayTimer);
-
+            this.getFrame()
+          }, setDelayTimer)
         }
       })
-    },
-    getTps() {
-      this.$http(this.$api.getTps).then(res => {
-        this.cardData.output.value = res.data
-      }).finally(() => {
-        if (this.update) {
-          setTimeout(() => {
-            this.getTps()
-          }, setDelayTimer);
-        }
-      })      
     },
     getHeightValue(val) {
       this.cardData.height.value = val
@@ -135,7 +126,7 @@ export default {
     }
     .cardDisplay {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 10px;
       .cardBox {
         min-height: calc(100% - 12px);

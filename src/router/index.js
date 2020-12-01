@@ -66,6 +66,11 @@ export const constantRoutes = [
     component: () => import('@/views/Assets'),
     meta: { title: '资产', icon: 'el-icon-s-cooperation' },
   },
+  { // TOP500
+    path: '/top500',
+    component: () => import('@/views/top500'),
+    meta: { title: '用户', icon: 'el-icon-s-marketing' },
+  },
   { // 区块详情
     path: '/blocks/:data',
     component: () => import('@/views/BlockDetails'),

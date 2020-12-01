@@ -8,7 +8,6 @@
         <div class="searchBar_selectWarpper">
           <el-select class="select" v-model="selectValue" @change="selectOption" placeholder="null">
             <template slot = "prefix">
-                <!-- <img src="@/assets/common/logo.png" style="width:20px;border-radius:50%" alt="" /> -->
               </template>
             <el-option
               v-for="(item, index) of selectStatus"
@@ -16,8 +15,6 @@
               :label="item.name"
               :value="item.name"
             >
-              <!-- <img src="@/assets/common/logo.png" style="width:20px;border-radius:50%" alt="" />
-              <span>{{item.value}}</span> -->
             </el-option>
           </el-select>
           <el-input
@@ -106,11 +103,11 @@ export default {
     //查询内容
     querykeyword() {
       //去除首尾空格
-      this.keyword = this.keyword.replace(/(^\s*)|(\s*$)/g, "");
+      this.keyword = this.keyword.replace(/(^\s*)|(\s*$)/g, '');
 
       if (/^\d+$/g.test(this.keyword)) {
         //纯数字直接查询区块信息
-        this.$http(this.$api.getBlocksList, "", this.keyword).then(res => {
+        this.$http(this.$api.getBlocksList, '', this.keyword).then(res => {
           if (res.code === 200 && res.data) {
             this.$store.dispatch('option/getBlockData', res)
             this.$router.push({ path: `/blocks/${this.keyword}` })
@@ -195,11 +192,11 @@ export default {
         .inputMargin {
           width: 500px;
         }
-        @media screen and (max-width: 1100px) {
-          .inputMargin {
-            display: none;
-          }
-        }
+        /*@media screen and (max-width: 1100px) {*/
+        /*  .inputMargin {*/
+        /*    display: none;*/
+        /*  }*/
+        /*}*/
       }
     }
   }
@@ -219,4 +216,5 @@ export default {
     }
   }
 }
+
 </style>
