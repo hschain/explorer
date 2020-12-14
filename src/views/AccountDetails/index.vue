@@ -1,7 +1,7 @@
 <template>
   <div class="AccountDetails containerWrap">
     <div class="titleWrapper">
-      <h2 class="pageTitle">账户详情</h2>
+      <h2 class="pageTitle">{{ $t('accountDetail.title') }}</h2>
     </div>
     <div class="address">
       <div class="qrAddress">
@@ -14,7 +14,7 @@
           </div>
         </el-popover>
         <ul class="addressDisplay">
-          <li class="addressLabel">地址</li>
+          <li class="addressLabel">{{ $t('accountDetail.address') }}</li>
           <li class="addressValue">
             <p>{{ $route.params.data }}</p>
             <img
@@ -27,7 +27,7 @@
       </div>
       <div class="statistics">
         <ul class="totalWrapper">
-          <li class="addressValue">估值</li>
+          <li class="addressValue">{{ $t('accountDetail.valuation') }}</li>
           <li
             class="addressDollars"
           >$ {{ assetsData[0] ? (assetsData[0].price * assetsData[0].amount).toFixed(6) : "-" }}</li>
@@ -54,9 +54,9 @@
         text-color="#b2b6bc"
         active-text-color="#222"
       >
-        <el-menu-item class="menuTitle" index="Assets">资产</el-menu-item>
-        <el-menu-item class="menuTitle" index="Transactions">交易</el-menu-item>
-        <el-menu-item class="menuTitle" index="Hashrate">算力</el-menu-item>
+        <el-menu-item class="menuTitle" index="Assets">{{ $t('accountDetail.assets') }}</el-menu-item>
+        <el-menu-item class="menuTitle" index="Transactions">{{ $t('accountDetail.transaction') }}</el-menu-item>
+        <el-menu-item class="menuTitle" index="Hashrate">{{ $t('accountDetail.computingPower') }}</el-menu-item>
       </el-menu>
       <el-card shadow="never" class="assetTxsTable table">
         <el-table
@@ -66,7 +66,7 @@
           style="width: 100%"
           v-loading="loading"
         >
-          <el-table-column label="资产" width="150">
+          <el-table-column :label="$t('accountDetail.assets')" width="150">
             <template slot-scope="scope">
               <div class="nameDetail">
                 <div class="icon">
@@ -82,34 +82,34 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="可用余额">
+          <el-table-column :label="$t('accountDetail.availableBalance')">
             <template slot-scope="scope">
               <span>{{ scope.row.amount }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="冻结余额">
+          <el-table-column :label="$t('accountDetail.freezeBalance')">
             <template>
               <span>0.00</span>
             </template>
           </el-table-column>
-          <el-table-column label="合计余额">
+          <el-table-column :label="$t('accountDetail.totalBalance')">
             <template slot-scope="scope">
               <span>{{ scope.row.amount }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="汇率">
+          <el-table-column :label="$t('accountDetail.exchangeRate')">
             <template slot-scope="scope">
               <span>$ {{ scope.row.price }}{{ scope.row.priceunit }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="估值">
+          <el-table-column :label="$t('accountDetail.valuation')">
             <template slot-scope="scope">
               <span>$ {{ scope.row.value }}</span>
             </template>
           </el-table-column>
         </el-table>
         <div v-show="activeIndex === 'Transactions'" class="updateCheckbox">
-          <el-checkbox v-model="update" @change="handleCheckedChange">实时更新</el-checkbox>
+          <el-checkbox v-model="update" @change="handleCheckedChange">{{$t('accountDetail.liveUpdate')}}</el-checkbox>
         </div>
         <TxsTable v-show="activeIndex === 'Transactions'" :txsList="TransactionsData" />
         <el-table
@@ -119,17 +119,17 @@
           style="width: 100%"
           v-loading="loading"
         >
-          <el-table-column label="算力">
+          <el-table-column :label="$t('accountDetail.computingPower')">
             <template slot-scope="scope">
               <span>{{ scope.row.hashrate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="系统总算力">
+          <el-table-column :label="$t('accountDetail.totalComputingPower')">
             <template slot-scope="scope">
               <span>{{ scope.row.totalHashrate }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="百分比">
+          <el-table-column :label="$t('accountDetail.percentage')">
             <template slot-scope="scope">
               <span>{{ scope.row.rate }}</span>
             </template>

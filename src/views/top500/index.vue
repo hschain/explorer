@@ -1,24 +1,29 @@
 <template>
   <div class="top500 containerWrap">
     <div class="titleWrapper">
-      <h2 class="pageTitle">用户</h2>
+      <h2 class="pageTitle">{{ $t('user.title') }}</h2>
     </div>
     <el-card shadow="never" class="table">
+      <small-pagination
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.size"
+      @pagination="pagination"></small-pagination>
       <el-table v-loading="loading" :data="Top500List" stripe style="width: 100%">
-        <el-table-column label="序号" width="120">
+        <el-table-column :label="$t('user.serialNumber')" width="120">
           <template slot-scope="scope">
             {{scope.$index + 1 + (listQuery.page - 1) * listQuery.size}}
           </template>
         </el-table-column>
-        <el-table-column prop="address" label="地址">
+        <el-table-column prop="address" :label="$t('user.address')" width="340">
           <template slot-scope="scope">
             <el-link type="primary" :underline="false" @click="getDetails(scope.row.address, scope)">{{scope.row.address}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="可用余额">
+        <el-table-column prop="amount" :label="$t('user.availableBalance')">
           <template slot-scope="scope">{{scope.row.amount}}</template>
         </el-table-column>
-        <el-table-column prop="denom" label="货币">
+        <el-table-column prop="denom" :label="$t('user.currency')">
           <template slot-scope="scope">{{scope.row.denom}}</template>
         </el-table-column>
       </el-table>
@@ -38,10 +43,13 @@
   import { formatTime } from "@/utils";
   import { setDelayTimer } from "@/utils/common"
   import Pagination from "@/components/Pagination/Pagination";
+  import smallPagination from "@/components/smallPagination/smallPagination";
+  
   export default {
     name: 'top500',
     components: {
-      Pagination
+      Pagination,
+      smallPagination
     },
     data() {
       return {

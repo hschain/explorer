@@ -35,6 +35,9 @@
   .pagination-container {
     display: none !important;
   }
+  .small-pagination{
+    display: block!important;
+  }
   .SubHeader-app{
     display: none;
   }
@@ -187,7 +190,8 @@
     padding: 15px 5px;
   }
   .containerWrap .backtop{
-    display: none;
+    /* display: none; */
+    transform: scale(0.7);
   }
 
   .el-table th{
@@ -254,4 +258,3 @@
 
 
 }
-

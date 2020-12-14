@@ -2,7 +2,7 @@
   <div class="BlockDetails containerWrap">
     <div class="titleWrapper">
       <h2 class="pageTitle">
-        区块详情&nbsp;
+        {{ $t('blocksDetail.title') }}&nbsp;
         <span class="height">#{{ blockData.height }}</span>
       </h2>
       <el-button-group>
@@ -23,7 +23,7 @@
       </el-button-group>
     </div>
     <el-card shadow="never" class="firstContainer containerWrapper">
-      <div class="containerTitle">区块信息</div>
+      <div class="containerTitle">{{ $t('blocksDetail.blocksInfo') }}</div>
       <div class="containerDetail">
         <ul class="infoRow" v-for="(item, name) in blockData" :key="name">
           <li class="infoLabel">{{ blockDataLabel[name] }}</li>
@@ -34,11 +34,11 @@
       </div>
     </el-card>
     <el-card shadow="never" class="secondContainer containerWrapper">
-      <div class="containerTitle">交易信息</div>
+      <div class="containerTitle">{{ $t('blocksDetail.transactionsInfo') }}</div>
       <TxsTable v-if="TransactionsInfo.length" :txsList="TransactionsInfo" />
       <div v-else class="noTX">
         <img :src="require('@/assets/common/noitem_ic.svg')" alt />
-        <p class="msg">交易信息为空</p>
+        <p class="msg">{{ $t('blocksDetail.transactionsInfoEmpty') }}</p>
       </div>
     </el-card>
   </div>
@@ -57,11 +57,11 @@ export default {
     return {
       blockData: {},
       blockDataLabel: {
-        height: "区块高度",
-        timestamp: "区块创建时间",
-        block_hash: "当前区块Hash",
-        bonus: "区块奖励",
-        num_txs: "当前块交易数量",
+        height: this.$t('blocksDetail.blocksHeight'),
+        timestamp: this.$t('blocksDetail.creationTime'),
+        block_hash: this.$t('blocksDetail.currentBlockHash'),
+        bonus: this.$t('blocksDetail.blockReward'),
+        num_txs: this.$t('blocksDetail.transactionsNum'),
       },
       TransactionsInfo: [],
     };

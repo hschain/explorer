@@ -4,7 +4,7 @@
       <div class="footerLeft">
         <img src="@/assets/footer/HSC_footer.png" alt="" />
         <div class="walletLinkWrapper">
-          <p class="title">HSChain | 全球新经济网络基础公链</p>
+          <p class="title">{{$t('footer.footerTitle')}}</p>
         </div>
       </div>
       <div class="footerRight">
@@ -59,7 +59,7 @@ export default {
           line-height: 1.2;
           color:#e2e2e2;
           margin-bottom: 10px;
-          margin-top: 10px;
+          // margin-top: 10px;
         }
       }
     }
@@ -89,6 +89,7 @@ export default {
     .footerWrapper{
       padding: 15px 10px;
       .footerLeft{
+        width: 220px;
         height: 92px;
         img{
           width: 120px;

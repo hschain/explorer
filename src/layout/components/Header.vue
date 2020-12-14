@@ -13,27 +13,49 @@
             <i class=""></i>
           </span>
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
               <el-menu :default-active="activeIndex" class="el-menu" mode="horizontal" :router="true" active-text-color="#C1996C" @select="handleSelect">
                 <el-menu-item v-for="item in menu" :key="item.meta.title" :index="item.path">
                   <i :class="item.meta.icon" />
                   <span slot="title" class="menu_title">{{ item.meta.title }}</span>
                 </el-menu-item>
+                <!-- 语言切换 -->
+                <el-menu-item>
+                  <el-dropdown class="lang-toggle" trigger="click" @command="switchLang" style="color: #909399;">
+                    <p><i class="el-icon-arrow-down el-icon--right" style="margin-left: 0;"></i> {{ language }} </p>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item v-for="item of langOptions" :key="item.value" :command="item.value">
+                        {{ item.label }}
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </el-menu-item>
               </el-menu>
+              </el-dropdown-item>
 <!--              <el-dropdown-item command="中文">中文</el-dropdown-item>-->
 <!--              <el-dropdown-item command="Englist">Englist</el-dropdown-item>-->
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-        <div class="clear" />
+        <!-- <div class="clear" /> -->
         <div class="searchBar_selectWarpper">
           <el-select v-model="selectValue" class="select" placeholder="" @change="selectOption">
             <template slot="prefix" />
             <el-option v-for="(item, index) of selectStatus" :key="index" :label="item.name" :value="item.name" />
           </el-select>
-          <el-input v-model="keyword" placeholder="查询区块，交易，地址详情等…" class="inputMargin" clearable @keyup.enter.native="querykeyword()">
-            <el-button slot="append" icon="el-icon-search" @click="querykeyword()">查询</el-button>
+          <el-input v-model="keyword" :placeholder="$t('header.searchPlaceholder')" class="inputMargin" clearable @keyup.enter.native="querykeyword()">
+            <el-button slot="append" icon="el-icon-search" @click="querykeyword()">{{ $t('header.search') }}</el-button>
           </el-input>
         </div>
+        <!-- 切换语言 -->
+        <el-dropdown class="lang-toggle" trigger="click" @command="switchLang">
+          <p> {{ language }} <i class="el-icon-arrow-down el-icon--right"></i></p>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-for="item of langOptions" :key="item.value" :command="item.value">
+              {{ item.label }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
       <div class="SubHeader ">
         <div class="SubHeader__nav SubHeader-pc">
@@ -63,7 +85,12 @@ export default {
       origin: window.location.origin,
       localName: '',
       show:true,
-      language:'语言'
+      language:'', // 语言
+      //lang: "", // 语言
+      langOptions: [
+        { label: "中文", value: "cn" },
+        { label: "English", value: "en" },
+      ]
     }
   },
   watch: {
@@ -72,6 +99,22 @@ export default {
     }
   },
   created() {
+    // var lang = navigator.language||navigator.userLanguage;//常规浏览器语言和IE浏览器
+    // lang = lang.substr(0, 2);//截取lang前2位字符
+    // console.log(lang)
+
+    // window.localStorage.lang = lang;
+    // this.$i18n.locale = lang;
+    var lang = window.localStorage.lang;
+    if(lang == 'cn'){
+      window.localStorage.language = '中文';
+    }else{
+      window.localStorage.language = 'English';
+    }
+
+    this.language = window.localStorage.language;
+    // console.log(this.language)
+
     this.$router.options.routes.forEach(item => {
       if (!item.hidden) {
         this.menu.push(item)
@@ -80,6 +123,27 @@ export default {
     this.getMainNodes()
   },
   methods: {
+    // 切换语言
+    switchLang(lang) {
+      // console.log(lang) cn/en
+      window.localStorage.lang = lang;
+      this.$i18n.locale = lang;
+
+      this.$router.go(0);
+
+      if(lang == 'cn'){
+        window.localStorage.language = '中文';
+        // this.lang = '中文';
+      }else{
+        // this.lang = 'English';
+        window.localStorage.language = 'English';
+      }
+      console.log(window.localStorage.language)
+
+
+     this.language = window.localStorage.language;
+      // console.log(this.language)
+    },
     // 判断下拉框展示内容
     getMainNodes() {
       this.$http(this.$api.getNodes).then(res => {
@@ -106,7 +170,7 @@ export default {
             this.$store.dispatch('option/getBlockData', res)
             this.$router.push({ path: `/blocks/${this.keyword}` })
           } else {
-            this.$message.error('未查询到结果')
+            this.$message.error(this.$t('tip.noResult'))
           }
         })
       } else if (/^hsc/i.test(this.keyword)) {
@@ -116,7 +180,7 @@ export default {
             this.$store.dispatch('option/getAccountDetail', res)
             this.$router.push({ path: `/account/${this.keyword}` })
           } else {
-            this.$message.error('未查询到结果')
+            this.$message.error(this.$t('tip.noResult'))
           }
         })
       } else if (this.keyword.length === 64) {
@@ -131,13 +195,13 @@ export default {
                 this.$store.dispatch('option/getBlockData', res)
                 this.$router.push({ path: `/blocks/${this.keyword}` })
               } else {
-                this.$message.error('未查询到结果')
+                this.$message.error(this.$t('tip.noResult'))
               }
             })
           }
         })
       } else {
-        this.$message.error('请输入有效信息')
+        // this.$message.error(this.$t('tip.noMsg'));
       }
     },
     handleSelect(key, keyPath) {
@@ -187,6 +251,9 @@ export default {
           width: 500px;
         }
       }
+      .lang-toggle{
+        color: #fff;
+      }
       .ChineseEnglishSwitch{
         .el-dropdown{
           color: #fff;
@@ -225,6 +292,11 @@ export default {
         .searchBar_selectWarpper{
           display: none;
         }
+
+        .lang-toggle{
+          display: none;
+        }
+
       }
     }
   }
@@ -244,6 +316,11 @@ export default {
         }
         .ChineseEnglishSwitch,.searchBar_selectWarpper{
           display: none;
+        }
+
+        .lang-toggle{
+          font-size: 15px!important;
+          color: #909399;
         }
       }
     }
@@ -266,4 +343,3 @@ export default {
 }
 
 </style>
-

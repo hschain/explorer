@@ -1,11 +1,11 @@
 <template>
   <el-card shadow="hover" class="Transactions BlockTxBox">
     <div class="titleWrapper">
-      <h2 class="title">交易</h2>
-      <el-button type="primary" size="small" plain @click="() => $router.push('/transactions')">显示更多</el-button>
+      <h2 class="title">{{ $t('dashboard.transactions.title') }}</h2>
+      <el-button type="primary" size="small" plain @click="() => $router.push('/transactions')">{{ $t('dashboard.transactions.showMore') }}</el-button>
     </div>
     <el-table class="containerTable" :data="TransactionsList" stripe style="width: 100%">
-      <el-table-column label="交易Hash" width="180">
+      <el-table-column :label="$t('dashboard.transactions.transactionsHash')" width="180">
         <template slot-scope="scope">
           <el-link
             type="primary"
@@ -14,12 +14,12 @@
           >{{scope.row.tx_hash | hash}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="交易类型">
+      <el-table-column :label="$t('dashboard.transactions.transactionsType')" width="100">
         <template slot-scope="scope">
           <div>{{scope.row.type}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="区块高度" width="100">
+      <el-table-column :label="$t('dashboard.transactions.blocksHeight')">
         <template slot-scope="scope">
           <el-link
             type="primary"
@@ -28,7 +28,7 @@
           >{{scope.row.height}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="时间" width="80">
+      <el-table-column :label="$t('dashboard.transactions.time')" width="100">
         <template slot-scope="scope">
           <div>{{scope.row.timestamp | time}}</div>
         </template>

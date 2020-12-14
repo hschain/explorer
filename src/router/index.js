@@ -6,7 +6,11 @@ Vue.use(Router);
 /* Layout */
 import Layout from '@/layout'
 import Jump from '@/jump'
+import i18n from '@/i18n/i18n' // 语言国际化，中英...
 
+const vm = i18n._vm;
+const header = vm.messages[vm.locale].header;
+// console.log(header)
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -33,6 +37,7 @@ import Jump from '@/jump'
  */
 
  // 无需配置权限页面
+
 export const constantRoutes = [
   { // 404页面
     path: '/404',
@@ -55,27 +60,27 @@ export const constantRoutes = [
   { // 主页面板
     path: '/dashboard',
     component: () => import('@/views/Dashboard'),
-    meta: { title: '主页', icon: 'el-icon-menu' },
+    meta: { title: header.dashboard, icon: 'el-icon-menu' },
   },
   { // 区块
     path: '/blocks',
     component: () => import('@/views/Blocks'),
-    meta: { title: '区块', icon: 'el-icon-s-order' },
+    meta: { title: header.blocks, icon: 'el-icon-s-order' },
   },
   { // 交易
     path: '/transactions',
     component: () => import('@/views/Transactions'),
-    meta: { title: '交易', icon: 'el-icon-s-data' },
+    meta: { title: header.transactions, icon: 'el-icon-s-data' },
   },
   { // 资产
     path: '/assets',
     component: () => import('@/views/Assets'),
-    meta: { title: '资产', icon: 'el-icon-s-cooperation' },
+    meta: { title: header.assets, icon: 'el-icon-s-cooperation' },
   },
   { // TOP500
     path: '/top500',
     component: () => import('@/views/top500'),
-    meta: { title: '用户', icon: 'el-icon-s-marketing' },
+    meta: { title: header.user, icon: 'el-icon-s-marketing' },
   },
   { // 区块详情
     path: '/blocks/:data',

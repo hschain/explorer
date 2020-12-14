@@ -1,19 +1,24 @@
 <template>
   <div class="Jump" onload="load()">
     <div class="JumpMain">
-      <img class="img" src="../assets/app_QRCode/jumpbgimg.png" alt="">
+      <img class="img" src="../assets/app_QRCode/jumpbgimg_new.png" alt="">
+      <!-- 图片上的文本 -->
+      <div class="banner-content">
+        <div class="banner-title">HSChain</div>
+        <div class="benner-text">{{$t('jump.bannerText')}}</div>
+      </div>
       <div class="swiper-slide">
         <div class="fp-tableCell page">
           <div class="sc_two_wraper">
-            <p class="title">了解HSC和式链</p>
+            <p class="title">{{$t('jump.title')}}</p>
             <p class="title_intro">
-              用区块链的技术为去中心化的互联网经济提供用户、技术、经济模型、平台
+              {{$t('jump.title_intro_1')}}
               <br>
-              以跨链技术为核心，融合的众多前沿技术的一种价值公链
+              {{$t('jump.title_intro_2')}}
               <br>
-              HSC是一种采用跨链，预言机技术的一条价值共链，结合整个的商业模式闭环，实现了区块链分布式应用的扩展
+              {{$t('jump.title_intro_3')}}
               <br>
-              跨链技术节点网络 公式算法
+              {{$t('jump.title_intro_4')}}
             </p>
             <!--          <div class="sc_two_item">-->
             <!--            <img src="../assets/app_QRCode/boe_tk.jpg" alt="">-->
@@ -23,7 +28,7 @@
       </div>
     </div>
     <div class="DownloadButton" id="DownloadButton" @click="down">
-      <a href="#">立即下载</a>
+      <a href="#">{{$t('jump.downloadText')}}</a>
     </div>
 
     <!--  遮罩层-->
@@ -33,9 +38,9 @@
           <img class="curvilinear-arrow" src="../assets/app_QRCode/CurvilinearArrow.png" alt="">
           <br/>
           <span class="loading-msg">
-              请点击右上角...
+              {{$t('jump.rightCorner')}}
               <br>
-              选择“在浏览器中打开”
+              {{$t('jump.browserOpens')}}
             </span>
         </div>
       </div>
@@ -57,9 +62,24 @@ window.onload = function(){
   }
 }
 import "@/styles/index.scss";
+import i18n from '@/i18n/i18n' // 语言国际化，中英...
+
+// const vm = i18n._vm;
+
 export default {
   name: "jump",
   components: {},
+  data(){
+    return {
+      // jump: {}
+    }
+  },
+  mounted() {
+    // const vm = i18n._vm;
+    // const jump = vm.messages[vm.locale].jump;
+    // console.log(jump)
+    // this.jump = jump;
+  },
   methods: {
       down() {
           let ua = navigator.userAgent.toLowerCase();
@@ -67,10 +87,10 @@ export default {
           let isAndroid = ua.indexOf("Android") > -1 || ua.indexOf("Adr") > -1;
           let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
           if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
-              console.log('我是iPhone|iPad|iPod|iOS')
+              // console.log('我是iPhone|iPad|iPod|iOS')
               window.location = 'itms-services://?action=download-manifest&url=https://wallet-hschain-io.oss-cn-hangzhou.aliyuncs.com/wallet-app/HSWallet.plist';
           } else if (/(Android)/i.test(navigator.userAgent)) {
-              console.log('我是安卓')
+              // console.log('我是安卓')
               window.location ="https://wallet-hschain-io.oss-cn-hangzhou.aliyuncs.com/wallet-app/HSWallet.apk";
           }
       }
@@ -83,7 +103,21 @@ export default {
   .Footer{
   }
 }
+.banner-content{
+        width: 100%;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        position: absolute;
+        top: 18%;
+        left: 0;
 
+        .benner-text{
+          font-size: 22px;
+          margin-top: 8px;
+        }
+      }
 @media screen and (max-width: 890px) {
   .Jump {
     overflow: hidden;
@@ -91,9 +125,25 @@ export default {
       /* padding-bottom: 70px; */
       background: #120E58;
       height: 100%;
+      position: relative;
       .img {
         width: 100%;
         margin-top: 100px;
+      }
+      .banner-content{
+        width: 100%;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        position: absolute;
+        top: 36%;
+        left: 0;
+
+        .benner-text{
+          font-size: 22px;
+          margin-top: 8px;
+        }
       }
       .swiper-slide {
         display: none;

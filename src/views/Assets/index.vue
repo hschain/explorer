@@ -2,19 +2,25 @@
   <div class="AssetsList containerWrap">
     <el-backtop class="backtop" :bottom="150">
       <img src="@/assets/common/top.png" alt="">
-      <p>顶部</p>
+      <p>{{ $t('assets.top') }}</p>
     </el-backtop>
     <div class="titleWrapper">
-      <h2 class="pageTitle">资产</h2>
+      <h2 class="pageTitle">{{ $t('assets.title') }}</h2>
     </div>
     <el-card shadow="never" class="table">
       <div class="searchBar">
         <div class="queryIndex">
-          <el-input class="inputKeyword" v-model="textarea" placeholder="请输入查询名称" clearable></el-input>
+          <el-input class="inputKeyword" v-model="textarea" :placeholder="$t('assets.searchInputPlaceholder')" clearable></el-input>
         </div>
       </div>
+      <!-- 小分页组件 -->
+      <small-pagination
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.size"
+      @pagination="pagination"></small-pagination>
       <el-table v-loading="loading" :default-sort="{prop: 'value', order: 'descending'}" :data="AssetsList" stripe style="width: 100%">
-        <el-table-column sortable prop="denom" label="名称" width="150">
+        <el-table-column sortable prop="denom" :label="$t('assets.name')" width="150">
           <template slot-scope="scope">
             <div class="nameDetail">
               <div class="icon">
@@ -25,17 +31,17 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column sortable prop="value" label="市值">
+        <el-table-column sortable prop="value" :label="$t('assets.marketCap')">
           <template slot-scope="scope">
             <span>{{ scope.row.value }}</span>
           </template>
         </el-table-column>
-        <el-table-column sortable prop="price" label="汇率">
+        <el-table-column sortable prop="price" :label="$t('assets.exchangeRate')">
           <template slot-scope="scope">
             <span>$ {{scope.row.price}}{{scope.row.priceunit}}</span>
           </template>
         </el-table-column>
-        <el-table-column sortable prop="amount" label="发行量">
+        <el-table-column sortable prop="amount" :label="$t('assets.circulation')">
           <template slot-scope="scope">
             <span>{{scope.row.amount}}</span>
           </template>
@@ -54,10 +60,13 @@
 <script>
 import { setDelayTimer } from "@/utils/common";
 import Pagination from "@/components/Pagination/Pagination";
+import smallPagination from "@/components/smallPagination/smallPagination";
+
 export default {
   name: "Assets",
   components: {
     Pagination,
+    smallPagination
   },
   data() {
     return {

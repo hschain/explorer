@@ -2,14 +2,20 @@
   <div class="TransactionsList containerWrap">
     <el-backtop class="backtop" :right="20" style="bottom: 25vh">
       <img src="@/assets/common/top.png" alt="">
-      <p>顶部</p>
+      <p>{{ $t('transactions.top') }}</p>
     </el-backtop>
     <div class="titleWrapper">
-      <h2 class="pageTitle">交易</h2>
+      <h2 class="pageTitle">{{ $t('transactions.title') }}</h2>
     </div>
     <el-card shadow="never" class="table">
       <div class="updateCheckbox">
-        <el-checkbox v-model="update" @change="handleCheckedChange">实时更新</el-checkbox>
+        <!-- 小分页组件 -->
+        <small-pagination
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.size"
+        @pagination="pagination"></small-pagination>
+        <el-checkbox v-model="update" @change="handleCheckedChange">{{ $t('transactions.liveUpdate') }}</el-checkbox>
       </div>
       <TxsTable :loading="loading" :txsList="TransactionsList" :showCheckbox="true" @handleCheckedChange="handleCheckedChange" />
       <Pagination
@@ -26,11 +32,14 @@
 import { setTxsType, setDelayTimer } from "@/utils/common";
 import TxsTable from "@/components/TxsTable/TxsTable";
 import Pagination from "@/components/Pagination/Pagination";
+import smallPagination from "@/components/smallPagination/smallPagination";
+
 export default {
   name: "Transactions",
   components: {
     Pagination,
-    TxsTable
+    TxsTable,
+    smallPagination
   },
   data() {
     return {
@@ -75,7 +84,6 @@ export default {
                 item.messages[0].events.transfer.amount = (item.messages[0].events.transfer.amount/1000000).toFixed(6)
               }
             }
-            console.log(res.data)
             item.type = setTxsType(
               res.data[i].messages[0].events.message.action
             );

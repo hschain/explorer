@@ -1,22 +1,22 @@
 <template>
   <el-card shadow="hover" class="Blocks BlockTxBox">
     <div class="titleWrapper">
-      <h2 class="title">区块</h2>
-      <el-button type="primary" size="small" plain @click="() => $router.push('/blocks')">显示更多</el-button>
+      <h2 class="title">{{ $t('dashboard.blocks.title') }}</h2>
+      <el-button type="primary" size="small" plain @click="() => $router.push('/blocks')">{{ $t('dashboard.blocks.showMore') }}</el-button>
     </div>
     <el-table class="containerTable" :data="BlocksList" stripe style="width: 100%">
-      <el-table-column label="区块高度" width="100">
+      <el-table-column :label="$t('dashboard.blocks.blocksHeight')" width="180">
         <template slot-scope="scope">
           <el-link type="primary" :underline="false" @click="getDetails(scope.row.height)">{{scope.row.height}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="区块奖励">
+      <el-table-column :label="$t('dashboard.blocks.blocksReward')" width="100">
         <template slot-scope="scope">
           <div>{{ scope.row.amount}} {{scope.row.denom}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="num_txs" label="交易数量" width="80"></el-table-column>
-      <el-table-column label="时间" width="80">
+      <el-table-column prop="num_txs" :label="$t('dashboard.blocks.transactionsNumber')"></el-table-column>
+      <el-table-column :label="$t('dashboard.blocks.time')" width="100">
         <template slot-scope="scope">
           <div>{{scope.row.timestamp | time}}</div>
         </template>

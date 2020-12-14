@@ -1,10 +1,10 @@
 <template>
   <div class="TransactionDetails containerWrap">
     <div class="titleWrapper">
-      <h2 class="pageTitle">交易详情</h2>
+      <h2 class="pageTitle">{{ $t('transactionsDetail.title') }}</h2>
     </div>
     <el-card shadow="never" class="firstContainer containerWrapper">
-      <div class="containerTitle">交易信息</div>
+      <div class="containerTitle">{{ $t('transactionsDetail.transactionsInfo') }}</div>
       <div class="containerDetail">
         <ul class="infoRow" v-for="(item,name) in Information" :key="name">
           <li class="infoLabel">{{InformationLabel[name]}}</li>
@@ -12,14 +12,14 @@
             <img v-if="name === 'status' && item" :src="require('@/assets/common/success_ic.svg')" alt/>
             <img v-else-if="name === 'status' && !item" :src="require('@/assets/common/fail_ic.svg')" alt/>
             <el-link type="primary" :underline="false" v-if="name === 'height'" @click="getBlockDetails(item)">{{item}}</el-link>
-            <div style="display:inline-block" v-else-if="name === 'status'">{{item ? '成功' : '失败'}}</div>
+            <div style="display:inline-block" v-else-if="name === 'status'">{{item ? $t('status.success') : $t('status.fail')}}</div>
             <span v-else>{{item}}</span>
           </li>
         </ul>
       </div>
     </el-card>
     <el-card shadow="never" class="secondContainer containerWrapper">
-      <div class="containerTitle">交易内容</div>
+      <div class="containerTitle">{{ $t('transactionsDetail.transactionsContent') }}</div>
       <div class="TxMessageWrapper">
         <div class="TxMessageType">
           <img :src="require('@/assets/common/msgsic_2.svg')" alt />
@@ -27,7 +27,7 @@
         </div>
         <div v-if="Information.status" class="TxMessage">
           <ul class="InfoRow">
-            <li class="InfoRow_label">来源</li>
+            <li class="InfoRow_label">{{ $t('transactionsDetail.transactionsOrigin') }}</li>
             <li>
               <el-link type="primary" class="InfoRow_value" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.from}` })">{{Msgs.from}}</el-link>
             </li>
@@ -37,13 +37,13 @@
             <div class="TxMessage_contentWrapper">
               <div class="TxMessage_content">
                 <ul class="TxMessage_show">
-                  <li class="TxMessage_label">去向</li>
+                  <li class="TxMessage_label">{{ $t('transactionsDetail.transactionsWhereabouts') }}</li>
                   <li class="TxMessage_value">
                     <el-link type="primary" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.to}` })">{{Msgs.to}}</el-link>
                   </li>
                 </ul>
                 <ul class="TxMessage_show">
-                  <li class="TxMessage_label">交易值</li>
+                  <li class="TxMessage_label">{{ $t('transactionsDetail.transactionsValue') }}</li>
                   <li class="TxMessage_value" style="color: #4b525d;">
                     <span>{{Msgs.amount}} {{Msgs.denom}}</span>
                   </li>
@@ -52,17 +52,17 @@
             </div>
           </div>
           <ul v-else-if="Msgs.action === 'create_validator'" class="InfoRow">
-            <li class="InfoRow_label">验证者</li>
+            <li class="InfoRow_label">{{ $t('transactionsDetail.verifier') }}</li>
             <li class="InfoRow_value">{{Msgs.validator}}</li>
           </ul>
           <ul class="InfoRow">
-            <li class="InfoRow_label">交易备注</li>
+            <li class="InfoRow_label">{{ $t('transactionsDetail.transactionNotes') }}</li>
             <li class="InfoRow_value">{{Msgs.memo || '-'}}</li>
           </ul>
         </div>
         <div v-else class="TxMessage">
           <ul class="InfoRow">
-            <li class="InfoRow_label">转账失败原因</li>
+            <li class="InfoRow_label">{{ $t('transactionsDetail.failReason') }}</li>
             <li class="InfoRow_value">{{Msgs.errorInfo || '-'}}</li>
           </ul>
         </div>
@@ -80,10 +80,10 @@ export default {
     return {
       Information: {},
       InformationLabel: {
-        tx_hash: '交易Hash',
-        status: '状态',
-        height: '区块高度',
-        timestamp: '交易时间'
+        tx_hash: this.$t('transactionsDetail.transactionsHash'),
+        status: this.$t('transactionsDetail.transactionsStatus'),
+        height: this.$t('transactionsDetail.blocksHeight'),
+        timestamp: this.$t('transactionsDetail.transactionsTime')
       },
       Msgs: {},
     };

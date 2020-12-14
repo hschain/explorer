@@ -1,6 +1,6 @@
 <template>
   <el-table v-loading="loading" :data="TransactionsList" stripe style="width: 100%">
-    <el-table-column label="交易Hash" width="180">
+    <el-table-column :label="$t('transactions.transactionsHash')" width="180">
       <template slot-scope="scope">
         <el-link
           type="primary"
@@ -9,12 +9,12 @@
         >{{scope.row.tx_hash | hash}}</el-link>
       </template>
     </el-table-column>
-    <el-table-column label="交易类型" width="80">
+    <el-table-column :label="$t('transactions.transactionsType')" width="80">
       <template slot-scope="scope">
         <div>{{scope.row.type}}</div>
       </template>
     </el-table-column>
-    <el-table-column label="交易状态" width="80">
+    <el-table-column :label="$t('transactions.transactionsStatus')" width="90">
       <template slot-scope="scope">
         <div>
           <img
@@ -23,11 +23,11 @@
             alt
           />
           <img v-else :src="require('@/assets/common/fail_ic.svg')" alt />
-          <span>{{scope.row.messages[0].success ? '成功' : '失败'}}</span>
+          <span>{{scope.row.messages[0].success ? $t('status.success') : $t('status.fail')}}</span>
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="交易地址">
+    <el-table-column :label="$t('transactions.transactionsAddress')">
       <template slot-scope="scope">
         <div class="TransferAddress">
           <div v-if="scope.row.messages[0].success">
@@ -60,7 +60,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="交易金额" width="120">
+    <el-table-column :label="$t('transactions.transactionsValue')" width="120">
       <template slot-scope="scope">
         <div
           v-if="scope.row.messages[0].events.transfer && scope.row.messages[0].success"
@@ -68,7 +68,7 @@
         <div v-else>-</div>
       </template>
     </el-table-column>
-    <el-table-column label="交易货币" width="100">
+    <el-table-column :label="$t('transactions.transactionsCurrency')" width="100">
       <template slot-scope="scope">
         <div
           v-if="scope.row.messages[0].events.transfer && scope.row.messages[0].success"
@@ -76,7 +76,7 @@
         <div v-else>-</div>
       </template>
     </el-table-column>
-    <el-table-column label="区块高度" width="120">
+    <el-table-column :label="$t('transactions.blocksHeight')" width="120">
       <template slot-scope="scope">
         <el-link
           v-if="scope.row.height !== $route.params.data"
@@ -87,7 +87,7 @@
         <span v-else>{{scope.row.height}}</span>
       </template>
     </el-table-column>
-    <el-table-column label="时间" width="80">
+    <el-table-column :label="$t('transactions.time')" width="100">
       <template slot-scope="scope">
         <div>{{scope.row.timestamp | time}}</div>
       </template>

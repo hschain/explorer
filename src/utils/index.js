@@ -1,3 +1,9 @@
+import i18n from '@/i18n/i18n' // 语言国际化，中英...
+
+const vm = i18n._vm;
+const formatTimeTxt = vm.messages[vm.locale].formatTime;
+// console.log(formatTimeTxt)
+
 /**
  * 时间的展示方式
  * time : 需转换的时间值
@@ -22,19 +28,19 @@ export function formatTime(time, getTime) {
   } else {
     let diff = new Date().getTime() - timeStamp.getTime()
     if (diff <= 1000) {
-      return "刚刚";
+      return formatTimeTxt.just;
     } else if (diff <= 1000*60) {
-      return parseInt(diff/(1000)) + "秒前";
+      return parseInt(diff/(1000)) + formatTimeTxt.secondAgo;
     } else if (diff <= 1000*60*60) {
-      return parseInt(diff/(1000*60)) + "分钟前";
+      return parseInt(diff/(1000*60)) + formatTimeTxt.minuteAgo;
     } else if (diff <= 1000*60*60*24) {
-      return parseInt(diff/(1000*60*60)) + "小时前";
+      return parseInt(diff/(1000*60*60)) + formatTimeTxt.hourAgo;
     } else if (diff <= 1000*60*60*24*30) {
-      return parseInt(diff/(1000*60*60*24)) + "天前";
-    } else if (diff <= 1000*60*60*365) {
-      return parseInt(diff/(1000*60*60*24*30)) + "个月前";
+      return parseInt(diff/(1000*60*60*24)) + formatTimeTxt.dayAgo;
+    } else if (diff <= 1000*60*60*24*30*365) {
+      return parseInt(diff/(1000*60*60*24*30)) + formatTimeTxt.monthAgo;
     } else {
-      return parseInt(diff/(1000*60*60*365)) + "年前";
+      return parseInt(diff/(1000*60*60*365)) + formatTimeTxt.yearAgo;
     }
   }
 }

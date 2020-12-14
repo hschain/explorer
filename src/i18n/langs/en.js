@@ -1,0 +1,157 @@
+//en.js
+import enLocale from 'element-ui/lib/locale/lang/en'; //element组件英语语言包
+
+const en = {
+  jump: {
+    'bannerText': 'Global New Economic Network Basic Public Chain',
+    'title': 'Understand HSC and Chain',
+    'title_intro_1': 'Use blockchain technology to provide users, technology, economic models, and platforms for the decentralized Internet economy',
+    'title_intro_2': 'A public value chain with cross-chain technology as the core and integration of many cutting-edge technologies',
+    'title_intro_3': 'HSC is a value chain that uses cross-chain and oracle technology, combined with the entire closed-loop business model, to achieve the expansion of blockchain distributed applications',
+    'title_intro_4': 'Cross-chain technology node network formula algorithm',
+    'downloadText': 'download now',
+    'rightCorner': 'Please click on the upper right corner...',
+    'browserOpens': 'Select "Open in browser"'
+  },
+  bannerDesc: {
+    'bannerDesc': 'Global New Economic Network Basic Public Chain'
+  },
+  status: {
+    'success': 'success',
+    'fail': 'fail',
+  },
+  formatTime: {
+    'just': ' just',
+    'secondAgo': ' secs ago',
+    'minuteAgo': ' mins ago',
+    'hourAgo': ' hrs ago',
+    'dayAgo': ' days ago',
+    'monthAgo': ' mon ago',
+    'yearAgo': ' year ago',
+  },
+  header: {
+    // 'toggleLang': 'Toggle',
+    'searchPlaceholder': 'Search block, transaction, address details...',
+    'search': 'search',
+    'dashboard': 'DASHBORD',
+    'blocks': 'BLOCKS',
+    'transactions': 'TRANSACTIONS',
+    'assets': 'ASSETS',
+    'user': 'USERS'
+  },
+  dashboard: {
+    'clickDownUpload': 'Click To Download',
+    'blocksHeight': 'Height',
+    'transactionsNumber': 'Txs',
+    'transactionsPerSecond': 'TPS',
+    'circulation': 'Circulation',
+    'dailyOutput': 'Daily Production',
+    'subscribers': 'User Amount',
+    'blocks': {
+      'title': 'BLOCKS',
+      'showMore': 'Show More',
+      'blocksHeight': 'Height',
+      'blocksReward': 'Reward',
+      'transactionsNumber': 'Txs',
+      'time': 'Time',
+    },
+    'transactions': {
+      'title': 'TRANSACTIONS',
+      'showMore': 'Show More',
+      'transactionsHash': 'Hash',
+      'transactionsType': 'Type',
+      'blocksHeight': 'Height',
+      'time': 'Time',
+    },
+
+  },
+  footer: {
+    'footerTitle': 'Global New Economic Network Basic Public Chain'
+  },
+  blocks: {
+    'top': 'Top',
+    'liveUpdate': 'Live Update',
+    'title': 'BLOCKS',
+    'blocksHeight': 'Height',
+    'blocksHash': 'Hash',
+    'blocksReward': 'Reward',
+    'transactionsNumber': 'Txs',
+    'time': 'Time',
+  },
+  transactions: {
+    'top': 'Top',
+    'liveUpdate': 'Live Update',
+    'title': 'TRANSACTIONS',
+    'transactionsHash': 'Hash',
+    'transactionsType': 'Type',
+    'transactionsStatus': 'Status',
+    'transactionsAddress': 'Address',
+    'transactionsValue': 'Value',
+    'transactionsCurrency': 'Currency',
+    'blocksHeight': 'Height',
+    'time': 'Time',
+  },
+  assets: {
+    'top': 'Top',
+    'title': 'ASSETS',
+    'searchInputPlaceholder': 'assets,name,currency',
+    'name': 'Name',
+    'marketCap': 'Market Cap',
+    'exchangeRate': 'Rate',
+    'circulation': 'Circulation'
+  },
+  user: {
+    'title': 'USER',
+    'serialNumber': 'No.',
+    'address': 'Address',
+    'availableBalance': 'Available Balance',
+    'currency': 'Currency',
+  },
+  blocksDetail: {
+    'title': 'Blocks Detail',
+    'blocksInfo': 'Blocks Info',
+    'blocksHeight': 'Height',
+    'creationTime': 'Creation Time',
+    'currentBlockHash': 'Current Hash',
+    'blockReward': 'Reward',
+    'transactionsNum': 'Current Txs',
+    'transactionsInfo': 'Transactions Info',
+    'transactionsInfoEmpty': 'Transaction Information Is Empty',
+  },
+  transactionsDetail: {
+    'title': 'TRANSACTION DETAILS',
+    'transactionsInfo': 'Transactions Info',
+    'transactionsHash': 'Hash',
+    'transactionsStatus': 'Status',
+    'blocksHeight': 'Height',
+    'transactionsTime': 'Time',
+    'transactionsContent': 'Transactions Content',
+    'transactionsOrigin': 'From',
+    'transactionsWhereabouts': 'To',
+    'transactionsValue': 'Value',
+    'verifier': 'Verifier',
+    'transactionNotes': 'Memo',
+    'failReason': 'Failure Reasons ',
+  },
+  accountDetail: {
+    'title': 'ACCOUNT DETAIL',
+    'address': 'Address',
+    'valuation': 'Valuation',
+    'assets': 'Assets',
+    'transaction': 'Transactions',
+    'computingPower': 'Computing Power',
+    'availableBalance': 'Available Balance',
+    'freezeBalance': 'Freeze Balance',
+    'totalBalance': 'Total Balance',
+    'exchangeRate': 'Exchange Rate',
+    'liveUpdate': 'Live Update',
+    'totalComputingPower': 'Total Computing Power',
+    'percentage': 'Percentage',
+  },
+  tip: {
+    noResult: 'No results found',
+    noMsg: 'Please enter valid information',
+  },
+  ...enLocale
+}
+export default en

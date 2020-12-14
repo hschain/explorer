@@ -2,17 +2,23 @@
   <div class="BlocksList containerWrap">
     <el-backtop class="backtop" :right="20" style="bottom: 25vh">
       <img src="@/assets/common/top.png" alt="">
-      <p>顶部</p>
+      <p>{{ $t('blocks.top') }}</p>
     </el-backtop>
     <div class="titleWrapper">
-      <h2 class="pageTitle">区块</h2>
+      <h2 class="pageTitle">{{ $t('dashboard.blocks.title') }}</h2>
     </div>
     <el-card shadow="never" class="table">
       <div class="updateCheckbox">
-        <el-checkbox v-model="update" @change="handleCheckedChange">实时更新</el-checkbox>
+        <!-- 小分页组件 -->
+        <small-pagination
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.size"
+        @pagination="pagination"></small-pagination>
+        <el-checkbox v-model="update" @change="handleCheckedChange">{{ $t('blocks.liveUpdate') }}</el-checkbox>
       </div>
       <el-table v-loading="loading" :data="BlocksList" stripe style="width: 100%">
-        <el-table-column label="区块高度" width="120">
+        <el-table-column :label="$t('blocks.blocksHeight')" width="120">
           <template slot-scope="scope">
             <el-link
               type="primary"
@@ -21,7 +27,7 @@
             >{{scope.row.height}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="区块Hash">
+        <el-table-column :label="$t('blocks.blocksHash')">
           <template slot-scope="scope">
             <el-link
               type="info"
@@ -30,13 +36,13 @@
             >{{scope.row.block_hash | hash}}</el-link>
           </template>
         </el-table-column>
-        <el-table-column label="区块奖励">
+        <el-table-column :label="$t('blocks.blocksReward')">
           <template slot-scope="scope">
             <div>{{scope.row.amount}} {{scope.row.denom}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="num_txs" label="交易数量" width="100"></el-table-column>
-        <el-table-column label="时间" width="80">
+        <el-table-column prop="num_txs" :label="$t('blocks.transactionsNumber')" width="100"></el-table-column>
+        <el-table-column :label="$t('blocks.time')" width="100">
           <template slot-scope="scope">
             <div>{{scope.row.timestamp | time}}</div>
           </template>
@@ -56,10 +62,13 @@
 import { formatTime } from "@/utils";
 import { setDelayTimer } from "@/utils/common"
 import Pagination from "@/components/Pagination/Pagination";
+import smallPagination from "@/components/smallPagination/smallPagination";
+
 export default {
   name: "Blocks",
   components: {
     Pagination,
+    smallPagination
   },
   data() {
     return {
@@ -106,6 +115,7 @@ export default {
       this.$http(this.$api.getBlocksList, params).then((res) => {
         if (res.code === 200) {
           this.BlocksList = res.data;
+          // console.log(this.BlocksList)
           this.BlocksList.forEach(item => {
             if (/^u/i.test(item.denom)) {
               item.amount = (item.amount/1000000).toFixed(2)
