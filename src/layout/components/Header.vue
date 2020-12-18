@@ -114,11 +114,22 @@
 
       // window.localStorage.lang = lang;
       // this.$i18n.locale = lang;
+      var clientWidth = document.body.clientWidth;
       var lang = window.localStorage.lang;
-      if (lang == 'cn') {
-        window.localStorage.language = 'English';
-      } else {
-        window.localStorage.language = '中文';
+
+      // console.log(clientWidth)
+      if(clientWidth > 750){
+        if (lang == 'cn') {
+          window.localStorage.language = '中文';
+        } else {
+          window.localStorage.language = 'English';
+        }
+      }else{
+        if (lang == 'cn') {
+          window.localStorage.language = 'English';
+        } else {
+          window.localStorage.language = '中文';
+        }
       }
 
       this.language = window.localStorage.language;
