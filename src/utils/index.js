@@ -10,8 +10,9 @@ const formatTimeTxt = vm.messages[vm.locale].formatTime;
  * getTime : 是否直接返回原本时间，false则返回与现实时间的时差
  */
 export function formatTime(time, getTime) {
-  let arr = time.slice(0, -1).split("T");
-  let timeStamp = new Date(arr[0] + " " + arr[1] + " GMT+0000");
+  // let arr = time.slice(0, -1).split("T");
+  // let timeStamp = new Date(arr[0] + " " + arr[1] + " GMT+0000");
+  let timeStamp = new Date(time);
 
   if (getTime) {
     let time = {}
@@ -40,7 +41,7 @@ export function formatTime(time, getTime) {
     } else if (diff <= 1000*60*60*24*30*365) {
       return parseInt(diff/(1000*60*60*24*30)) + formatTimeTxt.monthAgo;
     } else {
-      return parseInt(diff/(1000*60*60*365)) + formatTimeTxt.yearAgo;
+      return parseInt(diff/(1000*60*60*24*30*365)) + formatTimeTxt.yearAgo;
     }
   }
 }

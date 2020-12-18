@@ -232,7 +232,7 @@
     .main_Dashboard-pc {
       width: 100%;
       height: 350px;
-      background-image: url("../../assets/view/main/banner.jpg");
+      background-image: url("../../assets/view/main/main_dashboard.png");
       background-repeat: no-repeat;
       background-size: 100% 100%;
       display: flex;
@@ -338,7 +338,7 @@
       .main_Dashboard-app {
         width: 100%;
         height: 250px;
-        // background-image: url("../../assets/view/main/main_mini.png");
+        background-image: url("../../assets/view/main/main_dashboard_mini.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
         margin-top: 0px;
@@ -360,6 +360,10 @@
             .searchBar_input {
               display: flex;
               margin-top: 5px;
+              
+              .select{
+                display: none;
+              }
             }
           }
 
@@ -529,7 +533,7 @@
       .main_Dashboard-app {
         width: 100%;
         height: 150px;
-        background-image: url("../../assets/view/main/banner.jpg");
+        background-image: url("../../assets/view/main/main_dashboard_mini.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
 

@@ -87,8 +87,9 @@ export default {
           let isAndroid = ua.indexOf("Android") > -1 || ua.indexOf("Adr") > -1;
           let isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
           if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+               this.$message('敬请期待！');
               // console.log('我是iPhone|iPad|iPod|iOS')
-              window.location = 'itms-services://?action=download-manifest&url=https://wallet-hschain-io.oss-cn-hangzhou.aliyuncs.com/wallet-app/HSWallet.plist';
+              // window.location = 'itms-services://?action=download-manifest&url=https://wallet-hschain-io.oss-cn-hangzhou.aliyuncs.com/wallet-app/HSWallet.plist';
           } else if (/(Android)/i.test(navigator.userAgent)) {
               // console.log('我是安卓')
               window.location ="https://wallet-hschain-io.oss-cn-hangzhou.aliyuncs.com/wallet-app/HSWallet.apk";
