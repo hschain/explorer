@@ -24,7 +24,7 @@
           <template slot-scope="scope">
             <div class="nameDetail">
               <div class="icon">
-                <img class="fixedIcon" v-if="scope.row.denom === 'HST'" :src="require('@/assets/common/logo.png')" alt="">
+                <img class="fixedIcon" v-if="scope.row.denom === 'HST' || scope.row.denom === 'HST0'" :src="require('@/assets/common/logo.png')" alt="">
                 <img v-else :src="require('@/assets/common/symbol_none.svg')" alt="">
               </div>
               <span class="name">{{scope.row.denom }}</span>

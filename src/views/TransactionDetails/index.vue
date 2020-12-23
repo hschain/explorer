@@ -136,7 +136,7 @@ export default {
         from: res.data[0].messages[0].events.message.sender,
         memo: res.data[0].memo,
       };
-      if (this.Msgs.action === "send" && this.Information.status) {
+      if (this.Msgs.action === "send" || this.Msgs.action === "issue" && this.Information.status) {
         this.Msgs.to = res.data[0].messages[0].events.transfer.recipient;
         console.log(this.Msgs.to)
         if (/^u/i.test(res.data[0].messages[0].events.transfer.denom)) {
@@ -151,7 +151,7 @@ export default {
           this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;
           this.Msgs.amount = res.data[0].messages[0].events.transfer.amount;
         }
-      } else if (this.Msgs.action === "send" && !this.Information.status) {
+      } else if (this.Msgs.action === "send" || this.Msgs.action === "issue" && !this.Information.status) {
         this.Msgs.errorInfo = JSON.parse(res.data[0].messages[0].log).message
       } else {
         this.Msgs.validator =
