@@ -38,6 +38,14 @@ export function setTxsType(type) {
       return "Set Address";
     }
 
+  }else if (type === "destory" || type === "destory_user") {
+
+    if (lang == 'cn') {
+      return "销毁";
+    } else {
+      return "Destory";
+    }
+
   }
 }
 // 设置统一延时时间

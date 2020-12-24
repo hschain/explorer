@@ -72,7 +72,7 @@
                 <div class="icon">
                   <img
                     class="fixedIcon"
-                    v-if="scope.row.denom === 'HST'"
+                    v-if="scope.row.denom === 'HST' || scope.row.denom === 'HST0'"
                     :src="require('@/assets/common/logo.png')"
                     alt
                   />

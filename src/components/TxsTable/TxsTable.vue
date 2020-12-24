@@ -48,13 +48,13 @@
             />
             <span
               v-if="scope.row.messages[0].events.transfer && scope.row.messages[0].events.transfer.recipient === $route.params.data"
-            >{{scope.row.messages[0].events.transfer.recipient | hash}}</span>
+            >{{scope.row.messages[0].events.transfer.recipient == 'hsc19q4r9qu34ayjns0yx2jf06hudvesquvkd8swnm'?'Burn Address':scope.row.messages[0].events.transfer.recipient | hash}}</span>
             <el-link
               v-else-if="scope.row.messages[0].events.transfer"
               type="primary"
               :underline="false"
               @click="getDetails('account', scope.row.messages[0].events.transfer.recipient)"
-            >{{scope.row.messages[0].events.transfer.recipient | hash}}</el-link>
+            >{{scope.row.messages[0].events.transfer.recipient == 'hsc19q4r9qu34ayjns0yx2jf06hudvesquvkd8swnm'?'Burn Address':scope.row.messages[0].events.transfer.recipient | hash}}</el-link>
           </div>
           <div v-else>-</div>
         </div>
@@ -130,7 +130,11 @@ export default {
   },
   filters: {
     hash: function (value) {
-      return value.slice(0, 6) + " … " + value.slice(-6);
+      if(value == 'Burn Address'){
+        return value
+      }else{
+        return value.slice(0, 6) + " … " + value.slice(-6);
+      }
     },
     time: function (value) {
       return formatTime(value);

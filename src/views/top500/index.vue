@@ -15,9 +15,14 @@
             {{scope.$index + 1 + (listQuery.page - 1) * listQuery.size}}
           </template>
         </el-table-column>
-        <el-table-column prop="address" :label="$t('user.address')" width="340">
+        <el-table-column prop="address" :label="$t('user.address')" width="365">
           <template slot-scope="scope">
-            <el-link type="primary" :underline="false" @click="getDetails(scope.row.address, scope)">{{scope.row.address}}</el-link>
+            <div class="fire-wrap">
+
+              <el-link type="primary" :underline="false" @click="getDetails(scope.row.address, scope)">{{scope.row.address == 'hsc19q4r9qu34ayjns0yx2jf06hudvesquvkd8swnm'?'Burn Address': scope.row.address}}</el-link>
+              <img v-if="scope.row.address == 'hsc19q4r9qu34ayjns0yx2jf06hudvesquvkd8swnm'" class="fire" src="../../assets/view/main/fire.png" alt="">
+            </div>
+
           </template>
         </el-table-column>
         <el-table-column prop="amount" :label="$t('user.availableBalance')">
@@ -44,7 +49,7 @@
   import { setDelayTimer } from "@/utils/common"
   import Pagination from "@/components/Pagination/Pagination";
   import smallPagination from "@/components/smallPagination/smallPagination";
-  
+
   export default {
     name: 'top500',
     components: {
@@ -103,13 +108,24 @@
         }
         this.stopLastRequest = true
         this.getTop500List()
-      }
+      },
     },
   }
 
 </script>
 
 <style lang="scss" scoped>
+  .fire-wrap{
+    display: flex;
+    align-items: center;
+
+    .fire{
+      width: 20px;
+      margin-left: 5px;
+      margin-top: -5px;
+    }
+  }
+
   .AssetsList {
     .table {
       .searchBar {
