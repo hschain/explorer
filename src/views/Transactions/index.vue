@@ -50,6 +50,7 @@ export default {
       },
       loading: true,
       total: 0,
+      end: 0, // 第一页的最后一条
       timer: null,
       update: true,
       stopLastRequest: false
@@ -71,19 +72,30 @@ export default {
         limit: this.listQuery.size
       };
       if (this.listQuery.page !== 1) {
-        params.begin =
-          this.total - (this.listQuery.page - 1) * this.listQuery.size;
+        // params.begin =
+        //   this.total - (this.listQuery.page - 1) * this.listQuery.size;
+        params.begin = this.end - (this.listQuery.page - 2) * this.listQuery.size - 1;
+        // console.log(params.begin)
       }
       this.$http(this.$api.getTransactionsList, params).then(res => {
         if (res.code === 200 && res.data) {
+          // console.log(this.listQuery.page)
+          if(this.listQuery.page == 1){
+            this.end = res.paging.end;
+          }
+          // console.log(this.end)
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
-            if (item.messages[0].success && /^u/i.test(item.messages[0].events.transfer.denom)) {
+            if (item.messages[0].success) {
               if (item.messages[0].events.transfer && /^u/i.test(item.messages[0].events.transfer.denom)) {
                 item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(1).toUpperCase()
                 item.messages[0].events.transfer.amount = (item.messages[0].events.transfer.amount/1000000).toFixed(6)
+              }else if(item.messages[0].events.set_distr_address && /^u/i.test(item.messages[0].events.set_distr_address.distr_address)){
+                item.messages[0].events.transfer.denom = '';
+                item.messages[0].events.transfer.amount = (item.messages[0].events.transfer.amount/1000000).toFixed(6)
               }
             }
+
             item.type = setTxsType(
               res.data[i].messages[0].events.message.action
             );

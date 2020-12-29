@@ -97,6 +97,7 @@ const cn = {
     'name': '名称',
     'marketCap': '市值',
     'exchangeRate': '汇率',
+    'circulationNum': '流通量',
     'circulation': '发行量'
   },
   user: {

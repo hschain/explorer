@@ -32,7 +32,7 @@
               <el-link type="primary" class="InfoRow_value" :underline="false" @click="() => this.$router.push({ path: `/account/${Msgs.from}` })">{{Msgs.from}}</el-link>
             </li>
           </ul>
-          <div class="TxMessage_toValue" v-if="Msgs.action === 'send' || Msgs.action === 'issue'">
+          <div class="TxMessage_toValue" v-if="Msgs.action === 'send' || Msgs.action === 'issue' || Msgs.action === 'destory' || Msgs.action === 'destory_user'">
 <!--            <div class="TxMessage_label">去向 / 交易值</div>-->
             <div class="TxMessage_contentWrapper">
               <div class="TxMessage_content">
@@ -136,9 +136,10 @@ export default {
         from: res.data[0].messages[0].events.message.sender,
         memo: res.data[0].memo,
       };
-      if (this.Msgs.action === "send" || this.Msgs.action === "issue" && this.Information.status) {
+      // console.log( this.Msgs.action)
+      if ((this.Msgs.action === "send" || this.Msgs.action === "issue" || this.Msgs.action === 'destory' || this.Msgs.action === 'destory_user') && this.Information.status) {
         this.Msgs.to = res.data[0].messages[0].events.transfer.recipient;
-        console.log(this.Msgs.to)
+        // console.log(this.Msgs.to)
         if (/^u/i.test(res.data[0].messages[0].events.transfer.denom)) {
           // console.log(res.data[0].messages[0].events.transfer.denom)
           this.Msgs.denom = res.data[0].messages[0].events.transfer.denom.slice(
@@ -151,7 +152,7 @@ export default {
           this.Msgs.denom = res.data[0].messages[0].events.transfer.denom;
           this.Msgs.amount = res.data[0].messages[0].events.transfer.amount;
         }
-      } else if (this.Msgs.action === "send" || this.Msgs.action === "issue" && !this.Information.status) {
+      } else if ((this.Msgs.action === "send" || this.Msgs.action === "issue") && !this.Information.status) {
         this.Msgs.errorInfo = JSON.parse(res.data[0].messages[0].log).message
       } else {
         this.Msgs.validator =

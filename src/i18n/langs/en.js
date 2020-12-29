@@ -98,6 +98,7 @@ const en = {
     'name': 'Name',
     'marketCap': 'Market Cap',
     'exchangeRate': 'Rate',
+    'circulationNum': 'circulationNum',
     'circulation': 'Circulation'
   },
   user: {

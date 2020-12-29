@@ -43,7 +43,7 @@ export function setTxsType(type) {
     if (lang == 'cn') {
       return "销毁";
     } else {
-      return "Destory";
+      return "Burn";
     }
 
   }
