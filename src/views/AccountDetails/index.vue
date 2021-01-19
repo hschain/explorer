@@ -254,17 +254,19 @@ export default {
           this.totalTrans =  this.total;
           this.end = res.paging.end
           this.TransactionsData.forEach((item, i) => {
-            if (/^u/i.test(item.messages[0].events.transfer.denom)) {
-              item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
-                1
+            if (item.message !== null) {
+              if (/^u/i.test(item.messages[0].events.transfer.denom)) {
+                item.messages[0].events.transfer.denom = item.messages[0].events.transfer.denom.slice(
+                  1
+                );
+                item.messages[0].events.transfer.amount = (
+                  item.messages[0].events.transfer.amount / 1000000
+                ).toFixed(6);
+              }
+              item.type = setTxsType(
+                res.data[i].messages[0].events.message.action
               );
-              item.messages[0].events.transfer.amount = (
-                item.messages[0].events.transfer.amount / 1000000
-              ).toFixed(6);
             }
-            item.type = setTxsType(
-              res.data[i].messages[0].events.message.action
-            );
           });
         } else {
           this.TransactionsData = []
