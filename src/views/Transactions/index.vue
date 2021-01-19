@@ -69,14 +69,12 @@ export default {
   methods: {
     getTransactionsList() {
       let params = {
+        page: this.listQuery.page,
         limit: this.listQuery.size
       };
-      if (this.listQuery.page !== 1) {
-        // params.begin =
-        //   this.total - (this.listQuery.page - 1) * this.listQuery.size;
-        params.begin = this.end - (this.listQuery.page - 2) * this.listQuery.size - 1;
-        // console.log(params.begin)
-      }
+      // if (this.listQuery.page !== 1) {
+      //   params.begin = this.end - (this.listQuery.page - 2) * this.listQuery.size - 1;
+      // }
       this.$http(this.$api.getTransactionsList, params).then(res => {
         if (res.code === 200 && res.data) {
           // console.log(this.listQuery.page)

@@ -76,6 +76,10 @@
                     :src="require('@/assets/common/logo.png')"
                     alt
                   />
+                  <img class="fixedIcon" v-else-if="scope.row.denom === 'TWT'" :src="require('@/assets/common/TWT.png')"
+                    alt="">
+                  <img class="fixedIcon" v-else-if="scope.row.denom === 'TWT0'" :src="require('@/assets/common/TWT0.png')"
+                    alt="">
                   <img v-else :src="require('@/assets/common/symbol_none.svg')" alt />
                 </div>
                 <span class="name">{{ scope.row.denom }}</span>

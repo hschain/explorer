@@ -24,6 +24,11 @@
               <div class="icon">
                 <img class="fixedIcon" v-if="scope.row.denom === 'HST' || scope.row.denom === 'HST0'" :src="require('@/assets/common/logo.png')"
                   alt="">
+                <img class="fixedIcon" v-else-if="scope.row.denom === 'TWT'" :src="require('@/assets/common/TWT.png')"
+                  alt="">
+                <img class="fixedIcon" v-else-if="scope.row.denom === 'TWT0'" :src="require('@/assets/common/TWT0.png')"
+                  alt="">
+
                 <img v-else :src="require('@/assets/common/symbol_none.svg')" alt="">
               </div>
               <span class="name">{{scope.row.denom }}</span>
@@ -120,6 +125,7 @@
               if (/^u/i.test(item.denom)) {
                 item.denom = item.denom.toUpperCase().slice(1)
                 item.amount = (item.amount / 1000000).toFixed(6)
+                item.minted_supply = (item.minted_supply / 1000000).toFixed(6);
               } else {
                 item.denom = item.denom.toUpperCase()
               }

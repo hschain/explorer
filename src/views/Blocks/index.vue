@@ -106,12 +106,14 @@ export default {
     //获取列表
     getBlocksList() {
       let params = {
+        page: this.listQuery.page,
         limit: this.listQuery.size,
       };
-      if (this.listQuery.page !== 1) {
-        params.begin =
-          this.total - (this.listQuery.page - 1) * this.listQuery.size;
-      }
+      
+      // if (this.listQuery.page !== 1) {
+      //   params.begin =
+      //     this.total - (this.listQuery.page - 1) * this.listQuery.size;
+      // }
       this.$http(this.$api.getBlocksList, params).then((res) => {
         if (res.code === 200) {
           this.BlocksList = res.data;
