@@ -75,7 +75,7 @@ export default {
           this.TransactionsList.forEach((item, i) => {
             item.type = setTxsType(res.data[i].messages[0].events.message.action)
           });
-          this.$emit('sendTransferValue', res.paging.begin)
+          this.$emit('sendTransferValue', res.paging.total)
         }
       }).finally(() => {
         if (this.update) {
