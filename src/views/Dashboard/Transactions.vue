@@ -73,7 +73,9 @@ export default {
         if (res.code === 200 && res.data) {
           this.TransactionsList = res.data;
           this.TransactionsList.forEach((item, i) => {
-            item.type = setTxsType(res.data[i].messages[0].events.message.action)
+            if(res.data[i].messages !== null) {
+              item.type = setTxsType(res.data[i].messages[0].events.message.action)
+            }
           });
           this.$emit('sendTransferValue', res.paging.total)
         }
