@@ -241,12 +241,13 @@ export default {
     // 获取交易列表
     getTransactionsList() {
       let params = {
+        page: this.listQuery.page,
         limit: this.listQuery.size,
         address: this.$route.params.data,
       };
-      if (this.listQuery.page !== 1) {
-        params.begin = this.end - 1;
-      }
+      // if (this.listQuery.page !== 1) {
+      //   params.begin = this.end - 1;
+      // }
       this.$http(this.$api.getTransactionsList, params).then((res) => {
         if (res.code === 200 && res.data) {
           this.TransactionsData = res.data;
